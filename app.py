@@ -598,17 +598,20 @@ header[data-testid="stHeader"],
 
 .hero-title{
   display:flex;
-  flex-direction:row; 
-  flex-wrap:wrap; 
-  gap:.2em; 
-  font-size:clamp(2.15rem, 4.6vw, 3.45rem) !important;
-  line-height:1.1 !important;
-  letter-spacing:-.04em !important;
-  margin:0 0 .95rem !important;
+  flex-direction:row;
+  align-items:baseline;
+  gap:.18em;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  font-size:clamp(2.1rem, 3.6vw, 3rem) !important;
+  line-height:1 !important;
+  letter-spacing:-.05em !important;
+  margin:0 0 .85rem !important;
   max-width:none !important;
+  text-wrap:balance;
 }
 
-.hero-title-line{ display:inline; } 
+.hero-title-line{ display:inline; }
 
 .hero-title-top{
   font-size:.72em;
