@@ -958,11 +958,28 @@ p, li, span, div, label, input, textarea, button {
   letter-spacing: 0.16em !important;
 }
 
+.hero-shell.hero-copy-shell {
+  padding: 1.6rem 1.7rem;
+  display: flex;
+  align-items: center;
+  min-height: 320px;
+}
+
 .hero-title {
-  font-size: clamp(2.15rem, 4.6vw, 3.45rem) !important;
-  line-height: 1.02 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  align-items: baseline !important;
+  gap: 0.18em !important;
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem) !important;
+  line-height: 1.05 !important;
   margin-bottom: 0.8rem !important;
-  max-width: 12em;
+  max-width: none !important;
+}
+
+.hero-title-line {
+  display: inline !important;
 }
 
 .hero-title .accent {
@@ -981,6 +998,10 @@ p, li, span, div, label, input, textarea, button {
   position: relative;
   border-radius: 30px;
   padding: 1rem;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background:
     linear-gradient(180deg, rgba(255,255,255,0.84), rgba(255,255,255,0.58)),
     radial-gradient(circle at 30% 20%, rgba(255,140,66,0.10), transparent 26%),
@@ -1848,10 +1869,10 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
     <style>
       .compass-wrap {{
         width: 100%;
-        min-height: 520px;
+        min-height: 280px;
         display: grid;
         place-items: center;
-        padding: 1rem 0 0.25rem;
+        padding: 0.5rem 0 0.25rem;
         color: #231B1C;
         font-family: 'Inter', sans-serif;
         user-select: none;
@@ -1860,7 +1881,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       .compass-shell {{
         --base-angle: {angle:.0f}deg;
         position: relative;
-        width: min(90vw, 460px);
+        width: min(70vw, 260px);
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         display: grid;
@@ -2063,11 +2084,9 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
 hero_left, hero_right = st.columns([1.05, 1])
 
-st.markdown('<div class="hero-shell">', unsafe_allow_html=True)
-st.markdown('<div class="hero-grid">', unsafe_allow_html=True)
 with hero_left:
     st.markdown("""
-    <div class="hero">
+    <div class="hero-shell hero-copy-shell">
       <div class="hero-copy">
         <h1 class="hero-title"><span class="hero-title-line hero-title-top">First-Gen</span><span class="hero-title-line hero-title-bottom">Compass</span></h1>
         <div class="hero-slogan">A calm, intelligent map for high-stakes choices—made for students who were never handed the unwritten rules.</div>
@@ -2076,9 +2095,8 @@ with hero_left:
     """, unsafe_allow_html=True)
 with hero_right:
     st.markdown('<div class="compass-card">', unsafe_allow_html=True)
-    st.components.v1.html(render_compass_widget(), height=560, scrolling=False)
+    st.components.v1.html(render_compass_widget(), height=320, scrolling=False)
     st.markdown('</div>', unsafe_allow_html=True)
-st.markdown('</div></div>', unsafe_allow_html=True)
 
 if not get_api_key():
     st.warning(
