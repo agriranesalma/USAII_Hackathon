@@ -207,28 +207,31 @@ div[data-baseweb="checkbox"] input:checked + span {
 
 .hero-title{
   display:flex;
-  flex-direction:column;
-  gap:.02em;
-  font-size:clamp(3rem, 6vw, 5.1rem);
-  line-height:.92;
+  flex-direction:row;
+  align-items:baseline;
+  gap:.18em;
+  flex-wrap:nowrap;
+  white-space:nowrap;
+  font-size:clamp(2.25rem, 4vw, 3.35rem);
+  line-height:1;
   font-weight:800;
-  letter-spacing:-.055em;
+  letter-spacing:-.05em;
   color:var(--text);
   margin:0 0 .85rem;
-  max-width:8.2ch;
+  max-width:none;
 }
 
-.hero-title-line{ display:block; }
+.hero-title-line{ display:inline; }
 
 .hero-title-top{
-  font-size:.56em;
-  letter-spacing:-.06em;
+  font-size:1em;
+  letter-spacing:-.055em;
   color:var(--text);
 }
 
 .hero-title-bottom{
-  font-size:1.12em;
-  letter-spacing:-.075em;
+  font-size:1em;
+  letter-spacing:-.055em;
   color:var(--accent-2);
   text-shadow:0 1px 0 rgba(255,255,255,.42);
 }
@@ -458,7 +461,7 @@ div[data-baseweb="checkbox"] input:checked + span {
 }
 
 @media (max-width: 640px) {
-  .hero-title { font-size: 2.45rem; }
+  .hero-title { font-size: 2rem; }
   .hero-banner { font-size: 0.92rem; }
 }
 </style>
