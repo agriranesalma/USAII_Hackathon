@@ -205,22 +205,6 @@ div[data-baseweb="checkbox"] input:checked + span {
 
 .hero-copy{ display:flex; flex-direction:column; gap:.15rem; }
 
-.hero-title{
-  display:flex;
-  flex-direction:row;
-  align-items:baseline;
-  gap:.18em;
-  flex-wrap:nowrap;
-  white-space:nowrap;
-  font-size:clamp(2.25rem, 4vw, 3.35rem);
-  line-height:1;
-  font-weight:800;
-  letter-spacing:-.05em;
-  color:var(--text);
-  margin:0 0 .85rem;
-  max-width:none;
-}
-
 .hero-title-line{ display:inline; }
 
 .hero-title-top{
@@ -415,19 +399,6 @@ div[data-baseweb="checkbox"] input:checked + span {
 .empty-state-text { color: var(--muted); max-width: 500px; margin: 0 auto; font-size: 0.96rem; line-height: 1.7; }
 
 /* Compass hero */
-.compass-card {
-  position: relative;
-  padding: 1rem;
-  border-radius: 30px;
-  background:
-    radial-gradient(circle at 18% 18%, rgba(201,130,114,0.13), transparent 28%),
-    radial-gradient(circle at 82% 78%, rgba(104,128,107,0.10), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,241,233,0.78));
-  border: 1px solid rgba(58,44,45,0.09);
-  box-shadow: var(--shadow);
-  overflow: hidden;
-}
-
 .compass-card::before,
 .compass-card::after {
   content: "";
@@ -596,21 +567,6 @@ header[data-testid="stHeader"],
   padding:.62rem .95rem !important;
 }
 
-.hero-title{
-  display:flex;
-  flex-direction:row;
-  align-items:baseline;
-  gap:.18em;
-  flex-wrap:nowrap;
-  white-space:nowrap;
-  font-size:clamp(2.1rem, 3.6vw, 3rem) !important;
-  line-height:1 !important;
-  letter-spacing:-.05em !important;
-  margin:0 0 .85rem !important;
-  max-width:none !important;
-  text-wrap:balance;
-}
-
 .hero-title-line{ display:inline; }
 
 .hero-title-top{
@@ -643,28 +599,6 @@ header[data-testid="stHeader"],
   font-size:.94rem;
   line-height:1.78;
   font-weight:600;
-}
-
-.compass-card{
-  position:relative;
-  padding:1rem;
-  border-radius:30px;
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(247,239,230,0.72)),
-    radial-gradient(circle at 30% 20%, rgba(255,140,66,0.10), transparent 26%),
-    radial-gradient(circle at 70% 78%, rgba(111,168,136,0.10), transparent 26%);
-  border:1px solid rgba(57,42,56,0.08);
-  box-shadow:0 24px 60px rgba(57,42,56,0.10), inset 0 1px 0 rgba(255,255,255,0.85);
-  backdrop-filter: blur(14px);
-}
-
-.compass-card::before{
-  content:"";
-  position:absolute;
-  inset:10px;
-  border-radius:24px;
-  border:1px solid rgba(255,255,255,0.55);
-  pointer-events:none;
 }
 
 .compass-wrap{
@@ -1865,221 +1799,77 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
 
 
 def render_compass_widget(initial_angle: float = 0.0) -> str:
+    """Pure inline SVG compass — no iframe, no media queries, fixed pixel size.
+    Rendered directly via st.markdown so it obeys the page's own CSS cascade
+    and can never mismatch an iframe's internal viewport."""
     angle = float(initial_angle) % 360
+    size = 200  # fixed px, matches viewBox 1:1 — no vw/iframe scaling involved
+    cx = cy = size / 2
+    r_outer, r_mid, r_inner, r_degree, r_shine, r_face = 97, 91, 84, 93, 87, 82
+    needle_len = size * 0.34
+
     return f"""
-    <style>
-      .compass-wrap {{
-        width: 100%;
-        min-height: 220px;
-        display: grid;
-        place-items: center;
-        padding: 0.25rem 0;
-        color: #231B1C;
-        font-family: 'Inter', sans-serif;
-        user-select: none;
-        overflow: hidden;
-      }}
+    <svg viewBox="0 0 {size} {size}" width="{size}" height="{size}"
+         style="display:block;margin:0 auto;overflow:visible;"
+         xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="compassGlow" cx="50%" cy="40%" r="65%">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.62)"/>
+          <stop offset="30%" stop-color="rgba(255,255,255,0.08)"/>
+          <stop offset="72%" stop-color="rgba(15,26,46,0)"/>
+        </radialGradient>
+        <radialGradient id="compassFace" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stop-color="rgba(15,26,46,0.15)"/>
+          <stop offset="100%" stop-color="rgba(15,26,46,0.32)"/>
+        </radialGradient>
+        <linearGradient id="needleTop" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#FF8C42"/>
+          <stop offset="45%" stop-color="#E8694F"/>
+          <stop offset="100%" stop-color="rgba(232,105,79,0.08)"/>
+        </linearGradient>
+        <linearGradient id="needleBottom" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(245,241,232,0.95)"/>
+          <stop offset="55%" stop-color="rgba(168,180,199,0.92)"/>
+          <stop offset="100%" stop-color="rgba(168,180,199,0.05)"/>
+        </linearGradient>
+        <radialGradient id="capGradient" cx="35%" cy="35%" r="65%">
+          <stop offset="0%" stop-color="#FFFFFF"/>
+          <stop offset="36%" stop-color="#A8B4C7"/>
+          <stop offset="72%" stop-color="#0F1A2E"/>
+        </radialGradient>
+        <mask id="tickMask">
+          <circle cx="{cx}" cy="{cy}" r="{size/2}" fill="white"/>
+          <circle cx="{cx}" cy="{cy}" r="{size*0.69/2*2}" fill="black"/>
+        </mask>
+      </defs>
 
-      .compass-shell {{
-        --base-angle: {angle:.0f}deg;
-        position: relative;
-        width: min(55vw, 200px);
-        aspect-ratio: 1 / 1;
-        border-radius: 50%;
-        display: grid;
-        place-items: center;
-        background:
-          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.62), rgba(255,255,255,0.08) 30%, rgba(15,26,46,0.0) 72%),
-          radial-gradient(circle at 50% 50%, rgba(255,140,66,0.10), rgba(255,140,66,0.03) 42%, rgba(15,26,46,0.0) 70%),
-          linear-gradient(145deg, rgba(58,44,45,0.04), rgba(255,255,255,0.02));
-        border: 1px solid rgba(58,44,45,0.12);
-        box-shadow:
-          0 28px 72px rgba(54,42,44,0.22),
-          inset 0 0 0 1px rgba(255,255,255,0.55);
-        overflow: hidden;
-        animation: shellFloat 7s ease-in-out infinite alternate;
-      }}
+      <circle cx="{cx}" cy="{cy}" r="{size/2 - 2}" fill="url(#compassGlow)"/>
+      <circle cx="{cx}" cy="{cy}" r="{r_outer}" fill="none" stroke="rgba(168,180,199,0.30)" stroke-width="1.4"/>
+      <circle cx="{cx}" cy="{cy}" r="{r_mid}" fill="none" stroke="rgba(255,140,66,0.30)" stroke-width="1.2"/>
+      <circle cx="{cx}" cy="{cy}" r="{r_inner}" fill="none" stroke="rgba(57,42,56,0.14)" stroke-width="1"/>
+      <circle cx="{cx}" cy="{cy}" r="{r_degree}" fill="none" stroke="rgba(168,180,199,0.22)" stroke-width="1" stroke-dasharray="2 3"/>
+      <circle cx="{cx}" cy="{cy}" r="{r_shine}" fill="none" stroke="rgba(57,42,56,0.08)" stroke-width="1"/>
+      <circle cx="{cx}" cy="{cy}" r="{r_face}" fill="url(#compassFace)"/>
 
-      @keyframes shellFloat {{
-        0% {{ transform: translateY(0px) scale(1); }}
-        100% {{ transform: translateY(-5px) scale(1.004); }}
-      }}
+      <g mask="url(#tickMask)">
+        {''.join(
+            f'<line x1="{cx}" y1="{cy-size/2+2}" x2="{cx}" y2="{cy-size/2+8}" '
+            f'stroke="rgba(168,180,199,0.45)" stroke-width="1.1" '
+            f'transform="rotate({deg} {cx} {cy})"/>'
+            for deg in range(0, 360, 6)
+        )}
+      </g>
 
-      .compass-shell::before,
-      .compass-shell::after {{
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        pointer-events: none;
-      }}
+      <g transform="rotate({angle:.0f} {cx} {cy})">
+        <polygon points="{cx},{cy-needle_len} {cx+7},{cy-needle_len*0.42} {cx+4.5},{cy} {cx-4.5},{cy} {cx-7},{cy-needle_len*0.42}"
+                 fill="url(#needleTop)"/>
+        <polygon points="{cx},{cy+needle_len} {cx+7},{cy+needle_len*0.42} {cx+4.5},{cy} {cx-4.5},{cy} {cx-7},{cy+needle_len*0.42}"
+                 fill="url(#needleBottom)"/>
+      </g>
 
-      .compass-shell::before {{
-        inset: 7%;
-        background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 54%),
-          conic-gradient(from 0deg,
-            rgba(232,105,79,0.00) 0deg 12deg,
-            rgba(57,42,56,0.05) 12deg 13deg,
-            rgba(232,105,79,0.00) 13deg 24deg);
-        opacity: 0.55;
-      }}
-
-      .compass-shell::after {{
-        inset: 18%;
-        border: 1px solid rgba(57,42,56,0.06);
-        box-shadow: inset 0 0 30px rgba(255,255,255,0.08);
-      }}
-
-      .compass-glow {{
-        position: absolute;
-        inset: 10%;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(214,133,149,0.18), transparent 62%);
-        filter: blur(10px);
-        pointer-events: none;
-        animation: pulse 5.5s ease-in-out infinite;
-      }}
-
-      @keyframes pulse {{
-        0%, 100% {{ opacity: .78; transform: scale(1); }}
-        50% {{ opacity: 1; transform: scale(1.03); }}
-      }}
-
-      .compass-ring-outer,
-      .compass-ring-mid,
-      .compass-ring-inner,
-      .compass-degree-ring,
-      .compass-ringshine,
-      .compass-face,
-      .compass-ticks {{
-        position: absolute;
-        border-radius: 50%;
-        pointer-events: none;
-      }}
-
-      .compass-ring-outer {{
-        inset: 2.5%;
-        border: 1px solid rgba(168,180,199,0.22);
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-      }}
-
-      .compass-ring-mid {{
-        inset: 9%;
-        border: 1px solid rgba(255,140,66,0.25);
-      }}
-
-      .compass-ring-inner {{
-        inset: 16%;
-        border: 1px solid rgba(57,42,56,0.12);
-      }}
-
-      .compass-face {{
-        inset: 18%;
-        background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
-          radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.18);
-      }}
-
-      .compass-degree-ring {{
-        inset: 7%;
-        border: 1px dashed rgba(168,180,199,0.18);
-      }}
-
-      .compass-ringshine {{
-        inset: 13%;
-        border: 1px solid rgba(57,42,56,0.06);
-        box-shadow: inset 0 0 50px rgba(255,255,255,0.02);
-      }}
-
-      .compass-ticks {{
-        inset: 0;
-        background:
-          repeating-conic-gradient(
-            from 0deg,
-            rgba(168,180,199,0.30) 0deg 1deg,
-            transparent 1deg 6deg
-          );
-        -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-                mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-        opacity: 0.72;
-      }}
-
-      .compass-needle {{
-        position: absolute;
-        inset: 16%;
-        border-radius: 50%;
-        transform: rotate(var(--base-angle));
-        animation: needleTurn 8.5s cubic-bezier(.4,0,.2,1) infinite alternate;
-      }}
-
-      @keyframes needleTurn {{
-        0% {{ transform: rotate(calc(var(--base-angle) - 6deg)); }}
-        100% {{ transform: rotate(calc(var(--base-angle) + 8deg)); }}
-      }}
-
-      .compass-needle::before,
-      .compass-needle::after {{
-        content: "";
-        position: absolute;
-        left: 50%;
-        transform-origin: center;
-        width: 1.9rem;
-        height: 46%;
-        clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
-        filter: drop-shadow(0 0 16px rgba(0,0,0,0.14));
-      }}
-
-      .compass-needle::before {{
-        top: 0;
-        transform: translateX(-50%);
-        background: linear-gradient(180deg, #FF8C42 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
-        filter: drop-shadow(0 0 18px rgba(255,140,66,0.22));
-      }}
-
-      .compass-needle::after {{
-        bottom: 0;
-        transform: translateX(-50%) rotate(180deg);
-        background: linear-gradient(180deg, rgba(245,241,232,0.95) 0%, rgba(168,180,199,0.92) 55%, rgba(168,180,199,0.05) 100%);
-        filter: drop-shadow(0 0 16px rgba(168,180,199,0.16));
-      }}
-
-      .compass-cap {{
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        transform: translate(-50%, -50%);
-        background: radial-gradient(circle at 35% 35%, #FFFFFF, #A8B4C7 36%, #0F1A2E 72%);
-        box-shadow:
-          0 0 0 6px rgba(57,42,56,0.05),
-          0 0 30px rgba(255,140,66,0.22);
-        z-index: 2;
-      }}
-
-      @media (max-width: 640px) {{
-        .compass-wrap {{ min-height: 480px; }}
-        .compass-shell {{ width: min(92vw, 380px); }}
-      }}
-    </style>
-
-    <div class="compass-wrap" aria-label="Compass illustration">
-      <div class="compass-shell">
-        <div class="compass-glow"></div>
-        <div class="compass-ring-outer"></div>
-        <div class="compass-ring-mid"></div>
-        <div class="compass-ring-inner"></div>
-        <div class="compass-degree-ring"></div>
-        <div class="compass-ringshine"></div>
-        <div class="compass-ticks"></div>
-        <div class="compass-face"></div>
-        <div class="compass-needle">
-          <div class="compass-cap"></div>
-        </div>
-      </div>
-    </div>
+      <circle cx="{cx}" cy="{cy}" r="11" fill="url(#capGradient)"/>
+      <circle cx="{cx}" cy="{cy}" r="14" fill="none" stroke="rgba(57,42,56,0.10)" stroke-width="3"/>
+    </svg>
     """
 
 
@@ -2096,9 +1886,10 @@ with hero_left:
     </div>
     """, unsafe_allow_html=True)
 with hero_right:
-    st.markdown('<div class="compass-card">', unsafe_allow_html=True)
-    st.components.v1.html(render_compass_widget(), height=240, scrolling=False)
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown(
+        f'<div class="compass-card">{render_compass_widget()}</div>',
+        unsafe_allow_html=True,
+    )
 
 if not get_api_key():
     st.warning(
