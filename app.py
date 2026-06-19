@@ -50,11 +50,11 @@ CSS = """
 
 * { box-sizing: border-box; }
 
-.stApp {
-  background: var(--night);
-  background-image:
-    radial-gradient(circle at 18% 8%, rgba(255,140,66,0.05) 0%, transparent 38%),
-    radial-gradient(circle at 85% 92%, rgba(111,168,136,0.04) 0%, transparent 42%);
+..stApp {
+  background:
+    radial-gradient(circle at 18% 10%, rgba(255,255,255,0.24) 0%, transparent 34%),
+    radial-gradient(circle at 82% 88%, rgba(232,105,79,0.14) 0%, transparent 36%),
+    linear-gradient(180deg, #f7ada3 0%, #f6a298 42%, #f4a99f 100%);
   color: var(--bone);
   font-family: 'Public Sans', -apple-system, sans-serif;
   font-size: 15.5px;
@@ -206,9 +206,9 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 28px;
   padding: 1rem;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255,140,66,0.18), transparent 28%),
-    radial-gradient(circle at 70% 72%, rgba(111,168,136,0.14), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02));
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18), transparent 28%),
+    radial-gradient(circle at 70% 72%, rgba(232,105,79,0.12), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.10));
   border: 1px solid rgba(168,180,199,0.18);
   box-shadow: 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
@@ -283,7 +283,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 50%;
   display: grid;
   place-items: center;
-  filter: drop-shadow(0 28px 60px rgba(0,0,0,0.34));
+  filter: drop-shadow(0 30px 72px rgba(0,0,0,0.28));
 }
 .compass-glow {
   position: absolute;
@@ -1126,7 +1126,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
       .compass-shell {
         position: relative;
-        width: min(86vw, 430px);
+        width: min(92vw, 520px);
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         display: grid;
@@ -1310,7 +1310,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         gap: 0.2rem;
         padding: 0.55rem 0.85rem;
         border-radius: 999px;
-        background: rgba(15,26,46,0.42);
+        background: rgba(15,26,46,0.32);
         border: 1px solid rgba(168,180,199,0.16);
         backdrop-filter: blur(10px);
       }
@@ -1435,6 +1435,9 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       const deg = document.getElementById("__WIDGET_ID__-deg");
 
       let angle = Number(root.dataset.angle || 0);
+      let velocity = 0.045; // degrees per frame for a slow, elegant spin
+      let manualNudge = 0;
+      let last = performance.now();
 
       const dirs = [
         { label: "N",  deg: 0   },
@@ -1474,22 +1477,36 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         readout.textContent = c.label + ' · ' + delta;
       }
 
-      left.addEventListener('click', function() {
-        angle -= 15;
+      function tick(now) {
+        const dt = Math.min(40, now - last);
+        last = now;
+
+        angle += velocity * (dt / 16.6667);
+        if (manualNudge) {
+          angle += manualNudge;
+          manualNudge *= 0.72;
+          if (Math.abs(manualNudge) < 0.01) manualNudge = 0;
+        }
+
         render();
+        requestAnimationFrame(tick);
+      }
+
+      left.addEventListener('click', function() {
+        manualNudge -= 14;
       });
 
       right.addEventListener('click', function() {
-        angle += 15;
-        render();
+        manualNudge += 14;
       });
 
       root.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') { angle -= 15; render(); }
-        if (e.key === 'ArrowRight') { angle += 15; render(); }
+        if (e.key === 'ArrowLeft') manualNudge -= 14;
+        if (e.key === 'ArrowRight') manualNudge += 14;
       });
 
       render();
+      requestAnimationFrame(tick);
     })();
     </script>
     """
