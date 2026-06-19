@@ -10,7 +10,7 @@ from typing import Any, Dict, List, Optional
 
 import streamlit as st
 
-st.set_page_config(page_title="Compass — plan your next step", page_icon="🧭", layout="centered")
+st.set_page_config(page_title="First-Gen Compass", page_icon="🧭", layout="centered")
 
 NVIDIA_BASE_URL    = "https://integrate.api.nvidia.com/v1"
 NVIDIA_MODEL       = "meta/llama-3.3-70b-instruct"
@@ -458,6 +458,332 @@ div[data-baseweb="checkbox"] input:checked + span {
 """
 
 st.markdown(CSS, unsafe_allow_html=True)
+
+st.markdown("""
+<style>
+/* === Premium UI override === */
+:root{
+  --ink-strong:#1f1718;
+  --ink:#2d2224;
+  --fog:#6d6062;
+  --paper:#fbf7f1;
+  --cream:#f4eadc;
+  --sand:#efe2cf;
+  --sand-2:#e7d4bc;
+  --rose:#c98272;
+  --rose-2:#b86a79;
+  --sage:#68806b;
+  --line:rgba(58,44,45,0.10);
+  --line-strong:rgba(58,44,45,0.18);
+  --shadow:0 28px 70px rgba(54,42,44,0.10);
+  --shadow-soft:0 16px 38px rgba(54,42,44,0.07);
+}
+
+html, body, .stApp {
+  background:
+    radial-gradient(circle at 8% 10%, rgba(214,133,149,0.12) 0%, transparent 25%),
+    radial-gradient(circle at 84% 4%, rgba(232,180,92,0.10) 0%, transparent 22%),
+    radial-gradient(circle at 70% 82%, rgba(104,128,107,0.10) 0%, transparent 25%),
+    linear-gradient(180deg, #fffdf9 0%, #fbf7f1 48%, #f5ede4 100%) !important;
+  color: var(--ink-strong) !important;
+}
+
+.stApp::before{
+  content:"";
+  position:fixed;
+  inset:-8%;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(214,133,149,0.10) 0%, transparent 28%),
+    radial-gradient(circle at 80% 18%, rgba(232,180,92,0.10) 0%, transparent 24%),
+    radial-gradient(circle at 72% 82%, rgba(111,168,136,0.08) 0%, transparent 26%);
+  filter: blur(3px);
+}
+.stApp::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background-image:
+    linear-gradient(rgba(36,27,37,0.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(36,27,37,0.022) 1px, transparent 1px);
+  background-size:42px 42px;
+  opacity:.5;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.68), transparent 88%);
+}
+
+main, .block-container { position:relative; z-index:1; }
+
+[data-testid="stHeader"],
+[data-testid="stToolbar"],
+[data-testid="stDecoration"],
+header[data-testid="stHeader"],
+.stDeployButton,
+#MainMenu{
+  display:none !important;
+  visibility:hidden !important;
+  height:0 !important;
+}
+
+.block-container{
+  max-width:1140px !important;
+  padding-top:0.4rem !important;
+  padding-bottom:4.5rem !important;
+}
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:minmax(0,1.12fr) minmax(320px,0.88fr);
+  gap:1.4rem;
+  align-items:center;
+  padding:1.55rem;
+  border-radius:34px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,239,230,0.84)),
+    radial-gradient(circle at 18% 12%, rgba(214,133,149,0.12), transparent 30%),
+    radial-gradient(circle at 86% 15%, rgba(232,180,92,0.14), transparent 26%);
+  border:1px solid rgba(57,42,56,0.08);
+  box-shadow: 0 24px 60px rgba(57,42,56,0.08), inset 0 1px 0 rgba(255,255,255,0.82);
+}
+
+.hero::before,
+.hero::after{
+  content:"";
+  position:absolute;
+  border-radius:999px;
+  pointer-events:none;
+}
+.hero::before{
+  width:280px;height:280px;right:-86px;top:-120px;
+  background:radial-gradient(circle, rgba(214,133,149,0.12), transparent 62%);
+}
+.hero::after{
+  width:220px;height:220px;left:-86px;bottom:-120px;
+  background:radial-gradient(circle, rgba(111,168,136,0.12), transparent 62%);
+}
+
+.hero-top{
+  display:inline-flex !important;
+  align-items:center;
+  gap:.7rem;
+  padding:.36rem .6rem;
+  margin-bottom:1rem;
+  border-radius:999px;
+  background:linear-gradient(180deg, rgba(242,228,211,0.96), rgba(247,239,230,0.92));
+  border:1px solid rgba(57,42,56,0.08);
+  box-shadow:0 10px 22px rgba(57,42,56,0.05);
+}
+
+.hero-word{
+  font-family:'IBM Plex Mono', monospace !important;
+  color:var(--ink-strong) !important;
+  font-size:.74rem !important;
+  letter-spacing:.16em !important;
+}
+
+.hero-title{
+  font-size:clamp(2.65rem, 5.8vw, 4.35rem) !important;
+  line-height:.95 !important;
+  margin:0 0 .9rem !important;
+  max-width:8.4em;
+}
+
+.hero-slogan{
+  display:block;
+  font-size:1.05rem;
+  line-height:1.85;
+  font-weight:650;
+  color:var(--fog);
+  max-width:38rem;
+  margin:0 0 1rem;
+}
+
+.hero-banner{
+  max-width:700px;
+  padding:1rem 1.15rem;
+  border-radius:20px;
+  background: linear-gradient(180deg, rgba(245,235,223,0.98), rgba(238,226,211,0.96));
+  border:1px solid rgba(158,122,74,0.16);
+  box-shadow: var(--shadow-soft);
+  color:#3b2c2a;
+  font-size:.94rem;
+  line-height:1.78;
+  font-weight:600;
+}
+
+.compass-card{
+  position:relative;
+  padding:1rem;
+  border-radius:30px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(247,239,230,0.72)),
+    radial-gradient(circle at 30% 20%, rgba(255,140,66,0.10), transparent 26%),
+    radial-gradient(circle at 70% 78%, rgba(111,168,136,0.10), transparent 26%);
+  border:1px solid rgba(57,42,56,0.08);
+  box-shadow:0 24px 60px rgba(57,42,56,0.10), inset 0 1px 0 rgba(255,255,255,0.85);
+  backdrop-filter: blur(14px);
+}
+
+.compass-card::before{
+  content:"";
+  position:absolute;
+  inset:10px;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,0.55);
+  pointer-events:none;
+}
+
+.compass-wrap{
+  padding:0.35rem 0 0.1rem !important;
+}
+
+.compass-shell{
+  width:min(100%, 430px) !important;
+  box-shadow:0 26px 72px rgba(57,42,56,0.18), inset 0 1px 0 rgba(255,255,255,0.45) !important;
+}
+
+.compass-legend,
+.compass-controls,
+.compass-btn,
+.compass-label,
+.compass-cardinal{
+  display:none !important;
+}
+
+.compass-readout{
+  min-width:11rem !important;
+  padding:.75rem 1rem !important;
+  border-radius:999px !important;
+  background:linear-gradient(180deg, rgba(242,228,211,0.98), rgba(247,239,230,0.96)) !important;
+  border:1px solid rgba(57,42,56,0.08) !important;
+  box-shadow:0 14px 30px rgba(57,42,56,0.08) !important;
+  font-size:.8rem !important;
+  letter-spacing:.11em !important;
+  text-transform:uppercase !important;
+  color:var(--ink-strong) !important;
+}
+
+.compass-readout .deg{
+  display:block !important;
+  margin-top:.32rem !important;
+  color:var(--fog) !important;
+  font-size:1rem !important;
+  letter-spacing:.05em !important;
+  font-weight:700 !important;
+}
+
+.section-label{
+  display:inline-flex !important;
+  align-items:center;
+  gap:.55rem;
+  padding:.82rem 1rem;
+  margin:2.6rem 0 1rem;
+  border-radius:999px;
+  background: linear-gradient(180deg, rgba(242,228,211,0.95), rgba(247,239,230,0.92)) !important;
+  border:1px solid rgba(57,42,56,0.08);
+  color:var(--ink-strong) !important;
+  box-shadow:0 12px 24px rgba(57,42,56,0.06);
+}
+
+.section-label .dot{
+  box-shadow:0 0 0 4px rgba(214,133,149,0.10);
+}
+
+.section-hint{
+  background: rgba(255,255,255,0.72) !important;
+  border: 1px solid rgba(57,42,56,0.06) !important;
+  border-radius: 18px !important;
+  padding: .95rem 1rem !important;
+  box-shadow: 0 12px 24px rgba(57,42,56,0.05) !important;
+  color: var(--fog) !important;
+  font-size: .98rem !important;
+  line-height: 1.8 !important;
+}
+
+.opt-card,
+.opt-result,
+.lb,
+.cmp-panel,
+.sc-card,
+.stress-panel,
+.empty-state,
+[data-testid="stAlert"]{
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,239,230,0.82)) !important;
+  border:1px solid rgba(57,42,56,0.08) !important;
+  box-shadow:0 18px 40px rgba(57,42,56,0.07) !important;
+  backdrop-filter: blur(12px);
+}
+
+.opt-card{
+  padding:1rem 1.15rem .65rem !important;
+  border-radius:20px !important;
+  margin-bottom:1rem !important;
+}
+
+.opt-result-head{
+  background:linear-gradient(180deg, rgba(242,228,211,0.96), rgba(247,239,230,0.9)) !important;
+}
+
+.opt-result-name{
+  font-size:1.65rem !important;
+  font-weight:800 !important;
+}
+
+.opt-result-summary, .cmp-panel-text, .lb li, .tl-text, .sc-text, .stress-delta, .empty-state-text, .hero-slogan {
+  font-size:1.03rem !important;
+  line-height:1.8 !important;
+  font-weight:550 !important;
+  color:var(--fog) !important;
+}
+
+.mission-card{
+  margin-top:1.05rem;
+  padding:1rem 1.08rem;
+  border-radius:22px;
+  background:
+    linear-gradient(180deg, rgba(245,235,223,0.98), rgba(238,226,211,0.96));
+  border:1px solid rgba(158,122,74,0.16);
+  box-shadow:0 14px 30px rgba(57,42,56,0.06);
+  color:#3b2c2a;
+  font-size:.96rem;
+  line-height:1.78;
+  font-weight:600;
+}
+
+.mission-card strong{
+  display:block;
+  font-family:'IBM Plex Mono', monospace;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-size:.7rem;
+  color:var(--rose-2);
+  margin-bottom:.45rem;
+}
+
+.hero-shell{
+  padding:1.1rem;
+  border-radius:34px;
+  background: rgba(255,255,255,0.42);
+  border:1px solid rgba(57,42,56,0.05);
+  box-shadow:0 18px 50px rgba(57,42,56,0.05);
+}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.08fr) minmax(320px, .92fr);
+  gap:1.3rem;
+  align-items:center;
+}
+
+@media (max-width: 900px){
+  .hero, .hero-grid { grid-template-columns:1fr !important; }
+}
+</style>
+""", unsafe_allow_html=True)
 
 
 EXTRA_CSS = """
@@ -1411,9 +1737,9 @@ def render_timeline(opt: Dict[str, Any]) -> str:
 
 def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     n = max(len(opts), 1)
-    cw, ch, gap = 294, 232, 34
+    cw, ch, gap = 286, 232, 30
     total_cards = n * cw + (n - 1) * gap
-    width = max(980, total_cards + 220)
+    width = max(1040, total_cards + 180)
     height = 620
     cx = width / 2
     ry, py, cy2 = 52, 136, 232
@@ -1485,23 +1811,24 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
 
 
 
+
 def render_compass_widget(initial_angle: float = 0.0) -> str:
     angle = float(initial_angle) % 360
-
-    template = """
+    return f"""
     <style>
-      .compass-wrap {
+      .compass-wrap {{
         width: 100%;
         min-height: 520px;
         display: grid;
         place-items: center;
-        padding: 1rem 0 0.5rem;
+        padding: 1rem 0 0.25rem;
         color: #231B1C;
         font-family: 'Inter', sans-serif;
         user-select: none;
-      }
+      }}
 
-      .compass-shell {
+      .compass-shell {{
+        --base-angle: {angle:.0f}deg;
         position: relative;
         width: min(90vw, 460px);
         aspect-ratio: 1 / 1;
@@ -1509,7 +1836,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: grid;
         place-items: center;
         background:
-          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.65), rgba(255,255,255,0.08) 30%, rgba(15,26,46,0.0) 72%),
+          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.62), rgba(255,255,255,0.08) 30%, rgba(15,26,46,0.0) 72%),
           radial-gradient(circle at 50% 50%, rgba(255,140,66,0.10), rgba(255,140,66,0.03) 42%, rgba(15,26,46,0.0) 70%),
           linear-gradient(145deg, rgba(58,44,45,0.04), rgba(255,255,255,0.02));
         border: 1px solid rgba(58,44,45,0.12);
@@ -1517,23 +1844,23 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
           0 28px 72px rgba(54,42,44,0.22),
           inset 0 0 0 1px rgba(255,255,255,0.55);
         overflow: hidden;
-        animation: floaty 7s ease-in-out infinite alternate;
-      }
+        animation: shellFloat 7s ease-in-out infinite alternate;
+      }}
 
-      @keyframes floaty {
-        0% { transform: translateY(0px) scale(1); }
-        100% { transform: translateY(-5px) scale(1.004); }
-      }
+      @keyframes shellFloat {{
+        0% {{ transform: translateY(0px) scale(1); }}
+        100% {{ transform: translateY(-5px) scale(1.004); }}
+      }}
 
       .compass-shell::before,
-      .compass-shell::after {
+      .compass-shell::after {{
         content: "";
         position: absolute;
         border-radius: 50%;
         pointer-events: none;
-      }
+      }}
 
-      .compass-shell::before {
+      .compass-shell::before {{
         inset: 7%;
         background:
           radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 54%),
@@ -1542,15 +1869,15 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
             rgba(57,42,56,0.05) 12deg 13deg,
             rgba(232,105,79,0.00) 13deg 24deg);
         opacity: 0.55;
-      }
+      }}
 
-      .compass-shell::after {
+      .compass-shell::after {{
         inset: 18%;
         border: 1px solid rgba(57,42,56,0.06);
         box-shadow: inset 0 0 30px rgba(255,255,255,0.08);
-      }
+      }}
 
-      .compass-glow {
+      .compass-glow {{
         position: absolute;
         inset: 10%;
         border-radius: 50%;
@@ -1558,12 +1885,12 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         filter: blur(10px);
         pointer-events: none;
         animation: pulse 5.5s ease-in-out infinite;
-      }
+      }}
 
-      @keyframes pulse {
-        0%, 100% { opacity: .78; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.03); }
-      }
+      @keyframes pulse {{
+        0%, 100% {{ opacity: .78; transform: scale(1); }}
+        50% {{ opacity: 1; transform: scale(1.03); }}
+      }}
 
       .compass-ring-outer,
       .compass-ring-mid,
@@ -1571,48 +1898,48 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       .compass-degree-ring,
       .compass-ringshine,
       .compass-face,
-      .compass-ticks {
+      .compass-ticks {{
         position: absolute;
         border-radius: 50%;
         pointer-events: none;
-      }
+      }}
 
-      .compass-ring-outer {
+      .compass-ring-outer {{
         inset: 2.5%;
         border: 1px solid rgba(168,180,199,0.22);
         box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
-      }
+      }}
 
-      .compass-ring-mid {
+      .compass-ring-mid {{
         inset: 9%;
         border: 1px solid rgba(255,140,66,0.25);
-      }
+      }}
 
-      .compass-ring-inner {
+      .compass-ring-inner {{
         inset: 16%;
         border: 1px solid rgba(57,42,56,0.12);
-      }
+      }}
 
-      .compass-face {
+      .compass-face {{
         inset: 18%;
         background:
           radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
           radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
         box-shadow: inset 0 0 30px rgba(0,0,0,0.18);
-      }
+      }}
 
-      .compass-degree-ring {
+      .compass-degree-ring {{
         inset: 7%;
         border: 1px dashed rgba(168,180,199,0.18);
-      }
+      }}
 
-      .compass-ringshine {
+      .compass-ringshine {{
         inset: 13%;
         border: 1px solid rgba(57,42,56,0.06);
         box-shadow: inset 0 0 50px rgba(255,255,255,0.02);
-      }
+      }}
 
-      .compass-ticks {
+      .compass-ticks {{
         inset: 0;
         background:
           repeating-conic-gradient(
@@ -1622,38 +1949,24 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
           );
         -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
                 mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-        opacity: 0.75;
-      }
+        opacity: 0.72;
+      }}
 
-      .compass-cardinal {
-        position: absolute;
-        inset: 0;
-        display: block;
-        font-family: 'IBM Plex Mono', monospace;
-        font-weight: 700;
-        letter-spacing: 0.08em;
-        color: #2B2430;
-      }
-
-      .compass-cardinal span {
-        position: absolute;
-        text-shadow: 0 0 18px rgba(255,255,255,0.12);
-      }
-
-      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); }
-      .compass-cardinal .e { right: 7%; top: 50%; transform: translateY(-50%); }
-      .compass-cardinal .s { bottom: 7%; left: 50%; transform: translateX(-50%); }
-      .compass-cardinal .w { left: 7%; top: 50%; transform: translateY(-50%); }
-
-      .compass-needle {
+      .compass-needle {{
         position: absolute;
         inset: 16%;
         border-radius: 50%;
-        transform: rotate(__ANGLE__deg);
-      }
+        transform: rotate(var(--base-angle));
+        animation: needleTurn 8.5s cubic-bezier(.4,0,.2,1) infinite alternate;
+      }}
+
+      @keyframes needleTurn {{
+        0% {{ transform: rotate(calc(var(--base-angle) - 6deg)); }}
+        100% {{ transform: rotate(calc(var(--base-angle) + 8deg)); }}
+      }}
 
       .compass-needle::before,
-      .compass-needle::after {
+      .compass-needle::after {{
         content: "";
         position: absolute;
         left: 50%;
@@ -1662,23 +1975,23 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         height: 46%;
         clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
         filter: drop-shadow(0 0 16px rgba(0,0,0,0.14));
-      }
+      }}
 
-      .compass-needle::before {
+      .compass-needle::before {{
         top: 0;
         transform: translateX(-50%);
         background: linear-gradient(180deg, #FF8C42 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
         filter: drop-shadow(0 0 18px rgba(255,140,66,0.22));
-      }
+      }}
 
-      .compass-needle::after {
+      .compass-needle::after {{
         bottom: 0;
         transform: translateX(-50%) rotate(180deg);
         background: linear-gradient(180deg, rgba(245,241,232,0.95) 0%, rgba(168,180,199,0.92) 55%, rgba(168,180,199,0.05) 100%);
         filter: drop-shadow(0 0 16px rgba(168,180,199,0.16));
-      }
+      }}
 
-      .compass-cap {
+      .compass-cap {{
         position: absolute;
         left: 50%;
         top: 50%;
@@ -1691,32 +2004,12 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
           0 0 0 6px rgba(57,42,56,0.05),
           0 0 30px rgba(255,140,66,0.22);
         z-index: 2;
-      }
+      }}
 
-      .compass-label {
-        position: absolute;
-        left: 50%;
-        bottom: 8.5%;
-        transform: translateX(-50%);
-        min-width: 10.5rem;
-        padding: 0.72rem 1rem;
-        border-radius: 999px;
-        background: linear-gradient(180deg, rgba(245,235,223,0.98), rgba(238,226,211,0.96));
-        border: 1px solid rgba(58,44,45,0.08);
-        box-shadow: 0 14px 30px rgba(58,44,45,0.08);
-        text-align: center;
-        color: #3B2C2A;
-        font-family: 'IBM Plex Mono', monospace;
-        font-size: 0.76rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-
-      @media (max-width: 640px) {
-        .compass-wrap { min-height: 480px; }
-        .compass-shell { width: min(92vw, 380px); }
-      }
+      @media (max-width: 640px) {{
+        .compass-wrap {{ min-height: 480px; }}
+        .compass-shell {{ width: min(92vw, 380px); }}
+      }}
     </style>
 
     <div class="compass-wrap" aria-label="Compass illustration">
@@ -1729,22 +2022,12 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         <div class="compass-ringshine"></div>
         <div class="compass-ticks"></div>
         <div class="compass-face"></div>
-        <div class="compass-cardinal">
-          <span class="n">N</span>
-          <span class="e">E</span>
-          <span class="s">S</span>
-          <span class="w">W</span>
-        </div>
         <div class="compass-needle">
           <div class="compass-cap"></div>
-        </div>
-        <div class="compass-label">
-          NORTH
         </div>
       </div>
     </div>
     """
-    return template.replace("__ANGLE__", f"{angle:03.0f}")
 
 
 
@@ -1756,12 +2039,13 @@ with hero_left:
     st.markdown("""
     <div class="hero">
       <div class="hero-top">
-        <span class="hero-word">First-Gen Compass</span>
+        <span class="hero-word">FIRST-GEN NAVIGATION</span>
       </div>
       <div class="hero-copy">
-        <h1 class="hero-title">Most college guidance assumes<br>someone already showed you<br>the <span class="accent">unwritten rules</span>.</h1>
+        <h1 class="hero-title">First-Gen Compass</h1>
+        <div class="hero-slogan">A calm, intelligent map for high-stakes choices—built to make the hidden parts visible without making the decision feel colder.</div>
         <div class="hero-banner">
-          This won't tell you which option is “best.” It’ll show you what each one actually costs, who it quietly depends on, and what tends to surprise people who didn’t grow up with a roadmap for this.
+          Designed for students making life-shaping decisions without inherited playbooks. It turns pressure, trade-offs, and hidden costs into something you can actually read.
         </div>
       </div>
     </div>
@@ -1786,13 +2070,13 @@ with c1:
 with c2:
     st.session_state["context_note"] = st.text_input("One-line context",         value=st.session_state["context_note"], placeholder="e.g. first in family to study abroad")
 with c3:
-    st.session_state["home_location"]= st.text_input("Home city / country",      value=st.session_state["home_location"],placeholder="e.g. Rabat, Morocco")
+    st.session_state["home_location"]= st.text_input("Home city / country",      value=st.session_state["home_location"],placeholder="e.g. Connecticut")
 
 s1, s2, s3 = st.columns(3)
 with s1: st.session_state["risk_tolerance"]    = st.slider("Risk tolerance",           0, 10, int(st.session_state["risk_tolerance"]))
 with s2: st.session_state["financial_pressure"]= st.slider("Financial pressure",       0, 10, int(st.session_state["financial_pressure"]))
 with s3: st.session_state["family_support"]    = st.slider("Family support / guidance",0, 10, int(st.session_state["family_support"]))
-st.markdown('<p class="section-hint">These three numbers tilt every score below toward what actually matters in your situation — there\'s no universal right answer here.</p>', unsafe_allow_html=True)
+st.markdown('<div class="mission-card"><strong>Why this exists</strong>This is a decision tool for first-gen students who are expected to translate a whole system alone. It brings the real cost of each path into focus—money, mobility, pressure, and the surprises people rarely say out loud.</div>', unsafe_allow_html=True)
 
 st.markdown('<div class="section-label"><span class="dot"></span>WHAT COULD GO SIDEWAYS</div>', unsafe_allow_html=True)
 st.markdown('<p class="section-hint">Tick anything that feels plausible. Each option gets re-read through that lens further down.</p>', unsafe_allow_html=True)
@@ -1967,8 +2251,7 @@ if st.session_state.show_results and st.session_state.engine_result:
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
 
-    with st.expander("Raw data behind this analysis"):
-        st.code(json.dumps(result, indent=2, ensure_ascii=False), language="json")
+
 
 else:
     st.markdown("""
