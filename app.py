@@ -598,17 +598,17 @@ header[data-testid="stHeader"],
 
 .hero-title{
   display:flex;
-  flex-direction:column;
-  gap:.06em;
-  font-size:clamp(3.4rem, 7.2vw, 5.9rem) !important;
-  line-height:.82 !important;
-  letter-spacing:-.06em !important;
+  flex-direction:row; 
+  flex-wrap:wrap; 
+  gap:.2em; 
+  font-size:clamp(2.15rem, 4.6vw, 3.45rem) !important;
+  line-height:1.1 !important;
+  letter-spacing:-.04em !important;
   margin:0 0 .95rem !important;
   max-width:none !important;
-  text-wrap:balance;
 }
 
-.hero-title-line{ display:block; }
+.hero-title-line{ display:inline; } 
 
 .hero-title-top{
   font-size:.72em;
