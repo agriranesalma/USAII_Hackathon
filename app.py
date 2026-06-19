@@ -30,22 +30,22 @@ CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --night:      #F7F1E8;
-  --night-2:    #EFE3DA;
-  --dusk:       #E9D8D1;
-  --dusk-2:     #DDC7C0;
-  --line:       rgba(74,47,61,0.16);
-  --line-hi:    rgba(74,47,61,0.30);
-  --bone:       #4A2F3D;
-  --fog:        #7C6871;
-  --fog-dim:    #9B8790;
-  --flare:      #F4B8B2;
-  --flare-dim:  rgba(244,184,178,0.24);
-  --sage:       #5C3B49;
-  --sage-dim:   rgba(92,59,73,0.14);
-  --coral:      #D48A9A;
-  --coral-dim:  rgba(212,138,154,0.16);
-  --gold:       #A27986;
+  --night:      #D6AC85;
+  --night-2:    #D6AC85;
+  --dusk:       #E8C7B4;
+  --dusk-2:     #D8A789;
+  --line:       rgba(74,39,64,0.14);
+  --line-hi:    rgba(74,39,64,0.26);
+  --bone:       #FFF7EF;
+  --fog:        #5D4554;
+  --fog-dim:    #7B6271;
+  --flare:      #E7A6A0;
+  --flare-dim:  rgba(231,166,160,0.20);
+  --sage:       #5A2E46;
+  --sage-dim:   rgba(90,46,70,0.12);
+  --coral:      #8B4D6B;
+  --coral-dim:  rgba(139,77,107,0.16);
+  --gold:       #5A2E46;
 }
 
 * { box-sizing: border-box; }
@@ -53,8 +53,9 @@ CSS = """
 .stApp {
   background: var(--night);
   background-image:
-    radial-gradient(circle at 18% 8%, rgba(244,184,178,0.28) 0%, transparent 36%),
-    radial-gradient(circle at 85% 92%, rgba(74,47,61,0.08) 0%, transparent 40%);
+    radial-gradient(circle at 18% 8%, rgba(232,155,172,0.13) 0%, transparent 34%),
+    radial-gradient(circle at 82% 86%, rgba(90,46,70,0.12) 0%, transparent 40%),
+    radial-gradient(circle at 48% 58%, rgba(255,247,239,0.10) 0%, transparent 28%);
   color: var(--bone);
   font-family: 'Public Sans', -apple-system, sans-serif;
   font-size: 15.5px;
@@ -85,7 +86,7 @@ div[data-testid="stSlider"] label,
   box-shadow: 0 0 0 3px var(--flare-dim) !important;
 }
 div[data-testid="stCheckbox"] label { color: var(--fog) !important; font-size: 0.87rem !important; }
-div[data-baseweb="checkbox"] span:first-child { background-color: rgba(74,47,61,0.05) !important; border-color: var(--line-hi) !important; }
+div[data-baseweb="checkbox"] span:first-child { background-color: rgba(255,255,255,0.04) !important; border-color: var(--line-hi) !important; }
 div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flare) !important; border-color: var(--flare) !important; }
 
 .stSlider [data-baseweb="slider"] div[role="slider"] {
@@ -97,12 +98,12 @@ div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flar
 .stButton button[kind="primary"] {
   background: var(--flare) !important; border: none !important; border-radius: 11px !important;
   font-weight: 700 !important; font-size: 0.95rem !important; letter-spacing: 0.01em;
-  padding: 0.75rem 1.5rem !important; color: #4A2F3D !important;
-  box-shadow: 0 8px 24px rgba(244,184,178,0.28) !important;
+  padding: 0.75rem 1.5rem !important; color: #1A0F05 !important;
+  box-shadow: 0 8px 24px rgba(255,140,66,0.28) !important;
   transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 .stButton button[kind="primary"]:hover {
-  transform: translateY(-1px) !important; box-shadow: 0 10px 30px rgba(244,184,178,0.4) !important;
+  transform: translateY(-1px) !important; box-shadow: 0 10px 30px rgba(255,140,66,0.4) !important;
 }
 .stButton button:not([kind="primary"]) {
   background: transparent !important; border: 1px solid var(--line-hi) !important;
@@ -174,17 +175,17 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .opt-result-body { padding: 1.3rem 1.5rem; }
 
 /* comparison */
-.cmp-panel { padding: 1.25rem 1.4rem; border-radius: 14px; background: var(--flare-dim); border: 1px solid rgba(244,184,178,0.3); margin-bottom: 1rem; }
+.cmp-panel { padding: 1.25rem 1.4rem; border-radius: 14px; background: var(--flare-dim); border: 1px solid rgba(255,140,66,0.3); margin-bottom: 1rem; }
 .cmp-panel-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--flare); margin-bottom: 0.55rem; }
 .cmp-panel-text { color: var(--bone); font-size: 0.96rem; line-height: 1.65; opacity: 0.92; }
 
 /* scenario */
-.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: var(--gold)15; background: rgba(178,142,151,0.09); border: 1px solid rgba(178,142,151,0.3); }
+.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: var(--gold)15; background: rgba(224,176,92,0.09); border: 1px solid rgba(224,176,92,0.3); }
 .sc-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); }
 .sc-text { color: var(--fog); font-size: 0.86rem; margin-top: 0.3rem; line-height: 1.5; }
 
 /* stress */
-.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: var(--sage-dim); border: 1px solid rgba(123,90,103,0.32); display: flex; gap: 0.8rem; align-items: flex-start; }
+.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: var(--sage-dim); border: 1px solid rgba(111,168,136,0.32); display: flex; gap: 0.8rem; align-items: flex-start; }
 .stress-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.3rem; }
 .stress-delta { font-size: 0.9rem; color: var(--fog); line-height: 1.5; }
 
@@ -206,11 +207,11 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 28px;
   padding: 1rem;
   background:
-    radial-gradient(circle at 30% 20%, rgba(244,184,178,0.18), transparent 28%),
-    radial-gradient(circle at 70% 72%, rgba(123,90,103,0.14), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(74,47,61,0.03));
-  border: 1px solid rgba(74,47,61,0.18);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(74,47,61,0.08);
+    radial-gradient(circle at 30% 20%, rgba(255,140,66,0.18), transparent 28%),
+    radial-gradient(circle at 70% 72%, rgba(111,168,136,0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02));
+  border: 1px solid rgba(90,46,70,0.18);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
 }
 .compass-card::before,
@@ -224,13 +225,13 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-card::before {
   width: 240px; height: 240px;
   right: -40px; top: -60px;
-  background: radial-gradient(circle, rgba(244,184,178,0.18), transparent 64%);
+  background: radial-gradient(circle, rgba(255,140,66,0.18), transparent 64%);
   filter: blur(2px);
 }
 .compass-card::after {
   width: 180px; height: 180px;
   left: -50px; bottom: -50px;
-  background: radial-gradient(circle, rgba(123,90,103,0.14), transparent 64%);
+  background: radial-gradient(circle, rgba(111,168,136,0.14), transparent 64%);
 }
 .compass-copy {
   padding: 0.3rem 0.15rem 0.3rem 0.2rem;
@@ -272,7 +273,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   display: grid;
   place-items: center;
   padding: 16px 10px 10px;
-  color: #4A2F3D;
+  color: #F5F1E8;
   font-family: 'Public Sans', sans-serif;
 }
 .compass-shell {
@@ -290,8 +291,8 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   inset: 10px;
   border-radius: 50%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(74,47,61,0.08), transparent 52%),
-    radial-gradient(circle at 50% 50%, rgba(244,184,178,0.18), transparent 64%);
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06), transparent 52%),
+    radial-gradient(circle at 50% 50%, rgba(255,140,66,0.18), transparent 64%);
   filter: blur(2px);
 }
 .compass-ring-outer,
@@ -304,44 +305,44 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-ring-outer {
   inset: 0;
   background:
-    radial-gradient(circle at 50% 50%, rgba(74,47,61,0.04), transparent 58%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
     conic-gradient(from -90deg,
-      rgba(178,142,151,0.88) 0deg 2deg, transparent 2deg 14deg,
-      rgba(74,47,61,0.24) 14deg 15deg, transparent 15deg 29deg,
-      rgba(74,47,61,0.20) 29deg 30deg, transparent 30deg 44deg,
-      rgba(178,142,151,0.88) 44deg 46deg, transparent 46deg 90deg,
-      rgba(74,47,61,0.20) 90deg 91deg, transparent 91deg 135deg,
-      rgba(178,142,151,0.88) 135deg 137deg, transparent 137deg 180deg,
-      rgba(74,47,61,0.20) 180deg 181deg, transparent 181deg 225deg,
-      rgba(178,142,151,0.88) 225deg 227deg, transparent 227deg 270deg,
-      rgba(74,47,61,0.20) 270deg 271deg, transparent 271deg 315deg,
-      rgba(178,142,151,0.88) 315deg 317deg, transparent 317deg 360deg);
+      rgba(224,176,92,0.88) 0deg 2deg, transparent 2deg 14deg,
+      rgba(168,180,199,0.24) 14deg 15deg, transparent 15deg 29deg,
+      rgba(168,180,199,0.20) 29deg 30deg, transparent 30deg 44deg,
+      rgba(224,176,92,0.88) 44deg 46deg, transparent 46deg 90deg,
+      rgba(168,180,199,0.20) 90deg 91deg, transparent 91deg 135deg,
+      rgba(224,176,92,0.88) 135deg 137deg, transparent 137deg 180deg,
+      rgba(168,180,199,0.20) 180deg 181deg, transparent 181deg 225deg,
+      rgba(224,176,92,0.88) 225deg 227deg, transparent 227deg 270deg,
+      rgba(168,180,199,0.20) 270deg 271deg, transparent 271deg 315deg,
+      rgba(224,176,92,0.88) 315deg 317deg, transparent 317deg 360deg);
   box-shadow:
-    inset 0 0 0 1px rgba(74,47,61,0.06),
+    inset 0 0 0 1px rgba(255,255,255,0.05),
     inset 0 0 45px rgba(0,0,0,0.55);
 }
 .compass-ring-mid {
   inset: 7%;
   background:
     radial-gradient(circle at 50% 50%, rgba(18,26,46,0.92), rgba(18,26,46,0.97) 62%, rgba(20,34,58,0.99)),
-    radial-gradient(circle at 50% 50%, transparent 63%, rgba(74,47,61,0.08) 64%, transparent 66%);
-  box-shadow: inset 0 0 0 1px rgba(74,47,61,0.06);
+    radial-gradient(circle at 50% 50%, transparent 63%, rgba(255,255,255,0.06) 64%, transparent 66%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
 }
 .compass-ring-inner {
   inset: 17%;
   background:
     radial-gradient(circle at 50% 50%, rgba(245,241,232,0.04), transparent 38%),
-    radial-gradient(circle at 50% 50%, rgba(74,47,61,0.10), transparent 62%);
-  border: 1px solid rgba(74,47,61,0.08);
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 62%);
+  border: 1px solid rgba(255,255,255,0.06);
 }
 .compass-face {
   inset: 23%;
   background:
-    radial-gradient(circle at 50% 50%, rgba(74,47,61,0.10), transparent 52%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 52%),
     radial-gradient(circle at 50% 50%, rgba(15,26,46,0.98), rgba(18,30,52,0.98) 64%, rgba(12,19,34,0.98));
   box-shadow:
-    inset 0 0 0 1px rgba(74,47,61,0.08),
-    inset 0 0 24px rgba(244,184,178,0.10);
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    inset 0 0 24px rgba(255,140,66,0.10);
 }
 .compass-ticks {
   position: absolute;
@@ -381,8 +382,8 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   inset: 29%;
   border-radius: 50%;
   background:
-    conic-gradient(from 0deg, rgba(244,184,178,0.0), rgba(244,184,178,0.0) 50%, rgba(244,184,178,0.34) 50.4%, rgba(244,184,178,0.0) 50.8%, rgba(244,184,178,0.0) 100%),
-    radial-gradient(circle, transparent 0 46%, rgba(74,47,61,0.08) 47% 48%, transparent 49% 100%);
+    conic-gradient(from 0deg, rgba(255,140,66,0.0), rgba(255,140,66,0.0) 50%, rgba(255,140,66,0.34) 50.4%, rgba(255,140,66,0.0) 50.8%, rgba(255,140,66,0.0) 100%),
+    radial-gradient(circle, transparent 0 46%, rgba(255,255,255,0.06) 47% 48%, transparent 49% 100%);
   opacity: 0.9;
 }
 .compass-needle {
@@ -405,12 +406,12 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-needle::before {
   top: 10%;
   height: 42%;
-  background: linear-gradient(180deg, #F8D4CE 0%, #F4B8B2 42%, rgba(244,184,178,0.2) 100%);
+  background: linear-gradient(180deg, #FFB07A 0%, #FF8C42 42%, rgba(255,140,66,0.2) 100%);
 }
 .compass-needle::after {
   bottom: 10%;
   height: 42%;
-  background: linear-gradient(180deg, rgba(123,90,103,0.1) 0%, #7B5A67 58%, #F8E9E5 100%);
+  background: linear-gradient(180deg, rgba(111,168,136,0.1) 0%, #6FA888 58%, #DDE9DF 100%);
 }
 .compass-cap {
   position: absolute;
@@ -419,17 +420,17 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 30%, rgba(255,255,255,0.24), transparent 38%),
-    linear-gradient(180deg, #4A2F3D, #4A2F3D);
+    linear-gradient(180deg, #1A2942, #0F1A2E);
   border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 0 14px rgba(74,47,61,0.05), 0 10px 26px rgba(0,0,0,0.35);
+  box-shadow: inset 0 0 14px rgba(255,255,255,0.04), 0 10px 26px rgba(0,0,0,0.35);
   z-index: 3;
 }
 .compass-ringshine {
   position: absolute;
   inset: 5%;
   border-radius: 50%;
-  border: 1px solid rgba(74,47,61,0.08);
-  box-shadow: inset 0 0 0 1px rgba(244,184,178,0.08), 0 0 36px rgba(244,184,178,0.10);
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 0 1px rgba(255,140,66,0.08), 0 0 36px rgba(255,140,66,0.10);
   pointer-events: none;
 }
 .compass-legend {
@@ -450,7 +451,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   color: rgba(245,241,232,0.72);
 }
 .compass-legend strong {
-  color: #4A2F3D;
+  color: #F5F1E8;
 }
 .compass-controls {
   margin-top: 1rem;
@@ -462,10 +463,10 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-btn {
   width: 3rem;
   height: 3rem;
-  border: 1px solid rgba(74,47,61,0.22);
+  border: 1px solid rgba(168,180,199,0.22);
   border-radius: 999px;
   background: rgba(255,255,255,0.035);
-  color: #4A2F3D;
+  color: #F5F1E8;
   font-size: 1.05rem;
   cursor: pointer;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
@@ -474,7 +475,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-btn:hover {
   transform: translateY(-1px) scale(1.03);
   background: rgba(255,255,255,0.055);
-  border-color: rgba(244,184,178,0.5);
+  border-color: rgba(255,140,66,0.5);
   box-shadow: 0 14px 28px rgba(0,0,0,0.28);
 }
 .compass-readout {
@@ -483,7 +484,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   padding: 0.75rem 0.95rem;
   border-radius: 999px;
   background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(74,47,61,0.16);
+  border: 1px solid rgba(168,180,199,0.16);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
   letter-spacing: 0.11em;
@@ -501,7 +502,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   position: absolute;
   inset: 7%;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 20%, rgba(74,47,61,0.10), transparent 48%);
+  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.08), transparent 48%);
   animation: drift 8s ease-in-out infinite;
   pointer-events: none;
 }
@@ -981,13 +982,13 @@ _POSITIVE_KEYS = {"salary_potential","networking","career_flexibility","flexibil
 
 def _bar_color(key: str, val: float) -> str:
     if key in _POSITIVE_KEYS:
-        if val >= 7: return "#7B5A67"
-        if val >= 4: return "#D7A0A8"
-        return "#A58A93"
+        if val >= 7: return "#6FA888"
+        if val >= 4: return "#8FBFA3"
+        return "#7A88A0"
     else:
-        if val >= 7: return "#C97E90"
-        if val >= 4: return "#B28E97"
-        return "#7B5A67"
+        if val >= 7: return "#E8694F"
+        if val >= 4: return "#E0B05C"
+        return "#6FA888"
 
 
 def metric_chip(label: str, key: str, val: float) -> str:
@@ -1045,17 +1046,17 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     ry, py, cy2 = 50, 132, 226
 
     def e(s): return html_escape(str(s))
-    def t(x, y, txt, sz=13, fw=500, col="#4A2F3D", anchor="middle", ff="'Public Sans',sans-serif"):
+    def t(x, y, txt, sz=13, fw=500, col="#F5F1E8", anchor="middle", ff="'Public Sans',sans-serif"):
         return (f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" fill="{col}" '
                 f'font-size="{sz}" font-weight="{fw}" font-family="{ff}">{e(txt)}</text>')
 
     out = [f'<svg viewBox="0 0 {width} {height}" width="100%" height="{height}" xmlns="http://www.w3.org/2000/svg">']
     out.append("""<defs>
       <linearGradient id="bgg" x1="0" y1="0" x2="0.3" y2="1">
-        <stop offset="0%" stop-color="#4A2F3D"/><stop offset="100%" stop-color="#F6EAE6"/>
+        <stop offset="0%" stop-color="#0F1A2E"/><stop offset="100%" stop-color="#162644"/>
       </linearGradient>
       <linearGradient id="cardg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#F0E4DE"/><stop offset="100%" stop-color="#F2E2DD"/>
+        <stop offset="0%" stop-color="#1B2A45"/><stop offset="100%" stop-color="#162038"/>
       </linearGradient>
       <filter id="glow2"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <style>
@@ -1066,11 +1067,11 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
       </style>
     </defs>""")
     out.append(f'<rect width="{width}" height="{height}" fill="url(#bgg)"/>')
-    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="22" fill="rgba(244,184,178,0.16)" filter="url(#glow2)"/>')
-    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="6" fill="#F4B8B2"/>')
-    out.append(t(cx, ry-8, "YOU ARE HERE", 9.5, 600, "#F4B8B2", ff="'JetBrains Mono',monospace"))
-    out.append(t(cx, ry+38, prof.get("name") or "Your decision", 21, 600, "#4A2F3D", ff="'Spectral',serif"))
-    out.append(f'<line x1="{cx}" y1="{ry+44}" x2="{cx}" y2="{py-8}" stroke="rgba(74,47,61,0.25)" stroke-width="1.3" stroke-dasharray="3,4"/>')
+    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="22" fill="rgba(255,140,66,0.16)" filter="url(#glow2)"/>')
+    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="6" fill="#FF8C42"/>')
+    out.append(t(cx, ry-8, "YOU ARE HERE", 9.5, 600, "#FF8C42", ff="'JetBrains Mono',monospace"))
+    out.append(t(cx, ry+38, prof.get("name") or "Your decision", 21, 600, "#F5F1E8", ff="'Spectral',serif"))
+    out.append(f'<line x1="{cx}" y1="{ry+44}" x2="{cx}" y2="{py-8}" stroke="rgba(168,180,199,0.25)" stroke-width="1.3" stroke-dasharray="3,4"/>')
 
     sx = cx - ((n-1)*(cw+gap))/2
     mkeys  = ["financial_risk","salary_potential","networking","recovery_difficulty"]
@@ -1082,26 +1083,27 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
         mid = x + cw/2
         d   = 0.11*i
         out.append(f'<path class="ln2" d="M{cx:.0f} {py+12} Q{cx:.0f} {cy2-40} {mid:.0f} {cy2-10}" '
-                   f'fill="none" stroke="rgba(244,184,178,0.22)" stroke-width="1.3" style="animation-delay:{d:.2f}s"/>')
+                   f'fill="none" stroke="rgba(255,140,66,0.22)" stroke-width="1.3" style="animation-delay:{d:.2f}s"/>')
         g = [f'<g class="cd2" style="animation-delay:{d+0.32:.2f}s">']
         g.append(f'<rect x="{x:.1f}" y="{cy2}" width="{cw}" height="{ch}" rx="16" '
-                 f'fill="url(#cardg)" stroke="rgba(74,47,61,0.18)" stroke-width="1"/>')
-        g.append(t(mid, cy2+28, opt["name"], 15.5, 600, "#4A2F3D", ff="'Spectral',serif"))
+                 f'fill="url(#cardg)" stroke="rgba(168,180,199,0.18)" stroke-width="1"/>')
+        g.append(t(mid, cy2+28, opt["name"], 15.5, 600, "#F5F1E8", ff="'Spectral',serif"))
         summary = str(opt.get("summary",""))[:54]
-        g.append(t(mid, cy2+47, summary, 9.5, 400, "#8D7680"))
+        g.append(t(mid, cy2+47, summary, 9.5, 400, "#A8B4C7"))
         base_y = cy2+70
         for j,(mk,ml,hi_bad) in enumerate(zip(mkeys,mlabels,mhigh_bad)):
             dy = base_y + j*36
             val = coerce(opt.get(mk, 5))
-            bar_col = "#7B5A67" if (hi_bad and val < 4) or (not hi_bad and val >= 7) else ("#B28E97" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#C97E90")
-            g.append(t(x+15, dy, ml, 8.5, 500, "#A58A93", anchor="start", ff="'JetBrains Mono',monospace"))
-            g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 600, "#4A2F3D", anchor="end", ff="'JetBrains Mono',monospace"))
+            bar_col = "#6FA888" if (hi_bad and val < 4) or (not hi_bad and val >= 7) else ("#E0B05C" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#E8694F")
+            g.append(t(x+15, dy, ml, 8.5, 500, "#7A88A0", anchor="start", ff="'JetBrains Mono',monospace"))
+            g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 600, "#F5F1E8", anchor="end", ff="'JetBrains Mono',monospace"))
             g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(255,255,255,0.07)"/>')
             g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{val/10*(cw-30):.1f}" height="5" rx="999" fill="{bar_col}"/>')
         g.append("</g>")
         out.append("".join(g))
     out.append("</svg>")
     return "".join(out)
+
 
 
 
@@ -1119,7 +1121,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         justify-content: center;
         gap: 1rem;
         padding: 1.25rem 0 0.5rem;
-        color: #4A2F3D;
+        color: #FFF7EF;
         font-family: 'Public Sans', sans-serif;
         user-select: none;
       }
@@ -1132,13 +1134,13 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: grid;
         place-items: center;
         background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12), rgba(74,47,61,0.04) 30%, rgba(15,26,46,0.0) 72%),
-          radial-gradient(circle at 50% 50%, rgba(244,184,178,0.14), rgba(244,184,178,0.02) 42%, rgba(15,26,46,0.0) 70%),
-          linear-gradient(145deg, rgba(74,47,61,0.06), rgba(255,255,255,0.015));
-        border: 1px solid rgba(74,47,61,0.18);
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.16), rgba(255,255,255,0.04) 30%, rgba(90,46,70,0.0) 72%),
+          radial-gradient(circle at 50% 50%, rgba(231,166,160,0.20), rgba(231,166,160,0.04) 42%, rgba(90,46,70,0.0) 70%),
+          linear-gradient(145deg, rgba(255,247,239,0.08), rgba(255,247,239,0.03));
+        border: 1px solid rgba(90,46,70,0.18);
         box-shadow:
-          0 24px 70px rgba(0,0,0,0.35),
-          inset 0 0 0 1px rgba(74,47,61,0.05);
+          0 24px 70px rgba(0,0,0,0.18),
+          inset 0 0 0 1px rgba(255,255,255,0.16);
         overflow: hidden;
       }
 
@@ -1146,7 +1148,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         position: absolute;
         inset: 10%;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(244,184,178,0.14), transparent 62%);
+        background: radial-gradient(circle, rgba(231,166,160,0.22), transparent 62%);
         filter: blur(8px);
         pointer-events: none;
       }
@@ -1166,37 +1168,37 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
       .compass-ring-outer {
         inset: 2.5%;
-        border: 1px solid rgba(74,47,61,0.22);
-        box-shadow: inset 0 0 0 1px rgba(74,47,61,0.03);
+        border: 1px solid rgba(90,46,70,0.20);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10);
       }
 
       .compass-ring-mid {
         inset: 9%;
-        border: 1px solid rgba(244,184,178,0.25);
+        border: 1px solid rgba(90,46,70,0.22);
       }
 
       .compass-ring-inner {
         inset: 16%;
-        border: 1px solid rgba(74,47,61,0.18);
+        border: 1px solid rgba(90,46,70,0.18);
       }
 
       .compass-face {
         inset: 18%;
         background:
-          radial-gradient(circle at 50% 50%, rgba(74,47,61,0.04), transparent 58%),
-          radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
-        box-shadow: inset 0 0 30px rgba(0,0,0,0.18);
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.10), transparent 58%),
+          radial-gradient(circle at 50% 50%, rgba(90,46,70,0.10), rgba(90,46,70,0.22));
+        box-shadow: inset 0 0 30px rgba(90,46,70,0.10);
       }
 
       .compass-degree-ring {
         inset: 7%;
-        border: 1px dashed rgba(74,47,61,0.18);
+        border: 1px dashed rgba(90,46,70,0.18);
       }
 
       .compass-ringshine {
         inset: 13%;
-        border: 1px solid rgba(74,47,61,0.06);
-        box-shadow: inset 0 0 50px rgba(74,47,61,0.03);
+        border: 1px solid rgba(255,255,255,0.10);
+        box-shadow: inset 0 0 50px rgba(255,255,255,0.04);
       }
 
       .compass-drift {
@@ -1205,14 +1207,14 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
           conic-gradient(
             from 0deg,
             rgba(255,255,255,0.00) 0deg,
-            rgba(74,47,61,0.06) 6deg,
+            rgba(255,255,255,0.05) 6deg,
             rgba(255,255,255,0.00) 12deg,
             rgba(255,255,255,0.00) 45deg,
-            rgba(74,47,61,0.05) 51deg,
+            rgba(255,255,255,0.04) 51deg,
             rgba(255,255,255,0.00) 57deg
           );
         mix-blend-mode: screen;
-        opacity: 0.35;
+        opacity: 0.28;
         animation: drift-spin 30s linear infinite;
       }
 
@@ -1221,12 +1223,12 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         background:
           repeating-conic-gradient(
             from 0deg,
-            rgba(74,47,61,0.32) 0deg 1deg,
+            rgba(90,46,70,0.32) 0deg 1deg,
             transparent 1deg 6deg
           );
         -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
                 mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-        opacity: 0.75;
+        opacity: 0.6;
       }
 
       .compass-cardinal {
@@ -1236,15 +1238,15 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         font-family: 'JetBrains Mono', monospace;
         font-weight: 700;
         letter-spacing: 0.08em;
-        color: #4A2F3D;
+        color: #FFF7EF;
       }
 
       .compass-cardinal span {
         position: absolute;
-        text-shadow: 0 0 18px rgba(255,255,255,0.12);
+        text-shadow: 0 0 18px rgba(255,255,255,0.18);
       }
 
-      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #F4B8B2; }
+      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #E7A6A0; }
       .compass-cardinal .e { right: 8%; top: 50%; transform: translateY(-50%); }
       .compass-cardinal .s { bottom: 7%; left: 50%; transform: translateX(-50%); }
       .compass-cardinal .w { left: 8%; top: 50%; transform: translateY(-50%); }
@@ -1256,7 +1258,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         height: 74%;
         border-radius: 50%;
         transform: rotate(var(--angle));
-        transition: transform 260ms cubic-bezier(.2,.9,.2,1);
+        transition: transform 520ms cubic-bezier(.2,.9,.2,1);
         will-change: transform;
       }
 
@@ -1273,18 +1275,18 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 1.8rem;
         height: 46%;
         transform: translate(-50%, -100%);
-        background: linear-gradient(180deg, #F4B8B2 0%, #C97E90 45%, rgba(201,126,144,0.08) 100%);
+        background: linear-gradient(180deg, #F6C8B9 0%, #E7A6A0 42%, rgba(231,166,160,0.08) 100%);
         clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
-        filter: drop-shadow(0 0 18px rgba(244,184,178,0.22));
+        filter: drop-shadow(0 0 18px rgba(231,166,160,0.26));
       }
 
       .compass-needle::after {
         width: 1.8rem;
         height: 46%;
         transform: translate(-50%, 0) rotate(180deg);
-        background: linear-gradient(180deg, rgba(245,241,232,0.95) 0%, rgba(74,47,61,0.92) 55%, rgba(74,47,61,0.05) 100%);
+        background: linear-gradient(180deg, rgba(255,247,239,0.98) 0%, rgba(181,150,132,0.94) 55%, rgba(181,150,132,0.10) 100%);
         clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
-        filter: drop-shadow(0 0 16px rgba(74,47,61,0.18));
+        filter: drop-shadow(0 0 16px rgba(90,46,70,0.14));
       }
 
       .compass-cap {
@@ -1292,10 +1294,10 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: radial-gradient(circle at 35% 35%, #F7F1E8, #8D7680 36%, #4A2F3D 72%);
+        background: radial-gradient(circle at 35% 35%, #FFFFFF, #DDBBA5 36%, #5A2E46 72%);
         box-shadow:
-          0 0 0 6px rgba(74,47,61,0.05),
-          0 0 30px rgba(244,184,178,0.22);
+          0 0 0 6px rgba(255,255,255,0.06),
+          0 0 30px rgba(231,166,160,0.24);
         z-index: 2;
       }
 
@@ -1310,20 +1312,20 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         gap: 0.2rem;
         padding: 0.55rem 0.85rem;
         border-radius: 999px;
-        background: rgba(15,26,46,0.42);
-        border: 1px solid rgba(74,47,61,0.16);
+        background: rgba(90,46,70,0.12);
+        border: 1px solid rgba(90,46,70,0.16);
         backdrop-filter: blur(10px);
       }
 
       .compass-legend span {
         font-size: 0.74rem;
-        color: #8D7680;
+        color: #5A2E46;
         letter-spacing: 0.02em;
       }
 
       .compass-legend strong {
         font-size: 0.92rem;
-        color: #4A2F3D;
+        color: #5A2E46;
         font-weight: 700;
       }
 
@@ -1337,20 +1339,20 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 3rem;
         height: 3rem;
         border-radius: 999px;
-        border: 1px solid rgba(74,47,61,0.18);
-        background: linear-gradient(180deg, rgba(74,47,61,0.10), rgba(74,47,61,0.04));
-        color: #4A2F3D;
+        border: 1px solid rgba(90,46,70,0.18);
+        background: linear-gradient(180deg, rgba(255,247,239,0.55), rgba(255,247,239,0.30));
+        color: #5A2E46;
         font-size: 1.15rem;
         font-weight: 800;
         cursor: pointer;
-        box-shadow: 0 10px 28px rgba(0,0,0,0.22);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.12);
         transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
       }
 
       .compass-btn:hover {
         transform: translateY(-1px) scale(1.03);
-        border-color: rgba(244,184,178,0.45);
-        background: linear-gradient(180deg, rgba(244,184,178,0.16), rgba(74,47,61,0.06));
+        border-color: rgba(231,166,160,0.58);
+        background: linear-gradient(180deg, rgba(231,166,160,0.24), rgba(255,247,239,0.46));
       }
 
       .compass-readout {
@@ -1359,7 +1361,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
-        color: #8D7680;
+        color: #5A2E46;
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -1367,7 +1369,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       }
 
       .compass-readout .deg {
-        color: #4A2F3D;
+        color: #5A2E46;
         font-size: 1.1rem;
         letter-spacing: 0.02em;
         text-transform: none;
@@ -1408,7 +1410,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         </div>
 
         <div class="compass-legend">
-          <span>Rotate with the arrows</span>
+          <span>Moving on its own</span>
           <strong id="__WIDGET_ID__-readout">N · 000°</strong>
         </div>
       </div>
@@ -1435,6 +1437,10 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       const deg = document.getElementById("__WIDGET_ID__-deg");
 
       let angle = Number(root.dataset.angle || 0);
+      let last = performance.now();
+      let manualNudge = 0;
+      const spinSpeed = 6.0; // degrees per second
+      const oscillation = 7.5;
 
       const dirs = [
         { label: "N",  deg: 0   },
@@ -1472,31 +1478,38 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         const delta = a.toFixed(0).padStart(3, '0') + '°';
         deg.textContent = delta;
         readout.textContent = c.label + ' · ' + delta;
+        root.dataset.angle = String(a);
       }
 
-      left.addEventListener('click', function() {
-        angle -= 15;
+      function nudge(step) {
+        angle = wrap(angle + step);
+        manualNudge = wrap(manualNudge + step * 4);
         render();
-      });
+      }
 
-      right.addEventListener('click', function() {
-        angle += 15;
-        render();
-      });
+      left.addEventListener('click', function() { nudge(-15); });
+      right.addEventListener('click', function() { nudge(15); });
 
       root.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') { angle -= 15; render(); }
-        if (e.key === 'ArrowRight') { angle += 15; render(); }
+        if (e.key === 'ArrowLeft') { nudge(-15); }
+        if (e.key === 'ArrowRight') { nudge(15); }
       });
 
+      function tick(now) {
+        const dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
+        angle = wrap(angle + (spinSpeed * dt) + (Math.sin(now / 2200) * oscillation * dt * 0.18));
+        render();
+        window.requestAnimationFrame(tick);
+      }
+
       render();
+      window.requestAnimationFrame(tick);
     })();
     </script>
     """
 
     return template.replace("__WIDGET_ID__", widget_id).replace("__ANGLE__", f"{angle:.1f}")
-
-
 hero_left, hero_right = st.columns([1.05, 1])
 with hero_left:
     st.markdown("""
@@ -1690,14 +1703,14 @@ if st.session_state.show_results and st.session_state.engine_result:
             ".tl-wrap{padding:0.4rem 0}"
             ".tl-row{display:grid;grid-template-columns:2.3rem 1fr;gap:0 0.9rem;margin-bottom:0}"
             ".tl-node-col{display:flex;flex-direction:column;align-items:center}"
-            ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#F4B8B2;"
+            ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#FF8C42;"
             "display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;"
-            "font-size:0.74rem;font-weight:600;color:#4A2F3D;flex-shrink:0}"
-            ".tl-connector{width:1.5px;flex:1;min-height:0.7rem;background:rgba(74,47,61,0.3);margin:3px 0}"
-            ".tl-content{padding:0.55rem 0 0.95rem;color:#4A2F3D}"
+            "font-size:0.74rem;font-weight:600;color:#0F1A2E;flex-shrink:0}"
+            ".tl-connector{width:1.5px;flex:1;min-height:0.7rem;background:rgba(168,180,199,0.3);margin:3px 0}"
+            ".tl-content{padding:0.55rem 0 0.95rem;color:#E5E0D4}"
             ".tl-stage{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;"
-            "text-transform:uppercase;color:#F4B8B2;margin-bottom:0.22rem}"
-            ".tl-text{font-size:0.88rem;line-height:1.55;color:#8D7680}</style>"
+            "text-transform:uppercase;color:#FF8C42;margin-bottom:0.22rem}"
+            ".tl-text{font-size:0.88rem;line-height:1.55;color:#A8B4C7}</style>"
             + render_timeline(opt),
             height=max(260, len(opt.get("timeline",[])) * 84), scrolling=False)
 
