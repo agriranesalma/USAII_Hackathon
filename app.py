@@ -953,10 +953,10 @@ p, li, span, div, label, input, textarea, button {
 }
 
 .hero-title {
-  font-size: clamp(2.4rem, 5.6vw, 4rem) !important;
-  line-height: 0.98 !important;
-  margin-bottom: 1rem !important;
-  max-width: 8.8em;
+  font-size: clamp(2.15rem, 4.6vw, 3.45rem) !important;
+  line-height: 1.02 !important;
+  margin-bottom: 0.8rem !important;
+  max-width: 12em;
 }
 
 .hero-title .accent {
@@ -1230,7 +1230,7 @@ div[data-testid="stAlert"] {
     border-radius: 28px !important;
   }
   .hero-title {
-    font-size: 2.1rem !important;
+    font-size: 1.95rem !important;
   }
   .section-label {
     border-radius: 20px !important;
