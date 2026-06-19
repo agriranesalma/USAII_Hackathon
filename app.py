@@ -962,7 +962,7 @@ p, li, span, div, label, input, textarea, button {
   padding: 1.6rem 1.7rem;
   display: flex;
   align-items: center;
-  min-height: 320px;
+  min-height: 280px;
 }
 
 .hero-title {
@@ -998,7 +998,8 @@ p, li, span, div, label, input, textarea, button {
   position: relative;
   border-radius: 30px;
   padding: 1rem;
-  min-height: 320px;
+  min-height: 280px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1869,19 +1870,20 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
     <style>
       .compass-wrap {{
         width: 100%;
-        min-height: 280px;
+        min-height: 220px;
         display: grid;
         place-items: center;
-        padding: 0.5rem 0 0.25rem;
+        padding: 0.25rem 0;
         color: #231B1C;
         font-family: 'Inter', sans-serif;
         user-select: none;
+        overflow: hidden;
       }}
 
       .compass-shell {{
         --base-angle: {angle:.0f}deg;
         position: relative;
-        width: min(70vw, 260px);
+        width: min(55vw, 200px);
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         display: grid;
@@ -2088,14 +2090,14 @@ with hero_left:
     st.markdown("""
     <div class="hero-shell hero-copy-shell">
       <div class="hero-copy">
-        <h1 class="hero-title"><span class="hero-title-line hero-title-top">First-Gen</span><span class="hero-title-line hero-title-bottom">Compass</span></h1>
+        <h1 class="hero-title"><span class="hero-title-line hero-title-top">First-Gen</span>&nbsp;<span class="hero-title-line hero-title-bottom">Compass</span></h1>
         <div class="hero-slogan">A calm, intelligent map for high-stakes choices—made for students who were never handed the unwritten rules.</div>
       </div>
     </div>
     """, unsafe_allow_html=True)
 with hero_right:
     st.markdown('<div class="compass-card">', unsafe_allow_html=True)
-    st.components.v1.html(render_compass_widget(), height=320, scrolling=False)
+    st.components.v1.html(render_compass_widget(), height=240, scrolling=False)
     st.markdown('</div>', unsafe_allow_html=True)
 
 if not get_api_key():
