@@ -193,6 +193,323 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .empty-state-title { font-family: 'Spectral', serif; font-size: 1.4rem; margin-bottom: 0.55rem; color: var(--bone); }
 .empty-state-text { color: var(--fog); max-width: 440px; margin: 0 auto; font-size: 0.93rem; line-height: 1.6; }
 
+/* hero compass */
+.compass-stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.15fr) minmax(280px, 0.95fr);
+  gap: 1.4rem;
+  align-items: center;
+  margin: 1rem 0 0.6rem;
+}
+.compass-card {
+  position: relative;
+  border-radius: 28px;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,140,66,0.18), transparent 28%),
+    radial-gradient(circle at 70% 72%, rgba(111,168,136,0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02));
+  border: 1px solid rgba(168,180,199,0.18);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+  overflow: hidden;
+}
+.compass-card::before,
+.compass-card::after {
+  content: "";
+  position: absolute;
+  inset: auto;
+  border-radius: 999px;
+  pointer-events: none;
+}
+.compass-card::before {
+  width: 240px; height: 240px;
+  right: -40px; top: -60px;
+  background: radial-gradient(circle, rgba(255,140,66,0.18), transparent 64%);
+  filter: blur(2px);
+}
+.compass-card::after {
+  width: 180px; height: 180px;
+  left: -50px; bottom: -50px;
+  background: radial-gradient(circle, rgba(111,168,136,0.14), transparent 64%);
+}
+.compass-copy {
+  padding: 0.3rem 0.15rem 0.3rem 0.2rem;
+}
+.compass-kicker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--fog);
+  margin-bottom: 0.8rem;
+}
+.compass-copy h1 {
+  margin: 0 0 0.85rem;
+}
+.compass-copy p {
+  margin: 0;
+}
+.compass-viewport {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.compass-viewport .stHtmlFrame {
+  width: 100%;
+}
+@media (max-width: 900px) {
+  .compass-stage { grid-template-columns: 1fr; }
+  .compass-viewport { min-height: 470px; }
+}
+
+/* interactive compass */
+.compass-wrap {
+  --angle: 0deg;
+  --size: min(92vw, 470px);
+  width: 100%;
+  display: grid;
+  place-items: center;
+  padding: 16px 10px 10px;
+  color: #F5F1E8;
+  font-family: 'Public Sans', sans-serif;
+}
+.compass-shell {
+  width: var(--size);
+  max-width: 100%;
+  aspect-ratio: 1/1;
+  position: relative;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 28px 60px rgba(0,0,0,0.34));
+}
+.compass-glow {
+  position: absolute;
+  inset: 10px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06), transparent 52%),
+    radial-gradient(circle at 50% 50%, rgba(255,140,66,0.18), transparent 64%);
+  filter: blur(2px);
+}
+.compass-ring-outer,
+.compass-ring-mid,
+.compass-ring-inner,
+.compass-face {
+  position: absolute;
+  border-radius: 50%;
+}
+.compass-ring-outer {
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
+    conic-gradient(from -90deg,
+      rgba(224,176,92,0.88) 0deg 2deg, transparent 2deg 14deg,
+      rgba(168,180,199,0.24) 14deg 15deg, transparent 15deg 29deg,
+      rgba(168,180,199,0.20) 29deg 30deg, transparent 30deg 44deg,
+      rgba(224,176,92,0.88) 44deg 46deg, transparent 46deg 90deg,
+      rgba(168,180,199,0.20) 90deg 91deg, transparent 91deg 135deg,
+      rgba(224,176,92,0.88) 135deg 137deg, transparent 137deg 180deg,
+      rgba(168,180,199,0.20) 180deg 181deg, transparent 181deg 225deg,
+      rgba(224,176,92,0.88) 225deg 227deg, transparent 227deg 270deg,
+      rgba(168,180,199,0.20) 270deg 271deg, transparent 271deg 315deg,
+      rgba(224,176,92,0.88) 315deg 317deg, transparent 317deg 360deg);
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.05),
+    inset 0 0 45px rgba(0,0,0,0.55);
+}
+.compass-ring-mid {
+  inset: 7%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(18,26,46,0.92), rgba(18,26,46,0.97) 62%, rgba(20,34,58,0.99)),
+    radial-gradient(circle at 50% 50%, transparent 63%, rgba(255,255,255,0.06) 64%, transparent 66%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+.compass-ring-inner {
+  inset: 17%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(245,241,232,0.04), transparent 38%),
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 62%);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.compass-face {
+  inset: 23%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 52%),
+    radial-gradient(circle at 50% 50%, rgba(15,26,46,0.98), rgba(18,30,52,0.98) 64%, rgba(12,19,34,0.98));
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    inset 0 0 24px rgba(255,140,66,0.10);
+}
+.compass-ticks {
+  position: absolute;
+  inset: 10%;
+  border-radius: 50%;
+  background:
+    repeating-conic-gradient(
+      from -90deg,
+      rgba(255,255,255,0.55) 0deg 1deg,
+      transparent 1deg 6deg
+    );
+  -webkit-mask: radial-gradient(circle, transparent 0 65%, #000 65.5% 66.9%, transparent 67.2% 100%);
+  mask: radial-gradient(circle, transparent 0 65%, #000 65.5% 66.9%, transparent 67.2% 100%);
+  opacity: 0.7;
+}
+.compass-cardinal {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: 'Spectral', serif;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: rgba(245,241,232,0.92);
+  text-shadow: 0 2px 12px rgba(0,0,0,0.45);
+}
+.compass-cardinal span {
+  position: absolute;
+  font-size: clamp(0.82rem, 2.1vw, 1rem);
+}
+.compass-cardinal .n { top: 5.5%; }
+.compass-cardinal .e { right: 5.5%; }
+.compass-cardinal .s { bottom: 5.5%; }
+.compass-cardinal .w { left: 5.5%; }
+.compass-degree-ring {
+  position: absolute;
+  inset: 29%;
+  border-radius: 50%;
+  background:
+    conic-gradient(from 0deg, rgba(255,140,66,0.0), rgba(255,140,66,0.0) 50%, rgba(255,140,66,0.34) 50.4%, rgba(255,140,66,0.0) 50.8%, rgba(255,140,66,0.0) 100%),
+    radial-gradient(circle, transparent 0 46%, rgba(255,255,255,0.06) 47% 48%, transparent 49% 100%);
+  opacity: 0.9;
+}
+.compass-needle {
+  position: absolute;
+  inset: 16%;
+  border-radius: 50%;
+  transform: rotate(var(--angle));
+  transition: transform 360ms cubic-bezier(.2,.9,.2,1);
+}
+.compass-needle::before,
+.compass-needle::after {
+  content:"";
+  position:absolute;
+  left:50%;
+  transform: translateX(-50%);
+  width: 18%;
+  border-radius: 999px;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
+}
+.compass-needle::before {
+  top: 10%;
+  height: 42%;
+  background: linear-gradient(180deg, #FFB07A 0%, #FF8C42 42%, rgba(255,140,66,0.2) 100%);
+}
+.compass-needle::after {
+  bottom: 10%;
+  height: 42%;
+  background: linear-gradient(180deg, rgba(111,168,136,0.1) 0%, #6FA888 58%, #DDE9DF 100%);
+}
+.compass-cap {
+  position: absolute;
+  width: 17%;
+  height: 17%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(255,255,255,0.24), transparent 38%),
+    linear-gradient(180deg, #1A2942, #0F1A2E);
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: inset 0 0 14px rgba(255,255,255,0.04), 0 10px 26px rgba(0,0,0,0.35);
+  z-index: 3;
+}
+.compass-ringshine {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: inset 0 0 0 1px rgba(255,140,66,0.08), 0 0 36px rgba(255,140,66,0.10);
+  pointer-events: none;
+}
+.compass-legend {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 74%;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.7rem 1rem 0.25rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(245,241,232,0.72);
+}
+.compass-legend strong {
+  color: #F5F1E8;
+}
+.compass-controls {
+  margin-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.compass-btn {
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid rgba(168,180,199,0.22);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  color: #F5F1E8;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  box-shadow: 0 10px 22px rgba(0,0,0,0.22);
+}
+.compass-btn:hover {
+  transform: translateY(-1px) scale(1.03);
+  background: rgba(255,255,255,0.055);
+  border-color: rgba(255,140,66,0.5);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.28);
+}
+.compass-readout {
+  min-width: 8.5rem;
+  text-align: center;
+  padding: 0.75rem 0.95rem;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(168,180,199,0.16);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--bone);
+}
+.compass-readout .deg {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.98rem;
+  letter-spacing: 0.04em;
+  color: var(--fog);
+}
+.compass-drift {
+  position: absolute;
+  inset: 7%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 20%, rgba(255,255,255,0.08), transparent 48%);
+  animation: drift 8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes drift {
+  0%, 100% { transform: translate3d(0,0,0) scale(1); opacity: .9; }
+  50% { transform: translate3d(0,-5px,0) scale(1.015); opacity: 1; }
+}
+
 @media (max-width: 640px) {
   .hero-title { font-size: 2rem; }
 }
@@ -787,26 +1104,135 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     return "".join(out)
 
 
-HERO_MARK = """<svg class="hero-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<circle cx="16" cy="16" r="14.5" stroke="#A8B4C7" stroke-width="1.3" opacity="0.45"/>
-<path d="M16 6 L19.5 16 L16 26 L12.5 16 Z" fill="#FF8C42"/>
-<circle cx="16" cy="16" r="2.3" fill="#0F1A2E"/>
-</svg>"""
 
-st.markdown(f"""
-<div class="hero">
-  <div class="hero-top">
-    {HERO_MARK}
-    <span class="hero-word">Compass</span>
-  </div>
-  <h1 class="hero-title">Most college guidance assumes<br>someone already showed you<br>the <span class="accent">unwritten rules</span>.</h1>
-  <p class="hero-sub">
-    This won't tell you which option is "best." It'll show you what each one actually
-    costs, who it quietly depends on, and what tends to surprise people who didn't grow up
-    with a roadmap for this.
-  </p>
-</div>
-""", unsafe_allow_html=True)
+def render_compass_widget(initial_angle: float = 0.0) -> str:
+    widget_id = f"compass-{uuid.uuid4().hex[:10]}"
+    angle = float(initial_angle) % 360
+    return f"""
+    <div class="compass-wrap" id="{widget_id}" data-angle="{angle:.1f}">
+      <div class="compass-shell">
+        <div class="compass-glow"></div>
+        <div class="compass-ring-outer"></div>
+        <div class="compass-ring-mid"></div>
+        <div class="compass-ring-inner"></div>
+        <div class="compass-drift"></div>
+        <div class="compass-ticks"></div>
+        <div class="compass-face"></div>
+        <div class="compass-degree-ring"></div>
+        <div class="compass-ringshine"></div>
+        <div class="compass-cardinal">
+          <span class="n">N</span>
+          <span class="e">E</span>
+          <span class="s">S</span>
+          <span class="w">W</span>
+        </div>
+        <div class="compass-needle" id="{widget_id}-needle">
+          <div class="compass-cap" style="left:50%; top:50%; transform: translate(-50%, -50%);"></div>
+        </div>
+        <div class="compass-legend">
+          <span>Rotate with the arrows</span>
+          <strong id="{widget_id}-readout">N · 0°</strong>
+        </div>
+      </div>
+      <div class="compass-controls">
+        <button class="compass-btn" id="{widget_id}-left" aria-label="Rotate compass left">◀</button>
+        <div class="compass-readout">
+          heading
+          <span class="deg" id="{widget_id}-deg">0°</span>
+        </div>
+        <button class="compass-btn" id="{widget_id}-right" aria-label="Rotate compass right">▶</button>
+      </div>
+    </div>
+    <script>
+    (function() {{
+      const root = document.getElementById("{widget_id}");
+      if (!root) return;
+      const needle = document.getElementById("{widget_id}-needle");
+      const left = document.getElementById("{widget_id}-left");
+      const right = document.getElementById("{widget_id}-right");
+      const readout = document.getElementById("{widget_id}-readout");
+      const deg = document.getElementById("{widget_id}-deg");
+      let angle = Number(root.dataset.angle || 0);
+
+      const dirs = [
+        { label: "N", deg: 0 },
+        { label: "NE", deg: 45 },
+        { label: "E", deg: 90 },
+        { label: "SE", deg: 135 },
+        { label: "S", deg: 180 },
+        { label: "SW", deg: 225 },
+        { label: "W", deg: 270 },
+        { label: "NW", deg: 315 },
+      ];
+
+      function wrap(n) {{
+        n = n % 360;
+        return n < 0 ? n + 360 : n;
+      }}
+
+      function nearestCardinal(a) {{
+        let best = dirs[0];
+        let bestDist = 9999;
+        for (const d of dirs) {{
+          const dist = Math.min(Math.abs(a - d.deg), 360 - Math.abs(a - d.deg));
+          if (dist < bestDist) {{
+            best = d;
+            bestDist = dist;
+          }}
+        }}
+        return best;
+      }}
+
+      function render() {{
+        const a = wrap(angle);
+        needle.style.setProperty('--angle', a + 'deg');
+        needle.style.transform = 'rotate(' + a + 'deg)';
+        const c = nearestCardinal(a);
+        const delta = a.toFixed(0).padStart(3, '0') + '°';
+        deg.textContent = delta;
+        readout.textContent = c.label + ' · ' + delta;
+      }}
+
+      left.addEventListener('click', function() {{
+        angle -= 15;
+        render();
+      }});
+      right.addEventListener('click', function() {{
+        angle += 15;
+        render();
+      }});
+
+      root.addEventListener('keydown', function(e) {{
+        if (e.key === 'ArrowLeft') {{ angle -= 15; render(); }}
+        if (e.key === 'ArrowRight') {{ angle += 15; render(); }}
+      }});
+
+      render();
+    }})();
+    </script>
+    """
+
+
+
+hero_left, hero_right = st.columns([1.05, 1])
+with hero_left:
+    st.markdown("""
+    <div class="hero">
+      <div class="hero-top">
+        <span class="hero-word">Compass</span>
+      </div>
+      <h1 class="hero-title">Most college guidance assumes<br>someone already showed you<br>the <span class="accent">unwritten rules</span>.</h1>
+      <p class="hero-sub">
+        This won't tell you which option is "best." It'll show you what each one actually
+        costs, who it quietly depends on, and what tends to surprise people who didn't grow up
+        with a roadmap for this.
+      </p>
+    </div>
+    """, unsafe_allow_html=True)
+with hero_right:
+    st.markdown('<div class="compass-card">', unsafe_allow_html=True)
+    st.components.v1.html(render_compass_widget(), height=560, scrolling=False)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if not get_api_key():
     st.warning(
