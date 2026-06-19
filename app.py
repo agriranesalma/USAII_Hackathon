@@ -27,7 +27,7 @@ SCENARIOS = [
 
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
 :root {
   --night:      #FBF8F2;
@@ -513,6 +513,212 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 @media (max-width: 640px) {
   .hero-title { font-size: 2rem; }
 }
+
+/* --- visual polish / readability overrides --- */
+:root {
+  --parchment: #F2E4D3;
+  --parchment-2: #EBD7C2;
+  --parchment-3: #F7EFE6;
+  --ink-strong: #241B25;
+}
+
+html, body, .stApp, .stApp * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.stApp {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-weight: 500;
+}
+
+h1, h2, h3, h4, h5, h6,
+.hero-title, .opt-result-name, .empty-state-title,
+.compass-copy h1 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  font-weight: 700 !important;
+  color: var(--ink-strong) !important;
+}
+
+p, li, span, div, label {
+  font-weight: 500;
+}
+
+.hero-sub,
+.section-hint,
+.opt-result-summary,
+.cmp-panel-text,
+.lb li,
+.tl-text,
+.sc-text,
+.stress-delta,
+.empty-state-text {
+  font-size: 1.01rem !important;
+  line-height: 1.72 !important;
+  font-weight: 550 !important;
+  color: var(--fog) !important;
+}
+
+.section-label {
+  background: linear-gradient(180deg, rgba(242,228,211,0.95), rgba(247,239,230,0.92));
+  border: 1px solid rgba(57,42,56,0.10);
+  border-radius: 999px;
+  padding: 0.8rem 1rem;
+  box-shadow: 0 10px 26px rgba(57,42,56,0.06);
+  color: var(--ink-strong);
+  font-weight: 700;
+}
+
+.section-label::after {
+  margin-left: 0.8rem;
+}
+
+.section-hint {
+  background: linear-gradient(180deg, rgba(242,228,211,0.88), rgba(247,239,230,0.84));
+  border: 1px solid rgba(57,42,56,0.08);
+  border-radius: 18px;
+  padding: 0.85rem 1rem;
+  box-shadow: 0 10px 24px rgba(57,42,56,0.05);
+  color: var(--fog) !important;
+}
+
+.opt-card,
+.lb,
+.opt-result,
+.cmp-panel,
+.sc-card,
+.stress-panel,
+.empty-state,
+[data-testid="stAlert"] {
+  background: linear-gradient(180deg, rgba(242,228,211,0.90), rgba(247,239,230,0.86)) !important;
+  border-color: rgba(57,42,56,0.10) !important;
+  box-shadow: 0 14px 30px rgba(57,42,56,0.08);
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.opt-card:hover,
+.lb:hover,
+.opt-result:hover,
+.cmp-panel:hover,
+.sc-card:hover,
+.stress-panel:hover,
+.empty-state:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(57,42,56,0.12);
+  border-color: rgba(214,133,149,0.28) !important;
+}
+
+.opt-result-head {
+  background: linear-gradient(180deg, rgba(247,239,230,0.96), rgba(242,228,211,0.95)) !important;
+}
+
+.lb-header,
+.mc-label,
+.tl-stage,
+.sc-name,
+.stress-label,
+.compass-kicker,
+.hero-word {
+  color: var(--fog) !important;
+  font-weight: 700 !important;
+}
+
+.mc-value {
+  font-weight: 800 !important;
+  color: var(--ink-strong) !important;
+}
+
+.opt-result-summary,
+.cmp-panel-text,
+.tl-text,
+.sc-text,
+.stress-delta,
+.empty-state-text,
+.lb li {
+  color: var(--ink-strong) !important;
+}
+
+.stTextInput label, .stTextArea label, .stSelectbox label, div[data-testid="stSlider"] label {
+  color: var(--ink-strong) !important;
+  font-size: 0.76rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.08em;
+}
+
+.stTextInput input, .stTextArea textarea {
+  background: rgba(255,255,255,0.92) !important;
+  border: 1px solid rgba(57,42,56,0.12) !important;
+  border-radius: 14px !important;
+  color: var(--ink-strong) !important;
+  font-size: 0.99rem !important;
+  font-weight: 600 !important;
+  line-height: 1.6 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.55);
+}
+
+.stTextInput input::placeholder, .stTextArea textarea::placeholder {
+  color: var(--fog-dim) !important;
+  font-weight: 500 !important;
+}
+
+.stTextInput input:focus, .stTextArea textarea:focus {
+  border-color: var(--flare) !important;
+  box-shadow: 0 0 0 3px rgba(214,133,149,0.16) !important;
+}
+
+div[data-testid="stCheckbox"] label {
+  background: linear-gradient(180deg, rgba(242,228,211,0.98), rgba(247,239,230,0.94)) !important;
+  border: 1px solid rgba(57,42,56,0.10) !important;
+  border-radius: 999px !important;
+  color: var(--ink-strong) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+  padding: 0.62rem 0.78rem !important;
+  margin: 0.10rem 0 !important;
+  box-shadow: 0 8px 18px rgba(57,42,56,0.05);
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+
+div[data-testid="stCheckbox"] label *,
+div[data-testid="stCheckbox"] label span,
+div[data-testid="stCheckbox"] label p {
+  color: var(--ink-strong) !important;
+  font-weight: 800 !important;
+}
+
+div[data-testid="stCheckbox"] label:hover {
+  border-color: rgba(214,133,149,0.30) !important;
+  box-shadow: 0 10px 22px rgba(57,42,56,0.08);
+}
+
+div[data-baseweb="checkbox"] span:first-child {
+  background-color: rgba(255,255,255,0.85) !important;
+  border-color: rgba(57,42,56,0.18) !important;
+}
+
+div[data-baseweb="checkbox"] input:checked + span {
+  background-color: var(--flare) !important;
+  border-color: var(--flare) !important;
+}
+
+.stButton button:not([kind="primary"]) {
+  background: linear-gradient(180deg, rgba(242,228,211,0.90), rgba(247,239,230,0.86)) !important;
+  color: var(--ink-strong) !important;
+  border: 1px solid rgba(57,42,56,0.10) !important;
+  font-weight: 700 !important;
+}
+
+.stButton button:not([kind="primary"]):hover {
+  border-color: rgba(214,133,149,0.25) !important;
+}
+
+@media (max-width: 640px) {
+  .section-label { border-radius: 22px; }
+}
+
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
