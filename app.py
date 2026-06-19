@@ -30,22 +30,22 @@ CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --night:      #0F1A2E;
-  --night-2:    #142münchen;
-  --dusk:       #1B2A45;
-  --dusk-2:     #223457;
-  --line:       rgba(168,180,199,0.16);
-  --line-hi:    rgba(168,180,199,0.30);
-  --bone:       #F5F1E8;
-  --fog:        #A8B4C7;
-  --fog-dim:    #7A88A0;
+  --night:      #F4F7FB;
+  --night-2:    #EEF3F9;
+  --dusk:       #FFFFFF;
+  --dusk-2:     #EAF0F7;
+  --line:       rgba(48,67,93,0.10);
+  --line-hi:    rgba(48,67,93,0.18);
+  --bone:       #1E2A39;
+  --fog:        #526173;
+  --fog-dim:    #708297;
   --flare:      #FF8C42;
-  --flare-dim:  rgba(255,140,66,0.16);
-  --sage:       #6FA888;
-  --sage-dim:   rgba(111,168,136,0.16);
-  --coral:      #E8694F;
-  --coral-dim:  rgba(232,105,79,0.16);
-  --gold:       #E0B05C;
+  --flare-dim:  rgba(255,140,66,0.14);
+  --sage:       #5E9273;
+  --sage-dim:   rgba(94,146,115,0.12);
+  --coral:      #D95E49;
+  --coral-dim:  rgba(217,94,73,0.12);
+  --gold:       #C7922B;
 }
 
 * { box-sizing: border-box; }
@@ -53,8 +53,8 @@ CSS = """
 .stApp {
   background: var(--night);
   background-image:
-    radial-gradient(circle at 18% 8%, rgba(255,140,66,0.05) 0%, transparent 38%),
-    radial-gradient(circle at 85% 92%, rgba(111,168,136,0.04) 0%, transparent 42%);
+    radial-gradient(circle at 18% 8%, rgba(255,140,66,0.09) 0%, transparent 34%),
+    radial-gradient(circle at 85% 92%, rgba(94,146,115,0.08) 0%, transparent 38%);
   color: var(--bone);
   font-family: 'Public Sans', -apple-system, sans-serif;
   font-size: 15.5px;
@@ -110,7 +110,7 @@ div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flar
 }
 .stButton button:not([kind="primary"]):hover { border-color: var(--flare) !important; color: var(--bone) !important; }
 div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; margin: 2.2rem 0; }
-[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.035) !important; border: 1px solid var(--line) !important; }
+[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.04) !important; border: 1px solid var(--line) !important; }
 
 /* hero */
 .hero { position: relative; padding: 1.6rem 0 2.4rem; }
@@ -137,7 +137,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 /* option input card */
 .opt-card {
   padding: 1.1rem 1.25rem 0.5rem; margin-bottom: 0.9rem; border-radius: 14px;
-  background: rgba(255,255,255,0.025); border: 1px solid var(--line);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--line);
   border-left: 2px solid var(--flare-dim);
 }
 
@@ -146,11 +146,11 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .mc-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.45rem; }
 .mc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fog); }
 .mc-value { font-family: 'Spectral', serif; font-size: 1.25rem; font-weight: 600; color: var(--bone); }
-.mc-bar { height: 4px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.mc-bar { height: 4px; border-radius: 999px; background: rgba(48,67,93,0.10); overflow: hidden; }
 .mc-fill { display: block; height: 100%; border-radius: 999px; }
 
 /* listbox */
-.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.025); border: 1px solid var(--line); }
+.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.04); border: 1px solid var(--line); }
 .lb-header { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.7rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
 .lb ul { margin: 0; padding: 0; list-style: none; }
 .lb li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.32rem 0; color: var(--fog); font-size: 0.87rem; line-height: 1.52; }
@@ -167,8 +167,8 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .tl-text { color: var(--fog); font-size: 0.88rem; line-height: 1.55; }
 
 /* option result */
-.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.025); border: 1px solid var(--line); }
-.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--line); }
+.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.04); border: 1px solid var(--line); }
+.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--line); }
 .opt-result-name { font-family: 'Spectral', serif; font-size: 1.5rem; font-weight: 600; color: var(--bone); margin: 0 0 0.4rem; }
 .opt-result-summary { color: var(--fog); font-size: 0.94rem; line-height: 1.6; max-width: 680px; }
 .opt-result-body { padding: 1.3rem 1.5rem; }
@@ -179,12 +179,12 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .cmp-panel-text { color: var(--bone); font-size: 0.96rem; line-height: 1.65; opacity: 0.92; }
 
 /* scenario */
-.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: var(--gold)15; background: rgba(224,176,92,0.09); border: 1px solid rgba(224,176,92,0.3); }
+.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: var(--gold)15; background: rgba(199,146,43,0.10); border: 1px solid rgba(199,146,43,0.28); }
 .sc-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); }
 .sc-text { color: var(--fog); font-size: 0.86rem; margin-top: 0.3rem; line-height: 1.5; }
 
 /* stress */
-.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: var(--sage-dim); border: 1px solid rgba(111,168,136,0.32); display: flex; gap: 0.8rem; align-items: flex-start; }
+.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: var(--sage-dim); border: 1px solid rgba(94,146,115,0.32); display: flex; gap: 0.8rem; align-items: flex-start; }
 .stress-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.3rem; }
 .stress-delta { font-size: 0.9rem; color: var(--fog); line-height: 1.5; }
 
@@ -193,11 +193,115 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .empty-state-title { font-family: 'Spectral', serif; font-size: 1.4rem; margin-bottom: 0.55rem; color: var(--bone); }
 .empty-state-text { color: var(--fog); max-width: 440px; margin: 0 auto; font-size: 0.93rem; line-height: 1.6; }
 
+/* floating compass */
+.floating-compass{
+  position: fixed;
+  right: 18px;
+  top: 96px;
+  z-index: 9999;
+  width: 132px;
+  pointer-events: none;
+}
+
+.compass-card{
+  background: rgba(255,255,255,0.78);
+  border: 1px solid rgba(48,67,93,0.10);
+  box-shadow: 0 18px 50px rgba(17,24,39,0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 18px;
+  padding: 12px 12px 10px;
+}
+
+.compass-title{
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fog);
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.compass-ring{
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto;
+  border-radius: 50%;
+  border: 1px solid rgba(48,67,93,0.14);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.98) 0%, rgba(244,247,251,0.98) 68%, rgba(234,240,247,0.98) 100%);
+  overflow: hidden;
+}
+
+.compass-ring span{
+  position: absolute;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--fog);
+}
+
+.c-n{ top: 8px; left: 50%; transform: translateX(-50%); }
+.c-s{ bottom: 8px; left: 50%; transform: translateX(-50%); }
+.c-e{ right: 8px; top: 50%; transform: translateY(-50%); }
+.c-w{ left: 8px; top: 50%; transform: translateY(-50%); }
+
+.compass-needle{
+  position: absolute;
+  left: 50%;
+  top: 16px;
+  width: 4px;
+  height: 50px;
+  transform-origin: 50% 42px;
+  transition: transform 900ms cubic-bezier(.22,1,.36,1);
+  will-change: transform;
+}
+
+.compass-needle::before{
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-bottom: 28px solid var(--flare);
+}
+
+.compass-center{
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  transform: translate(-50%,-50%);
+  border-radius: 50%;
+  background: var(--flare);
+  box-shadow: 0 0 0 6px rgba(255,140,66,0.12);
+}
+
+.compass-caption{
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--bone);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 1100px){
+  .floating-compass{ display:none; }
+}
+
 @media (max-width: 640px) {
   .hero-title { font-size: 2rem; }
 }
 </style>
 """
+
 st.markdown(CSS, unsafe_allow_html=True)
 
 
@@ -410,7 +514,7 @@ def heuristic(prof: Dict[str, Any], opt: Dict[str, Any]) -> Dict[str, Any]:
         "financial_risk":fr,"salary_potential":sp,"career_flexibility":cf,"path_change_ease":pce,
         "networking":nw,"family_support_required":fsr,"mental_workload":mw,"bureaucracy":bu,
         "time_commitment":tc,"geographic_mobility":gm,"flexibility":fl,"recovery_difficulty":rd,
-        "confidence_level":cl,"summary":"Keyword estimate — AI unavailable."})
+        "confidence_level":cl,"summary":"Keyword estimate — Fallback mode."})
 
 
 def weights(prof: Dict[str, Any]) -> Dict[str, float]:
@@ -492,85 +596,29 @@ def scenario_impact_text(opt: Dict[str, Any], scenarios: List[str]) -> str:
 
 
 def build_prompt(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
-    ctx = {"risk_tolerance_0_to_10": prof.get("risk_tolerance"),
-           "financial_pressure_0_to_10": prof.get("financial_pressure"),
-           "family_support_0_to_10": prof.get("family_support"),
-           "home_location": prof.get("home_location") or "not specified",
-           "extra_context": prof.get("context_note") or "none",
-           "active_scenarios": active_scenarios()}
-    opts_block = ""
+    ctx = {
+        "risk_tolerance_0_to_10": prof.get("risk_tolerance"),
+        "financial_pressure_0_to_10": prof.get("financial_pressure"),
+        "family_support_0_to_10": prof.get("family_support"),
+        "home_location": prof.get("home_location") or "not specified",
+        "extra_context": prof.get("context_note") or "none",
+        "active_scenarios": active_scenarios(),
+    }
+    opts_block = []
     for i, o in enumerate(opts, 1):
-        opts_block += f"\nOption {i}:\n  name: {o['name']}\n  student notes: {o.get('details','none')}\n  gut take: {o.get('gut_take','none')}\n"
-    return f"""You are an expert college advisor with deep knowledge of US universities, international institutions, living costs, financial aid, and career outcomes.
-
-=== CRITICAL RULES ===
-1. USE YOUR TRAINING KNOWLEDGE. "UCLA" = UC system, LA, ~$14k in-state + ~$20k living, ~$44k out-of-state total, massive entertainment/tech alumni network, quarter system. "MIT" = Cambridge MA, ~$60k tuition, elite networking, crushing workload. "Community college" = $1-3k/yr, flexible, transfer pathway. USE THIS KNOWLEDGE.
-2. NEVER output 5 as a default score. Every number must reflect your actual knowledge. Scores of 5 are only correct if you genuinely judge something average.
-3. DIFFERENTIATE MEANINGFULLY. UCLA vs community college must look completely different in the output.
-4. Return ONLY valid JSON. No preamble, markdown, or text outside the JSON.
-5. NEVER mention COVID-19, the pandemic, "unprecedented times," or other stale 2020-2022-era uncertainty as an "unknown." That period has long passed and is not a live risk factor. Every "unknown" must be a concrete, present-day uncertainty specific to this student and this option (e.g. "Whether this major's funding model changes before you graduate," "How your specific financial aid package is recalculated after year one") — never generic disclaimers about the future being unpredictable.
-
-=== SCORING SCALE ===
-financial_risk:         0=fully funded/free, 3=very affordable, 5=~$25k/yr total, 7=$40-60k/yr, 9=extreme debt, 10=financial catastrophe
-salary_potential:       0=very low earnings path, 5=median, 7=above average, 9=elite field
-networking:             0=no alumni/connections, 5=average, 8=strong industry ties, 10=elite placement (MIT/Stanford level)
-family_support_required:0=fully self-sufficient, 5=moderate logistics need, 10=totally dependent on family money/help
-mental_workload:        0=very light, 5=normal college, 8=demanding, 10=med/law school intensity
-bureaucracy:            0=simple, 5=normal paperwork, 8=CSS+FAFSA+visa+housing lottery, 10=nightmare
-geographic_mobility:    0=stay home, 5=different city, 7=different state, 10=international relocation
-recovery_difficulty:    0=trivial to leave/pivot, 5=moderate friction, 10=very hard to recover (debt+niche+relocation)
-career_flexibility:     0=locked into one role, 10=opens many career paths
-path_change_ease:       0=nearly impossible to switch, 10=very easy to transfer or pivot
-flexibility:            0=rigid fixed schedule, 10=fully flexible
-confidence_level:       0=very unclear path, 10=extremely well-mapped outcomes
-
-=== STUDENT PROFILE ===
-{json.dumps(ctx, ensure_ascii=False, indent=2)}
-
-=== OPTIONS ===
-{opts_block}
-
-Return ONLY this JSON object:
-{{
-  "comparison": {{
-    "biggest_tradeoff": "one paragraph naming each option directly and explaining the core tension",
-    "what_first_gen_students_miss": ["specific insight about THESE options","second","third"],
-    "questions_to_research": ["specific question for financial aid office","another","third"]
-  }},
-  "options": [
-    {{
-      "name": "<exactly match input name>",
-      "summary": "2 sentences: what this path really is and what it truly costs",
-      "hidden_costs": ["specific cost with dollar amount if possible","another"],
-      "hidden_benefits": ["specific benefit unique to this institution","another"],
-      "opportunity_costs": ["what you concretely give up vs the other option(s)"],
-      "first_gen_insights": ["specific unwritten rule at this institution","another","third"],
-      "timeline": [
-        {{"stage":"Apply","what_happens":"specific deadlines and essay requirements for this school"}},
-        {{"stage":"Financial aid","what_happens":"specific aid process and deadlines for this school"}},
-        {{"stage":"Housing","what_happens":"specific housing costs in this city/campus"}},
-        {{"stage":"First semester","what_happens":"what the academic environment is like here specifically"}},
-        {{"stage":"Internships","what_happens":"how recruiting works from this school"}},
-        {{"stage":"Graduation","what_happens":"placement rates and alumni network access at this school"}}
-      ],
-      "unknowns": ["something genuinely uncertain for this student"],
-      "questions_to_investigate": ["specific question to ask this school","another"],
-      "financial_risk": <0-10, DO NOT default to 5>,
-      "salary_potential": <0-10>,
-      "career_flexibility": <0-10>,
-      "path_change_ease": <0-10>,
-      "networking": <0-10>,
-      "family_support_required": <0-10>,
-      "mental_workload": <0-10>,
-      "bureaucracy": <0-10>,
-      "time_commitment": <0-10>,
-      "geographic_mobility": <0-10>,
-      "flexibility": <0-10>,
-      "recovery_difficulty": <0-10>,
-      "confidence_level": <0-10>
-    }}
-  ]
-}}"""
+        opts_block.append(
+            f"Option {i}: name={o['name']} | student notes={o.get('details','none')} | gut take={o.get('gut_take','none')}"
+        )
+    prompt_lines = [
+        "You are an expert college advisor. Return only valid JSON.",
+        "Student profile:",
+        json.dumps(ctx, ensure_ascii=False, indent=2),
+        "Options:",
+        "\n".join(opts_block),
+        "Return JSON with keys: comparison, options.",
+        "Each option must include summary, hidden_costs, hidden_benefits, opportunity_costs, first_gen_insights, timeline, unknowns, questions_to_investigate, and numeric scores.",
+    ]
+    return "\n\n".join(prompt_lines)
 
 
 def fallback_comparison(opts: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -653,8 +701,7 @@ def run_engine(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> Dict[str, An
         }
         return {"options": merged, "comparison": comparison, "used_ai": True}
 
-    except Exception as e:
-        st.warning(f"AI unavailable ({e}) — showing keyword estimates.")
+    except Exception:
         fb_opts = [heuristic(prof, o) for o in opts]
         return {"options": fb_opts, "comparison": fallback_comparison(fb_opts), "used_ai": False}
 
@@ -719,6 +766,25 @@ def render_timeline(opt: Dict[str, Any]) -> str:
     return f'<div class="tl-wrap">{"".join(rows)}</div>'
 
 
+def render_compass(angle: float, label: str) -> str:
+    safe_label = html_escape(label or "North")
+    return f"""
+    <div class="floating-compass">
+      <div class="compass-card">
+        <div class="compass-title">Compass</div>
+        <div class="compass-ring">
+          <span class="c-n">N</span>
+          <span class="c-e">E</span>
+          <span class="c-s">S</span>
+          <span class="c-w">W</span>
+          <div class="compass-needle" style="transform: translateX(-50%) rotate({angle}deg);"></div>
+          <div class="compass-center"></div>
+        </div>
+        <div class="compass-caption">{safe_label}</div>
+      </div>
+    </div>
+    """
+
 def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     n = max(len(opts), 1)
     cw, ch, gap = 300, 232, 36
@@ -735,10 +801,10 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     out = [f'<svg viewBox="0 0 {width} {height}" width="100%" height="{height}" xmlns="http://www.w3.org/2000/svg">']
     out.append("""<defs>
       <linearGradient id="bgg" x1="0" y1="0" x2="0.3" y2="1">
-        <stop offset="0%" stop-color="#0F1A2E"/><stop offset="100%" stop-color="#162644"/>
+        <stop offset="0%" stop-color="#F7FAFF"/><stop offset="100%" stop-color="#EAF0F7"/>
       </linearGradient>
       <linearGradient id="cardg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#1B2A45"/><stop offset="100%" stop-color="#162038"/>
+        <stop offset="0%" stop-color="#FFFFFF"/><stop offset="100%" stop-color="#F3F7FC"/>
       </linearGradient>
       <filter id="glow2"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <style>
@@ -809,10 +875,8 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 if not get_api_key():
-    st.warning(
-        "No NVIDIA API key configured. Add `NVIDIA_API_KEY` to this app's "
-        "Streamlit secrets (Settings → Secrets) to enable AI reasoning. "
-        "Without it, results fall back to keyword-based estimates."
+    st.info(
+        "Add `NVIDIA_API_KEY` to Streamlit secrets to enable the full analysis."
     )
 
 st.markdown('<div class="section-label"><span class="dot"></span>WHERE YOU\'RE STARTING FROM</div>', unsafe_allow_html=True)
@@ -884,10 +948,15 @@ if st.session_state.show_results and st.session_state.engine_result:
     prof   = profile()
     w      = weights(prof)
 
+    best = max(ranked, key=lambda o: score(o, w))
+    best_score = score(best, w)
+    angle = 20 + (best_score / 10.0) * 320
+    st.markdown(render_compass(angle, best["name"]), unsafe_allow_html=True)
+
     if result.get("used_ai"):
-        st.success("Reasoning is grounded in real knowledge of these specific places and paths.")
+        st.success("Analysis is grounded in the paths you entered.")
     else:
-        st.warning("Running on keyword estimates only — the AI connection wasn't available. Add an NVIDIA API key for sharper analysis.")
+        st.warning("Using fallback estimates.")
 
     st.markdown('<div class="section-label"><span class="dot"></span>THE LAY OF THE LAND</div>', unsafe_allow_html=True)
     st.markdown('<p class="section-hint">Positions here describe the shape of the trade-off for your profile — not a ranking of which to pick.</p>', unsafe_allow_html=True)
