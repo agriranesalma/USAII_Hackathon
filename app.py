@@ -27,41 +27,41 @@ SCENARIOS = [
 
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --night:      #FBF8F2;
-  --night-2:    #F4EDE4;
-  --dusk:       #F1E7DA;
-  --dusk-2:     #E9DDD1;
-  --line:       rgba(57,42,56,0.10);
-  --line-hi:    rgba(57,42,56,0.18);
-  --bone:       #2B2430;
-  --fog:        #5D5360;
-  --fog-dim:    #85778A;
-  --flare:      #D68595;
-  --flare-dim:  rgba(214,133,149,0.16);
-  --sage:       #5C3147;
-  --sage-dim:   rgba(92,49,71,0.10);
-  --coral:      #8A4C6A;
-  --coral-dim:  rgba(138,76,106,0.12);
-  --gold:       #8B6A7A;
+  --night:      #FFFDF8;
+  --night-2:    #F9F4EB;
+  --dusk:       #2A1F3B;
+  --dusk-2:     #4C395F;
+  --line:       rgba(60,42,78,0.12);
+  --line-hi:    rgba(60,42,78,0.22);
+  --bone:       #201735;
+  --fog:        #534964;
+  --fog-dim:    #7A718B;
+  --flare:      #C76B8D;
+  --flare-dim:  rgba(199,107,141,0.12);
+  --sage:       #7D5B86;
+  --sage-dim:   rgba(125,91,134,0.12);
+  --coral:      #D9837E;
+  --coral-dim:  rgba(217,131,126,0.14);
+  --gold:       #B98457;
 }
 
 * { box-sizing: border-box; }
 
 .stApp {
-  background: var(--night);
+  background: linear-gradient(180deg, #FFFDFB 0%, #FBF6EE 100%);
   background-image:
-    radial-gradient(circle at 18% 8%, rgba(255,140,66,0.05) 0%, transparent 38%),
-    radial-gradient(circle at 85% 92%, rgba(111,168,136,0.04) 0%, transparent 42%);
+    radial-gradient(circle at 18% 8%, rgba(199,107,141,0.08) 0%, transparent 38%),
+    radial-gradient(circle at 85% 92%, rgba(189,138,87,0.08) 0%, transparent 42%);
   color: var(--bone);
   font-family: 'Public Sans', -apple-system, sans-serif;
   font-size: 15.5px;
 }
 .block-container { padding-top: 1.4rem; padding-bottom: 5rem; max-width: 920px; }
 footer, #MainMenu { visibility: hidden; height: 0; }
-h1, h2, h3, h4 { font-family: 'Spectral', serif !important; color: var(--bone); letter-spacing: -0.01em; }
+h1, h2, h3, h4 { font-family: 'Cormorant Garamond', serif !important; color: var(--bone); letter-spacing: -0.01em; font-weight: 700 !important; }
 a { color: var(--flare); }
 ::selection { background: var(--flare-dim); }
 
@@ -73,7 +73,7 @@ div[data-testid="stSlider"] label,
   letter-spacing: 0.07em; text-transform: uppercase; font-weight: 500 !important;
 }
 .stTextInput input, .stTextArea textarea {
-  background: rgba(255,255,255,0.86) !important;
+  background: rgba(255,255,255,0.035) !important;
   border: 1px solid var(--line) !important;
   border-radius: 10px !important;
   color: var(--bone) !important;
@@ -85,7 +85,7 @@ div[data-testid="stSlider"] label,
   box-shadow: 0 0 0 3px var(--flare-dim) !important;
 }
 div[data-testid="stCheckbox"] label { color: var(--fog) !important; font-size: 0.87rem !important; }
-div[data-baseweb="checkbox"] span:first-child { background-color: rgba(57,42,56,0.05) !important; border-color: var(--line-hi) !important; }
+div[data-baseweb="checkbox"] span:first-child { background-color: rgba(255,255,255,0.04) !important; border-color: var(--line-hi) !important; }
 div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flare) !important; border-color: var(--flare) !important; }
 
 .stSlider [data-baseweb="slider"] div[role="slider"] {
@@ -110,7 +110,7 @@ div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flar
 }
 .stButton button:not([kind="primary"]):hover { border-color: var(--flare) !important; color: var(--bone) !important; }
 div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; margin: 2.2rem 0; }
-[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.86) !important; border: 1px solid var(--line) !important; }
+[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.035) !important; border: 1px solid var(--line) !important; }
 
 /* hero */
 .hero { position: relative; padding: 1.6rem 0 2.4rem; }
@@ -118,8 +118,9 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .hero-mark { width: 30px; height: 30px; flex-shrink: 0; }
 .hero-word { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fog); }
 .hero-title {
-  font-size: clamp(2.1rem, 5vw, 3.1rem); font-weight: 500; line-height: 1.08;
-  color: var(--bone); margin: 0 0 1.1rem; max-width: 600px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 5.4vw, 3.6rem); font-weight: 700; line-height: 1.02;
+  color: var(--bone); margin: 0 0 1.1rem; max-width: 620px;
 }
 .hero-title .accent { color: var(--flare); font-style: italic; }
 .hero-sub { color: var(--fog); font-size: 1.05rem; line-height: 1.62; max-width: 540px; margin: 0; }
@@ -137,24 +138,24 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 /* option input card */
 .opt-card {
   padding: 1.1rem 1.25rem 0.5rem; margin-bottom: 0.9rem; border-radius: 14px;
-  background: rgba(255,255,255,0.76); border: 1px solid var(--line);
-  border-left: 2px solid var(--flare-dim);
+  background: rgba(199,107,141,0.06); border: 1px solid rgba(60,42,78,0.10);
+  border-left: 4px solid rgba(199,107,141,0.45);
 }
 
 /* metric */
 .mc { padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
 .mc-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.45rem; }
-.mc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fog); }
-.mc-value { font-family: 'Spectral', serif; font-size: 1.25rem; font-weight: 600; color: var(--bone); }
-.mc-bar { height: 4px; border-radius: 999px; background: rgba(57,42,56,0.08); overflow: hidden; }
+.mc-label { font-family: 'Cormorant Garamond', serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.02em; text-transform: none; color: var(--dusk); }
+.mc-value { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 700; color: var(--bone); }
+.mc-bar { height: 4px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
 .mc-fill { display: block; height: 100%; border-radius: 999px; }
 
 /* listbox */
-.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.76); border: 1px solid var(--line); }
-.lb-header { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.7rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
+.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.75); border: 1px solid rgba(60,42,78,0.10); }
+.lb-header { display: flex; align-items: center; gap: 0.5rem; font-family: 'Cormorant Garamond', serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.03em; text-transform: none; margin-bottom: 0.7rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); color: var(--dusk); }
 .lb ul { margin: 0; padding: 0; list-style: none; }
-.lb li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.32rem 0; color: var(--fog); font-size: 0.87rem; line-height: 1.52; }
-.lb li::before { content: '·'; color: var(--flare); flex-shrink: 0; font-weight: 700; }
+.lb li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.32rem 0; color: #4A415A; font-size: 0.92rem; line-height: 1.6; font-weight: 500; }
+.lb li::before { content: '·'; color: var(--flare); flex-shrink: 0; font-weight: 800; }
 
 /* timeline */
 .tl-wrap { position: relative; padding: 0.3rem 0; }
@@ -167,31 +168,31 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .tl-text { color: var(--fog); font-size: 0.88rem; line-height: 1.55; }
 
 /* option result */
-.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.76); border: 1px solid var(--line); }
-.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.76); border-bottom: 1px solid var(--line); }
-.opt-result-name { font-family: 'Spectral', serif; font-size: 1.5rem; font-weight: 600; color: var(--bone); margin: 0 0 0.4rem; }
-.opt-result-summary { color: var(--fog); font-size: 0.94rem; line-height: 1.6; max-width: 680px; }
+.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.75); border: 1px solid rgba(60,42,78,0.10); }
+.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--line); }
+.opt-result-name { font-family: 'Cormorant Garamond', serif; font-size: 1.72rem; font-weight: 700; color: var(--bone); margin: 0 0 0.4rem; }
+.opt-result-summary { color: #4A415A; font-size: 1rem; line-height: 1.7; max-width: 680px; font-weight: 500; }
 .opt-result-body { padding: 1.3rem 1.5rem; }
 
 /* comparison */
-.cmp-panel { padding: 1.25rem 1.4rem; border-radius: 14px; background: var(--flare-dim); border: 1px solid rgba(255,140,66,0.3); margin-bottom: 1rem; }
-.cmp-panel-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--flare); margin-bottom: 0.55rem; }
-.cmp-panel-text { color: var(--bone); font-size: 0.96rem; line-height: 1.65; opacity: 0.92; }
+.cmp-panel { padding: 1.25rem 1.4rem; border-radius: 14px; background: rgba(199,107,141,0.08); border: 1px solid rgba(199,107,141,0.24); margin-bottom: 1rem; }
+.cmp-panel-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--dusk); margin-bottom: 0.55rem; }
+.cmp-panel-text { color: #322742; font-size: 1rem; line-height: 1.75; font-weight: 500; }
 
 /* scenario */
-.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: var(--gold)15; background: rgba(224,176,92,0.09); border: 1px solid rgba(224,176,92,0.3); }
-.sc-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); }
-.sc-text { color: var(--fog); font-size: 0.86rem; margin-top: 0.3rem; line-height: 1.5; }
+.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: rgba(199,107,141,0.06); border: 1px solid rgba(199,107,141,0.18); }
+.sc-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--dusk); }
+.sc-text { color: #4A415A; font-size: 0.92rem; margin-top: 0.3rem; line-height: 1.6; font-weight: 500; }
 
 /* stress */
-.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: var(--sage-dim); border: 1px solid rgba(111,168,136,0.32); display: flex; gap: 0.8rem; align-items: flex-start; }
-.stress-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.3rem; }
-.stress-delta { font-size: 0.9rem; color: var(--fog); line-height: 1.5; }
+.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: rgba(125,91,134,0.08); border: 1px solid rgba(125,91,134,0.22); display: flex; gap: 0.8rem; align-items: flex-start; }
+.stress-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--dusk); margin-bottom: 0.3rem; }
+.stress-delta { font-size: 0.9rem; color: #4A415A; line-height: 1.7; font-weight: 500; }
 
 /* empty */
-.empty-state { padding: 3.4rem 2rem; text-align: center; border: 1px dashed var(--line-hi); border-radius: 18px; }
+.empty-state { padding: 3.4rem 2rem; text-align: center; border: 1px dashed rgba(60,42,78,0.18); border-radius: 18px; }
 .empty-state-title { font-family: 'Spectral', serif; font-size: 1.4rem; margin-bottom: 0.55rem; color: var(--bone); }
-.empty-state-text { color: var(--fog); max-width: 440px; margin: 0 auto; font-size: 0.93rem; line-height: 1.6; }
+.empty-state-text { color: #4A415A; max-width: 440px; margin: 0 auto; font-size: 0.98rem; line-height: 1.7; font-weight: 500; }
 
 /* hero compass */
 .compass-stage {
@@ -206,11 +207,11 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 28px;
   padding: 1rem;
   background:
-    radial-gradient(circle at 30% 20%, rgba(255,140,66,0.18), transparent 28%),
-    radial-gradient(circle at 70% 72%, rgba(111,168,136,0.14), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.02));
-  border: 1px solid rgba(57,42,56,0.12);
-  box-shadow: 0 24px 60px rgba(57,42,56,0.12), inset 0 1px 0 rgba(255,255,255,0.58);
+    radial-gradient(circle at 30% 20%, rgba(199,107,141,0.16), transparent 28%),
+    radial-gradient(circle at 70% 72%, rgba(120,92,134,0.14), transparent 30%),
+    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02));
+  border: 1px solid rgba(168,180,199,0.18);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
 }
 .compass-card::before,
@@ -224,13 +225,13 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-card::before {
   width: 240px; height: 240px;
   right: -40px; top: -60px;
-  background: radial-gradient(circle, rgba(255,140,66,0.18), transparent 64%);
+  background: radial-gradient(circle, rgba(199,107,141,0.16), transparent 64%);
   filter: blur(2px);
 }
 .compass-card::after {
   width: 180px; height: 180px;
   left: -50px; bottom: -50px;
-  background: radial-gradient(circle, rgba(92,49,71,0.16), transparent 64%);
+  background: radial-gradient(circle, rgba(120,92,134,0.14), transparent 64%);
 }
 .compass-copy {
   padding: 0.3rem 0.15rem 0.3rem 0.2rem;
@@ -272,7 +273,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   display: grid;
   place-items: center;
   padding: 16px 10px 10px;
-  color: #2B2430;
+  color: #251A39;
   font-family: 'Public Sans', sans-serif;
 }
 .compass-shell {
@@ -291,7 +292,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 50%;
   background:
     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.06), transparent 52%),
-    radial-gradient(circle at 50% 50%, rgba(255,140,66,0.18), transparent 64%);
+    radial-gradient(circle at 50% 50%, rgba(199,107,141,0.16), transparent 64%);
   filter: blur(2px);
 }
 .compass-ring-outer,
@@ -304,7 +305,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-ring-outer {
   inset: 0;
   background:
-    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
+    radial-gradient(circle at 50% 50%, rgba(60,42,78,0.04), transparent 58%),
     conic-gradient(from -90deg,
       rgba(224,176,92,0.88) 0deg 2deg, transparent 2deg 14deg,
       rgba(168,180,199,0.24) 14deg 15deg, transparent 15deg 29deg,
@@ -317,7 +318,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
       rgba(168,180,199,0.20) 270deg 271deg, transparent 271deg 315deg,
       rgba(224,176,92,0.88) 315deg 317deg, transparent 317deg 360deg);
   box-shadow:
-    inset 0 0 0 1px rgba(57,42,56,0.06),
+    inset 0 0 0 1px rgba(60,42,78,0.06),
     inset 0 0 45px rgba(0,0,0,0.55);
 }
 .compass-ring-mid {
@@ -325,7 +326,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   background:
     radial-gradient(circle at 50% 50%, rgba(18,26,46,0.92), rgba(18,26,46,0.97) 62%, rgba(20,34,58,0.99)),
     radial-gradient(circle at 50% 50%, transparent 63%, rgba(255,255,255,0.06) 64%, transparent 66%);
-  box-shadow: inset 0 0 0 1px rgba(57,42,56,0.06);
+  box-shadow: inset 0 0 0 1px rgba(60,42,78,0.06);
 }
 .compass-ring-inner {
   inset: 17%;
@@ -365,12 +366,12 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   font-family: 'Spectral', serif;
   font-weight: 700;
   letter-spacing: 0.07em;
-  color: rgba(245,241,232,0.92);
+  color: #251A39;
   text-shadow: 0 2px 12px rgba(0,0,0,0.45);
 }
 .compass-cardinal span {
   position: absolute;
-  font-size: clamp(0.82rem, 2.1vw, 1rem);
+  font-size: clamp(0.95rem, 2.3vw, 1.15rem); font-weight: 700;
 }
 .compass-cardinal .n { top: 5.5%; }
 .compass-cardinal .e { right: 5.5%; }
@@ -405,12 +406,12 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-needle::before {
   top: 10%;
   height: 42%;
-  background: linear-gradient(180deg, #EAA0AD 0%, #D68595 42%, rgba(214,133,149,0.15) 100%);
+  background: linear-gradient(180deg, #FFB07A 0%, #C76B8D 42%, rgba(255,140,66,0.2) 100%);
 }
 .compass-needle::after {
   bottom: 10%;
   height: 42%;
-  background: linear-gradient(180deg, rgba(92,49,71,0.08) 0%, #5C3147 58%, #9C7484 100%);
+  background: linear-gradient(180deg, rgba(111,168,136,0.1) 0%, #6FA888 58%, #DDE9DF 100%);
 }
 .compass-cap {
   position: absolute;
@@ -419,9 +420,9 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   border-radius: 50%;
   background:
     radial-gradient(circle at 30% 30%, rgba(255,255,255,0.24), transparent 38%),
-    linear-gradient(180deg, #1A2942, #0F1A2E);
+    linear-gradient(180deg, #F4E9D8, #FFFDF8);
   border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 0 14px rgba(57,42,56,0.05), 0 10px 26px rgba(0,0,0,0.35);
+  box-shadow: inset 0 0 14px rgba(255,255,255,0.04), 0 10px 26px rgba(0,0,0,0.35);
   z-index: 3;
 }
 .compass-ringshine {
@@ -450,7 +451,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   color: rgba(245,241,232,0.72);
 }
 .compass-legend strong {
-  color: #2B2430;
+  color: #251A39;
 }
 .compass-controls {
   margin-top: 1rem;
@@ -464,8 +465,8 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   height: 3rem;
   border: 1px solid rgba(168,180,199,0.22);
   border-radius: 999px;
-  background: rgba(255,255,255,0.86);
-  color: #2B2430;
+  background: rgba(255,255,255,0.035);
+  color: #251A39;
   font-size: 1.05rem;
   cursor: pointer;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
@@ -473,7 +474,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 }
 .compass-btn:hover {
   transform: translateY(-1px) scale(1.03);
-  background: rgba(255,255,255,0.96);
+  background: rgba(255,255,255,0.055);
   border-color: rgba(255,140,66,0.5);
   box-shadow: 0 14px 28px rgba(0,0,0,0.28);
 }
@@ -482,7 +483,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   text-align: center;
   padding: 0.75rem 0.95rem;
   border-radius: 999px;
-  background: rgba(255,255,255,0.86);
+  background: rgba(255,255,255,0.035);
   border: 1px solid rgba(168,180,199,0.16);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
@@ -1045,14 +1046,14 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     ry, py, cy2 = 50, 132, 226
 
     def e(s): return html_escape(str(s))
-    def t(x, y, txt, sz=13, fw=500, col="#F5F1E8", anchor="middle", ff="'Public Sans',sans-serif"):
+    def t(x, y, txt, sz=13, fw=500, col="#251A39", anchor="middle", ff="'Public Sans',sans-serif"):
         return (f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" fill="{col}" '
                 f'font-size="{sz}" font-weight="{fw}" font-family="{ff}">{e(txt)}</text>')
 
     out = [f'<svg viewBox="0 0 {width} {height}" width="100%" height="{height}" xmlns="http://www.w3.org/2000/svg">']
     out.append("""<defs>
       <linearGradient id="bgg" x1="0" y1="0" x2="0.3" y2="1">
-        <stop offset="0%" stop-color="#0F1A2E"/><stop offset="100%" stop-color="#162644"/>
+        <stop offset="0%" stop-color="#FFFDF8"/><stop offset="100%" stop-color="#162644"/>
       </linearGradient>
       <linearGradient id="cardg" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#1B2A45"/><stop offset="100%" stop-color="#162038"/>
@@ -1067,9 +1068,9 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     </defs>""")
     out.append(f'<rect width="{width}" height="{height}" fill="url(#bgg)"/>')
     out.append(f'<circle cx="{cx}" cy="{ry+14}" r="22" fill="rgba(255,140,66,0.16)" filter="url(#glow2)"/>')
-    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="6" fill="#FF8C42"/>')
-    out.append(t(cx, ry-8, "YOU ARE HERE", 9.5, 600, "#FF8C42", ff="'JetBrains Mono',monospace"))
-    out.append(t(cx, ry+38, prof.get("name") or "Your decision", 21, 600, "#F5F1E8", ff="'Spectral',serif"))
+    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="6" fill="#C76B8D"/>')
+    out.append(t(cx, ry-8, "YOU ARE HERE", 9.5, 600, "#C76B8D", ff="'JetBrains Mono',monospace"))
+    out.append(t(cx, ry+38, prof.get("name") or "Your decision", 21, 600, "#251A39", ff="'Spectral',serif"))
     out.append(f'<line x1="{cx}" y1="{ry+44}" x2="{cx}" y2="{py-8}" stroke="rgba(168,180,199,0.25)" stroke-width="1.3" stroke-dasharray="3,4"/>')
 
     sx = cx - ((n-1)*(cw+gap))/2
@@ -1086,17 +1087,17 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
         g = [f'<g class="cd2" style="animation-delay:{d+0.32:.2f}s">']
         g.append(f'<rect x="{x:.1f}" y="{cy2}" width="{cw}" height="{ch}" rx="16" '
                  f'fill="url(#cardg)" stroke="rgba(168,180,199,0.18)" stroke-width="1"/>')
-        g.append(t(mid, cy2+28, opt["name"], 15.5, 600, "#F5F1E8", ff="'Spectral',serif"))
+        g.append(t(mid, cy2+28, opt["name"], 15.5, 600, "#251A39", ff="'Spectral',serif"))
         summary = str(opt.get("summary",""))[:54]
-        g.append(t(mid, cy2+47, summary, 9.5, 400, "#A8B4C7"))
+        g.append(t(mid, cy2+47, summary, 9.5, 400, "#6A5D78"))
         base_y = cy2+70
         for j,(mk,ml,hi_bad) in enumerate(zip(mkeys,mlabels,mhigh_bad)):
             dy = base_y + j*36
             val = coerce(opt.get(mk, 5))
             bar_col = "#6FA888" if (hi_bad and val < 4) or (not hi_bad and val >= 7) else ("#E0B05C" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#E8694F")
             g.append(t(x+15, dy, ml, 8.5, 500, "#7A88A0", anchor="start", ff="'JetBrains Mono',monospace"))
-            g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 600, "#F5F1E8", anchor="end", ff="'JetBrains Mono',monospace"))
-            g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(57,42,56,0.08)"/>')
+            g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 600, "#251A39", anchor="end", ff="'JetBrains Mono',monospace"))
+            g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(255,255,255,0.07)"/>')
             g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{val/10*(cw-30):.1f}" height="5" rx="999" fill="{bar_col}"/>')
         g.append("</g>")
         out.append("".join(g))
@@ -1119,7 +1120,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         justify-content: center;
         gap: 1rem;
         padding: 1.25rem 0 0.5rem;
-        color: #2B2430;
+        color: #251A39;
         font-family: 'Public Sans', sans-serif;
         user-select: none;
       }
@@ -1132,13 +1133,13 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: grid;
         place-items: center;
         background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 30%, rgba(15,26,46,0.0) 72%),
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12), rgba(60,42,78,0.04) 30%, rgba(15,26,46,0.0) 72%),
           radial-gradient(circle at 50% 50%, rgba(255,140,66,0.14), rgba(255,140,66,0.02) 42%, rgba(15,26,46,0.0) 70%),
-          linear-gradient(145deg, rgba(57,42,56,0.06), rgba(255,255,255,0.015));
-        border: 1px solid rgba(57,42,56,0.12);
+          linear-gradient(145deg, rgba(60,42,78,0.06), rgba(255,255,255,0.015));
+        border: 1px solid rgba(168,180,199,0.18);
         box-shadow:
           0 24px 70px rgba(0,0,0,0.35),
-          inset 0 0 0 1px rgba(57,42,56,0.05);
+          inset 0 0 0 1px rgba(255,255,255,0.04);
         overflow: hidden;
       }
 
@@ -1146,7 +1147,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         position: absolute;
         inset: 10%;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(214,133,149,0.20), transparent 62%);
+        background: radial-gradient(circle, rgba(255,140,66,0.14), transparent 62%);
         filter: blur(8px);
         pointer-events: none;
       }
@@ -1177,13 +1178,13 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
       .compass-ring-inner {
         inset: 16%;
-        border: 1px solid rgba(57,42,56,0.12);
+        border: 1px solid rgba(168,180,199,0.18);
       }
 
       .compass-face {
         inset: 18%;
         background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
+          radial-gradient(circle at 50% 50%, rgba(60,42,78,0.04), transparent 58%),
           radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
         box-shadow: inset 0 0 30px rgba(0,0,0,0.18);
       }
@@ -1195,7 +1196,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
       .compass-ringshine {
         inset: 13%;
-        border: 1px solid rgba(57,42,56,0.06);
+        border: 1px solid rgba(60,42,78,0.06);
         box-shadow: inset 0 0 50px rgba(255,255,255,0.02);
       }
 
@@ -1205,10 +1206,10 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
           conic-gradient(
             from 0deg,
             rgba(255,255,255,0.00) 0deg,
-            rgba(57,42,56,0.06) 6deg,
+            rgba(60,42,78,0.06) 6deg,
             rgba(255,255,255,0.00) 12deg,
             rgba(255,255,255,0.00) 45deg,
-            rgba(57,42,56,0.05) 51deg,
+            rgba(255,255,255,0.04) 51deg,
             rgba(255,255,255,0.00) 57deg
           );
         mix-blend-mode: screen;
@@ -1236,7 +1237,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         font-family: 'JetBrains Mono', monospace;
         font-weight: 700;
         letter-spacing: 0.08em;
-        color: #2B2430;
+        color: #251A39;
       }
 
       .compass-cardinal span {
@@ -1244,7 +1245,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         text-shadow: 0 0 18px rgba(255,255,255,0.12);
       }
 
-      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #FF8C42; }
+      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #C76B8D; }
       .compass-cardinal .e { right: 8%; top: 50%; transform: translateY(-50%); }
       .compass-cardinal .s { bottom: 7%; left: 50%; transform: translateX(-50%); }
       .compass-cardinal .w { left: 8%; top: 50%; transform: translateY(-50%); }
@@ -1273,7 +1274,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 1.8rem;
         height: 46%;
         transform: translate(-50%, -100%);
-        background: linear-gradient(180deg, #FF8C42 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
+        background: linear-gradient(180deg, #C76B8D 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
         clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
         filter: drop-shadow(0 0 18px rgba(255,140,66,0.22));
       }
@@ -1292,9 +1293,9 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: radial-gradient(circle at 35% 35%, #FFFFFF, #A8B4C7 36%, #0F1A2E 72%);
+        background: radial-gradient(circle at 35% 35%, #FFFFFF, #6A5D78 36%, #FFFDF8 72%);
         box-shadow:
-          0 0 0 6px rgba(57,42,56,0.05),
+          0 0 0 6px rgba(255,255,255,0.04),
           0 0 30px rgba(255,140,66,0.22);
         z-index: 2;
       }
@@ -1317,13 +1318,13 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
       .compass-legend span {
         font-size: 0.74rem;
-        color: #5D5360;
+        color: #6A5D78;
         letter-spacing: 0.02em;
       }
 
       .compass-legend strong {
         font-size: 0.92rem;
-        color: #2B2430;
+        color: #251A39;
         font-weight: 700;
       }
 
@@ -1337,20 +1338,20 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 3rem;
         height: 3rem;
         border-radius: 999px;
-        border: 1px solid rgba(57,42,56,0.12);
-        background: linear-gradient(180deg, rgba(255,255,255,0.90), rgba(255,255,255,0.65));
-        color: #2B2430;
+        border: 1px solid rgba(168,180,199,0.18);
+        background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(60,42,78,0.04));
+        color: #251A39;
         font-size: 1.15rem;
         font-weight: 800;
         cursor: pointer;
-        box-shadow: 0 10px 28px rgba(57,42,56,0.12);
+        box-shadow: 0 10px 28px rgba(0,0,0,0.22);
         transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
       }
 
       .compass-btn:hover {
         transform: translateY(-1px) scale(1.03);
-        border-color: rgba(214,133,149,0.6);
-        background: linear-gradient(180deg, rgba(255,140,66,0.16), rgba(57,42,56,0.06));
+        border-color: rgba(255,140,66,0.45);
+        background: linear-gradient(180deg, rgba(255,140,66,0.16), rgba(60,42,78,0.06));
       }
 
       .compass-readout {
@@ -1359,7 +1360,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
-        color: #5D5360;
+        color: #6A5D78;
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -1367,7 +1368,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       }
 
       .compass-readout .deg {
-        color: #2B2430;
+        color: #251A39;
         font-size: 1.1rem;
         letter-spacing: 0.02em;
         text-transform: none;
@@ -1408,6 +1409,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         </div>
 
         <div class="compass-legend">
+          <span>Rotate with the arrows</span>
           <strong id="__WIDGET_ID__-readout">N · 000°</strong>
         </div>
       </div>
@@ -1415,6 +1417,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       <div class="compass-controls">
         <button class="compass-btn" id="__WIDGET_ID__-left" aria-label="Rotate compass left">◀</button>
         <div class="compass-readout">
+          heading
           <span class="deg" id="__WIDGET_ID__-deg">000°</span>
         </div>
         <button class="compass-btn" id="__WIDGET_ID__-right" aria-label="Rotate compass right">▶</button>
@@ -1472,35 +1475,22 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         readout.textContent = c.label + ' · ' + delta;
       }
 
-      function nudge(dir) {
-        angle += dir;
-        render();
-      }
-
       left.addEventListener('click', function() {
-        nudge(-15);
+        angle -= 15;
+        render();
       });
 
       right.addEventListener('click', function() {
-        nudge(15);
+        angle += 15;
+        render();
       });
 
       root.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowLeft') { nudge(-15); }
-        if (e.key === 'ArrowRight') { nudge(15); }
+        if (e.key === 'ArrowLeft') { angle -= 15; render(); }
+        if (e.key === 'ArrowRight') { angle += 15; render(); }
       });
 
-      let last = performance.now();
-      function animate(now) {
-        const dt = Math.min(40, now - last);
-        last = now;
-        angle += 0.03 * (dt / 16.67);
-        render();
-        requestAnimationFrame(animate);
-      }
-
       render();
-      requestAnimationFrame(animate);
     })();
     </script>
     """
@@ -1701,14 +1691,14 @@ if st.session_state.show_results and st.session_state.engine_result:
             ".tl-wrap{padding:0.4rem 0}"
             ".tl-row{display:grid;grid-template-columns:2.3rem 1fr;gap:0 0.9rem;margin-bottom:0}"
             ".tl-node-col{display:flex;flex-direction:column;align-items:center}"
-            ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#FF8C42;"
+            ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#C76B8D;"
             "display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;"
-            "font-size:0.74rem;font-weight:600;color:#0F1A2E;flex-shrink:0}"
+            "font-size:0.74rem;font-weight:600;color:#FFFDF8;flex-shrink:0}"
             ".tl-connector{width:1.5px;flex:1;min-height:0.7rem;background:rgba(168,180,199,0.3);margin:3px 0}"
-            ".tl-content{padding:0.55rem 0 0.95rem;color:#E5E0D4}"
+            ".tl-content{padding:0.55rem 0 0.95rem;color:#2A1F3B}"
             ".tl-stage{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;"
-            "text-transform:uppercase;color:#FF8C42;margin-bottom:0.22rem}"
-            ".tl-text{font-size:0.88rem;line-height:1.55;color:#A8B4C7}</style>"
+            "text-transform:uppercase;color:#C76B8D;margin-bottom:0.22rem}"
+            ".tl-text{font-size:0.88rem;line-height:1.55;color:#6A5D78}</style>"
             + render_timeline(opt),
             height=max(260, len(opt.get("timeline",[])) * 84), scrolling=False)
 
