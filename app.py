@@ -30,22 +30,22 @@ CSS = """
 @import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --night:      #D6AC85;
-  --night-2:    #D6AC85;
-  --dusk:       #E8C7B4;
-  --dusk-2:     #D8A789;
-  --line:       rgba(74,39,64,0.14);
-  --line-hi:    rgba(74,39,64,0.26);
-  --bone:       #FFF7EF;
-  --fog:        #5D4554;
-  --fog-dim:    #7B6271;
-  --flare:      #E7A6A0;
-  --flare-dim:  rgba(231,166,160,0.20);
-  --sage:       #5A2E46;
-  --sage-dim:   rgba(90,46,70,0.12);
-  --coral:      #8B4D6B;
-  --coral-dim:  rgba(139,77,107,0.16);
-  --gold:       #5A2E46;
+  --night:      #FBF8F2;
+  --night-2:    #F4EDE4;
+  --dusk:       #F1E7DA;
+  --dusk-2:     #E9DDD1;
+  --line:       rgba(57,42,56,0.10);
+  --line-hi:    rgba(57,42,56,0.18);
+  --bone:       #2B2430;
+  --fog:        #5D5360;
+  --fog-dim:    #85778A;
+  --flare:      #D68595;
+  --flare-dim:  rgba(214,133,149,0.16);
+  --sage:       #5C3147;
+  --sage-dim:   rgba(92,49,71,0.10);
+  --coral:      #8A4C6A;
+  --coral-dim:  rgba(138,76,106,0.12);
+  --gold:       #8B6A7A;
 }
 
 * { box-sizing: border-box; }
@@ -53,9 +53,8 @@ CSS = """
 .stApp {
   background: var(--night);
   background-image:
-    radial-gradient(circle at 18% 8%, rgba(232,155,172,0.13) 0%, transparent 34%),
-    radial-gradient(circle at 82% 86%, rgba(90,46,70,0.12) 0%, transparent 40%),
-    radial-gradient(circle at 48% 58%, rgba(255,247,239,0.10) 0%, transparent 28%);
+    radial-gradient(circle at 18% 8%, rgba(255,140,66,0.05) 0%, transparent 38%),
+    radial-gradient(circle at 85% 92%, rgba(111,168,136,0.04) 0%, transparent 42%);
   color: var(--bone);
   font-family: 'Public Sans', -apple-system, sans-serif;
   font-size: 15.5px;
@@ -74,7 +73,7 @@ div[data-testid="stSlider"] label,
   letter-spacing: 0.07em; text-transform: uppercase; font-weight: 500 !important;
 }
 .stTextInput input, .stTextArea textarea {
-  background: rgba(255,255,255,0.035) !important;
+  background: rgba(255,255,255,0.86) !important;
   border: 1px solid var(--line) !important;
   border-radius: 10px !important;
   color: var(--bone) !important;
@@ -86,7 +85,7 @@ div[data-testid="stSlider"] label,
   box-shadow: 0 0 0 3px var(--flare-dim) !important;
 }
 div[data-testid="stCheckbox"] label { color: var(--fog) !important; font-size: 0.87rem !important; }
-div[data-baseweb="checkbox"] span:first-child { background-color: rgba(255,255,255,0.04) !important; border-color: var(--line-hi) !important; }
+div[data-baseweb="checkbox"] span:first-child { background-color: rgba(57,42,56,0.05) !important; border-color: var(--line-hi) !important; }
 div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flare) !important; border-color: var(--flare) !important; }
 
 .stSlider [data-baseweb="slider"] div[role="slider"] {
@@ -111,7 +110,7 @@ div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flar
 }
 .stButton button:not([kind="primary"]):hover { border-color: var(--flare) !important; color: var(--bone) !important; }
 div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; margin: 2.2rem 0; }
-[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.035) !important; border: 1px solid var(--line) !important; }
+[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.86) !important; border: 1px solid var(--line) !important; }
 
 /* hero */
 .hero { position: relative; padding: 1.6rem 0 2.4rem; }
@@ -138,7 +137,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 /* option input card */
 .opt-card {
   padding: 1.1rem 1.25rem 0.5rem; margin-bottom: 0.9rem; border-radius: 14px;
-  background: rgba(255,255,255,0.025); border: 1px solid var(--line);
+  background: rgba(255,255,255,0.76); border: 1px solid var(--line);
   border-left: 2px solid var(--flare-dim);
 }
 
@@ -147,11 +146,11 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .mc-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.45rem; }
 .mc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fog); }
 .mc-value { font-family: 'Spectral', serif; font-size: 1.25rem; font-weight: 600; color: var(--bone); }
-.mc-bar { height: 4px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.mc-bar { height: 4px; border-radius: 999px; background: rgba(57,42,56,0.08); overflow: hidden; }
 .mc-fill { display: block; height: 100%; border-radius: 999px; }
 
 /* listbox */
-.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.025); border: 1px solid var(--line); }
+.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.76); border: 1px solid var(--line); }
 .lb-header { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.7rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
 .lb ul { margin: 0; padding: 0; list-style: none; }
 .lb li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.32rem 0; color: var(--fog); font-size: 0.87rem; line-height: 1.52; }
@@ -168,8 +167,8 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .tl-text { color: var(--fog); font-size: 0.88rem; line-height: 1.55; }
 
 /* option result */
-.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.025); border: 1px solid var(--line); }
-.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--line); }
+.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.76); border: 1px solid var(--line); }
+.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.76); border-bottom: 1px solid var(--line); }
 .opt-result-name { font-family: 'Spectral', serif; font-size: 1.5rem; font-weight: 600; color: var(--bone); margin: 0 0 0.4rem; }
 .opt-result-summary { color: var(--fog); font-size: 0.94rem; line-height: 1.6; max-width: 680px; }
 .opt-result-body { padding: 1.3rem 1.5rem; }
@@ -209,9 +208,9 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   background:
     radial-gradient(circle at 30% 20%, rgba(255,140,66,0.18), transparent 28%),
     radial-gradient(circle at 70% 72%, rgba(111,168,136,0.14), transparent 30%),
-    linear-gradient(180deg, rgba(255,255,255,0.035), rgba(255,255,255,0.02));
-  border: 1px solid rgba(90,46,70,0.18);
-  box-shadow: 0 24px 60px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+    linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.02));
+  border: 1px solid rgba(57,42,56,0.12);
+  box-shadow: 0 24px 60px rgba(57,42,56,0.12), inset 0 1px 0 rgba(255,255,255,0.58);
   overflow: hidden;
 }
 .compass-card::before,
@@ -231,7 +230,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-card::after {
   width: 180px; height: 180px;
   left: -50px; bottom: -50px;
-  background: radial-gradient(circle, rgba(111,168,136,0.14), transparent 64%);
+  background: radial-gradient(circle, rgba(92,49,71,0.16), transparent 64%);
 }
 .compass-copy {
   padding: 0.3rem 0.15rem 0.3rem 0.2rem;
@@ -273,7 +272,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   display: grid;
   place-items: center;
   padding: 16px 10px 10px;
-  color: #F5F1E8;
+  color: #2B2430;
   font-family: 'Public Sans', sans-serif;
 }
 .compass-shell {
@@ -318,7 +317,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
       rgba(168,180,199,0.20) 270deg 271deg, transparent 271deg 315deg,
       rgba(224,176,92,0.88) 315deg 317deg, transparent 317deg 360deg);
   box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,0.05),
+    inset 0 0 0 1px rgba(57,42,56,0.06),
     inset 0 0 45px rgba(0,0,0,0.55);
 }
 .compass-ring-mid {
@@ -326,7 +325,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   background:
     radial-gradient(circle at 50% 50%, rgba(18,26,46,0.92), rgba(18,26,46,0.97) 62%, rgba(20,34,58,0.99)),
     radial-gradient(circle at 50% 50%, transparent 63%, rgba(255,255,255,0.06) 64%, transparent 66%);
-  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+  box-shadow: inset 0 0 0 1px rgba(57,42,56,0.06);
 }
 .compass-ring-inner {
   inset: 17%;
@@ -406,12 +405,12 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 .compass-needle::before {
   top: 10%;
   height: 42%;
-  background: linear-gradient(180deg, #FFB07A 0%, #FF8C42 42%, rgba(255,140,66,0.2) 100%);
+  background: linear-gradient(180deg, #EAA0AD 0%, #D68595 42%, rgba(214,133,149,0.15) 100%);
 }
 .compass-needle::after {
   bottom: 10%;
   height: 42%;
-  background: linear-gradient(180deg, rgba(111,168,136,0.1) 0%, #6FA888 58%, #DDE9DF 100%);
+  background: linear-gradient(180deg, rgba(92,49,71,0.08) 0%, #5C3147 58%, #9C7484 100%);
 }
 .compass-cap {
   position: absolute;
@@ -422,7 +421,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
     radial-gradient(circle at 30% 30%, rgba(255,255,255,0.24), transparent 38%),
     linear-gradient(180deg, #1A2942, #0F1A2E);
   border: 1px solid rgba(255,255,255,0.1);
-  box-shadow: inset 0 0 14px rgba(255,255,255,0.04), 0 10px 26px rgba(0,0,0,0.35);
+  box-shadow: inset 0 0 14px rgba(57,42,56,0.05), 0 10px 26px rgba(0,0,0,0.35);
   z-index: 3;
 }
 .compass-ringshine {
@@ -451,7 +450,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   color: rgba(245,241,232,0.72);
 }
 .compass-legend strong {
-  color: #F5F1E8;
+  color: #2B2430;
 }
 .compass-controls {
   margin-top: 1rem;
@@ -465,8 +464,8 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   height: 3rem;
   border: 1px solid rgba(168,180,199,0.22);
   border-radius: 999px;
-  background: rgba(255,255,255,0.035);
-  color: #F5F1E8;
+  background: rgba(255,255,255,0.86);
+  color: #2B2430;
   font-size: 1.05rem;
   cursor: pointer;
   transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
@@ -474,7 +473,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
 }
 .compass-btn:hover {
   transform: translateY(-1px) scale(1.03);
-  background: rgba(255,255,255,0.055);
+  background: rgba(255,255,255,0.96);
   border-color: rgba(255,140,66,0.5);
   box-shadow: 0 14px 28px rgba(0,0,0,0.28);
 }
@@ -483,7 +482,7 @@ div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; ma
   text-align: center;
   padding: 0.75rem 0.95rem;
   border-radius: 999px;
-  background: rgba(255,255,255,0.035);
+  background: rgba(255,255,255,0.86);
   border: 1px solid rgba(168,180,199,0.16);
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.75rem;
@@ -1097,13 +1096,12 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
             bar_col = "#6FA888" if (hi_bad and val < 4) or (not hi_bad and val >= 7) else ("#E0B05C" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#E8694F")
             g.append(t(x+15, dy, ml, 8.5, 500, "#7A88A0", anchor="start", ff="'JetBrains Mono',monospace"))
             g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 600, "#F5F1E8", anchor="end", ff="'JetBrains Mono',monospace"))
-            g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(255,255,255,0.07)"/>')
+            g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(57,42,56,0.08)"/>')
             g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{val/10*(cw-30):.1f}" height="5" rx="999" fill="{bar_col}"/>')
         g.append("</g>")
         out.append("".join(g))
     out.append("</svg>")
     return "".join(out)
-
 
 
 
@@ -1121,7 +1119,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         justify-content: center;
         gap: 1rem;
         padding: 1.25rem 0 0.5rem;
-        color: #FFF7EF;
+        color: #2B2430;
         font-family: 'Public Sans', sans-serif;
         user-select: none;
       }
@@ -1134,13 +1132,13 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: grid;
         place-items: center;
         background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.16), rgba(255,255,255,0.04) 30%, rgba(90,46,70,0.0) 72%),
-          radial-gradient(circle at 50% 50%, rgba(231,166,160,0.20), rgba(231,166,160,0.04) 42%, rgba(90,46,70,0.0) 70%),
-          linear-gradient(145deg, rgba(255,247,239,0.08), rgba(255,247,239,0.03));
-        border: 1px solid rgba(90,46,70,0.18);
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 30%, rgba(15,26,46,0.0) 72%),
+          radial-gradient(circle at 50% 50%, rgba(255,140,66,0.14), rgba(255,140,66,0.02) 42%, rgba(15,26,46,0.0) 70%),
+          linear-gradient(145deg, rgba(57,42,56,0.06), rgba(255,255,255,0.015));
+        border: 1px solid rgba(57,42,56,0.12);
         box-shadow:
-          0 24px 70px rgba(0,0,0,0.18),
-          inset 0 0 0 1px rgba(255,255,255,0.16);
+          0 24px 70px rgba(0,0,0,0.35),
+          inset 0 0 0 1px rgba(57,42,56,0.05);
         overflow: hidden;
       }
 
@@ -1148,7 +1146,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         position: absolute;
         inset: 10%;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(231,166,160,0.22), transparent 62%);
+        background: radial-gradient(circle, rgba(214,133,149,0.20), transparent 62%);
         filter: blur(8px);
         pointer-events: none;
       }
@@ -1168,37 +1166,37 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
       .compass-ring-outer {
         inset: 2.5%;
-        border: 1px solid rgba(90,46,70,0.20);
-        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.10);
+        border: 1px solid rgba(168,180,199,0.22);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
       }
 
       .compass-ring-mid {
         inset: 9%;
-        border: 1px solid rgba(90,46,70,0.22);
+        border: 1px solid rgba(255,140,66,0.25);
       }
 
       .compass-ring-inner {
         inset: 16%;
-        border: 1px solid rgba(90,46,70,0.18);
+        border: 1px solid rgba(57,42,56,0.12);
       }
 
       .compass-face {
         inset: 18%;
         background:
-          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.10), transparent 58%),
-          radial-gradient(circle at 50% 50%, rgba(90,46,70,0.10), rgba(90,46,70,0.22));
-        box-shadow: inset 0 0 30px rgba(90,46,70,0.10);
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
+          radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
+        box-shadow: inset 0 0 30px rgba(0,0,0,0.18);
       }
 
       .compass-degree-ring {
         inset: 7%;
-        border: 1px dashed rgba(90,46,70,0.18);
+        border: 1px dashed rgba(168,180,199,0.18);
       }
 
       .compass-ringshine {
         inset: 13%;
-        border: 1px solid rgba(255,255,255,0.10);
-        box-shadow: inset 0 0 50px rgba(255,255,255,0.04);
+        border: 1px solid rgba(57,42,56,0.06);
+        box-shadow: inset 0 0 50px rgba(255,255,255,0.02);
       }
 
       .compass-drift {
@@ -1207,14 +1205,14 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
           conic-gradient(
             from 0deg,
             rgba(255,255,255,0.00) 0deg,
-            rgba(255,255,255,0.05) 6deg,
+            rgba(57,42,56,0.06) 6deg,
             rgba(255,255,255,0.00) 12deg,
             rgba(255,255,255,0.00) 45deg,
-            rgba(255,255,255,0.04) 51deg,
+            rgba(57,42,56,0.05) 51deg,
             rgba(255,255,255,0.00) 57deg
           );
         mix-blend-mode: screen;
-        opacity: 0.28;
+        opacity: 0.35;
         animation: drift-spin 30s linear infinite;
       }
 
@@ -1223,12 +1221,12 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         background:
           repeating-conic-gradient(
             from 0deg,
-            rgba(90,46,70,0.32) 0deg 1deg,
+            rgba(168,180,199,0.32) 0deg 1deg,
             transparent 1deg 6deg
           );
         -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
                 mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-        opacity: 0.6;
+        opacity: 0.75;
       }
 
       .compass-cardinal {
@@ -1238,15 +1236,15 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         font-family: 'JetBrains Mono', monospace;
         font-weight: 700;
         letter-spacing: 0.08em;
-        color: #FFF7EF;
+        color: #2B2430;
       }
 
       .compass-cardinal span {
         position: absolute;
-        text-shadow: 0 0 18px rgba(255,255,255,0.18);
+        text-shadow: 0 0 18px rgba(255,255,255,0.12);
       }
 
-      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #E7A6A0; }
+      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #FF8C42; }
       .compass-cardinal .e { right: 8%; top: 50%; transform: translateY(-50%); }
       .compass-cardinal .s { bottom: 7%; left: 50%; transform: translateX(-50%); }
       .compass-cardinal .w { left: 8%; top: 50%; transform: translateY(-50%); }
@@ -1258,7 +1256,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         height: 74%;
         border-radius: 50%;
         transform: rotate(var(--angle));
-        transition: transform 520ms cubic-bezier(.2,.9,.2,1);
+        transition: transform 260ms cubic-bezier(.2,.9,.2,1);
         will-change: transform;
       }
 
@@ -1275,18 +1273,18 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 1.8rem;
         height: 46%;
         transform: translate(-50%, -100%);
-        background: linear-gradient(180deg, #F6C8B9 0%, #E7A6A0 42%, rgba(231,166,160,0.08) 100%);
+        background: linear-gradient(180deg, #FF8C42 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
         clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
-        filter: drop-shadow(0 0 18px rgba(231,166,160,0.26));
+        filter: drop-shadow(0 0 18px rgba(255,140,66,0.22));
       }
 
       .compass-needle::after {
         width: 1.8rem;
         height: 46%;
         transform: translate(-50%, 0) rotate(180deg);
-        background: linear-gradient(180deg, rgba(255,247,239,0.98) 0%, rgba(181,150,132,0.94) 55%, rgba(181,150,132,0.10) 100%);
+        background: linear-gradient(180deg, rgba(245,241,232,0.95) 0%, rgba(168,180,199,0.92) 55%, rgba(168,180,199,0.05) 100%);
         clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
-        filter: drop-shadow(0 0 16px rgba(90,46,70,0.14));
+        filter: drop-shadow(0 0 16px rgba(168,180,199,0.18));
       }
 
       .compass-cap {
@@ -1294,10 +1292,10 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 22px;
         height: 22px;
         border-radius: 50%;
-        background: radial-gradient(circle at 35% 35%, #FFFFFF, #DDBBA5 36%, #5A2E46 72%);
+        background: radial-gradient(circle at 35% 35%, #FFFFFF, #A8B4C7 36%, #0F1A2E 72%);
         box-shadow:
-          0 0 0 6px rgba(255,255,255,0.06),
-          0 0 30px rgba(231,166,160,0.24);
+          0 0 0 6px rgba(57,42,56,0.05),
+          0 0 30px rgba(255,140,66,0.22);
         z-index: 2;
       }
 
@@ -1312,20 +1310,20 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         gap: 0.2rem;
         padding: 0.55rem 0.85rem;
         border-radius: 999px;
-        background: rgba(90,46,70,0.12);
-        border: 1px solid rgba(90,46,70,0.16);
+        background: rgba(15,26,46,0.42);
+        border: 1px solid rgba(168,180,199,0.16);
         backdrop-filter: blur(10px);
       }
 
       .compass-legend span {
         font-size: 0.74rem;
-        color: #5A2E46;
+        color: #5D5360;
         letter-spacing: 0.02em;
       }
 
       .compass-legend strong {
         font-size: 0.92rem;
-        color: #5A2E46;
+        color: #2B2430;
         font-weight: 700;
       }
 
@@ -1339,20 +1337,20 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         width: 3rem;
         height: 3rem;
         border-radius: 999px;
-        border: 1px solid rgba(90,46,70,0.18);
-        background: linear-gradient(180deg, rgba(255,247,239,0.55), rgba(255,247,239,0.30));
-        color: #5A2E46;
+        border: 1px solid rgba(57,42,56,0.12);
+        background: linear-gradient(180deg, rgba(255,255,255,0.90), rgba(255,255,255,0.65));
+        color: #2B2430;
         font-size: 1.15rem;
         font-weight: 800;
         cursor: pointer;
-        box-shadow: 0 10px 28px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 28px rgba(57,42,56,0.12);
         transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
       }
 
       .compass-btn:hover {
         transform: translateY(-1px) scale(1.03);
-        border-color: rgba(231,166,160,0.58);
-        background: linear-gradient(180deg, rgba(231,166,160,0.24), rgba(255,247,239,0.46));
+        border-color: rgba(214,133,149,0.6);
+        background: linear-gradient(180deg, rgba(255,140,66,0.16), rgba(57,42,56,0.06));
       }
 
       .compass-readout {
@@ -1361,7 +1359,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         display: flex;
         flex-direction: column;
         gap: 0.1rem;
-        color: #5A2E46;
+        color: #5D5360;
         font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 0.08em;
@@ -1369,7 +1367,7 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       }
 
       .compass-readout .deg {
-        color: #5A2E46;
+        color: #2B2430;
         font-size: 1.1rem;
         letter-spacing: 0.02em;
         text-transform: none;
@@ -1410,7 +1408,6 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         </div>
 
         <div class="compass-legend">
-          <span>Moving on its own</span>
           <strong id="__WIDGET_ID__-readout">N · 000°</strong>
         </div>
       </div>
@@ -1418,7 +1415,6 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       <div class="compass-controls">
         <button class="compass-btn" id="__WIDGET_ID__-left" aria-label="Rotate compass left">◀</button>
         <div class="compass-readout">
-          heading
           <span class="deg" id="__WIDGET_ID__-deg">000°</span>
         </div>
         <button class="compass-btn" id="__WIDGET_ID__-right" aria-label="Rotate compass right">▶</button>
@@ -1437,10 +1433,6 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       const deg = document.getElementById("__WIDGET_ID__-deg");
 
       let angle = Number(root.dataset.angle || 0);
-      let last = performance.now();
-      let manualNudge = 0;
-      const spinSpeed = 6.0; // degrees per second
-      const oscillation = 7.5;
 
       const dirs = [
         { label: "N",  deg: 0   },
@@ -1478,44 +1470,50 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         const delta = a.toFixed(0).padStart(3, '0') + '°';
         deg.textContent = delta;
         readout.textContent = c.label + ' · ' + delta;
-        root.dataset.angle = String(a);
       }
 
-      function nudge(step) {
-        angle = wrap(angle + step);
-        manualNudge = wrap(manualNudge + step * 4);
+      function nudge(dir) {
+        angle += dir;
         render();
       }
 
-      left.addEventListener('click', function() { nudge(-15); });
-      right.addEventListener('click', function() { nudge(15); });
+      left.addEventListener('click', function() {
+        nudge(-15);
+      });
+
+      right.addEventListener('click', function() {
+        nudge(15);
+      });
 
       root.addEventListener('keydown', function(e) {
         if (e.key === 'ArrowLeft') { nudge(-15); }
         if (e.key === 'ArrowRight') { nudge(15); }
       });
 
-      function tick(now) {
-        const dt = Math.min(0.05, (now - last) / 1000);
+      let last = performance.now();
+      function animate(now) {
+        const dt = Math.min(40, now - last);
         last = now;
-        angle = wrap(angle + (spinSpeed * dt) + (Math.sin(now / 2200) * oscillation * dt * 0.18));
+        angle += 0.03 * (dt / 16.67);
         render();
-        window.requestAnimationFrame(tick);
+        requestAnimationFrame(animate);
       }
 
       render();
-      window.requestAnimationFrame(tick);
+      requestAnimationFrame(animate);
     })();
     </script>
     """
 
     return template.replace("__WIDGET_ID__", widget_id).replace("__ANGLE__", f"{angle:.1f}")
+
+
 hero_left, hero_right = st.columns([1.05, 1])
 with hero_left:
     st.markdown("""
     <div class="hero">
       <div class="hero-top">
-        <span class="hero-word">Compass</span>
+        <span class="hero-word">First-Gen Compass</span>
       </div>
       <h1 class="hero-title">Most college guidance assumes<br>someone already showed you<br>the <span class="accent">unwritten rules</span>.</h1>
       <p class="hero-sub">
