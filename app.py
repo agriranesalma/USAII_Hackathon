@@ -1108,8 +1108,283 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
 def render_compass_widget(initial_angle: float = 0.0) -> str:
     widget_id = f"compass-{uuid.uuid4().hex[:10]}"
     angle = float(initial_angle) % 360
-    return f"""
-    <div class="compass-wrap" id="{widget_id}" data-angle="{angle:.1f}">
+
+    template = """
+    <style>
+      .compass-wrap {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.25rem 0 0.5rem;
+        color: #F5F1E8;
+        font-family: 'Public Sans', sans-serif;
+        user-select: none;
+      }
+
+      .compass-shell {
+        position: relative;
+        width: min(86vw, 430px);
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.12), rgba(255,255,255,0.03) 30%, rgba(15,26,46,0.0) 72%),
+          radial-gradient(circle at 50% 50%, rgba(255,140,66,0.14), rgba(255,140,66,0.02) 42%, rgba(15,26,46,0.0) 70%),
+          linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015));
+        border: 1px solid rgba(168,180,199,0.18);
+        box-shadow:
+          0 24px 70px rgba(0,0,0,0.35),
+          inset 0 0 0 1px rgba(255,255,255,0.04);
+        overflow: hidden;
+      }
+
+      .compass-glow {
+        position: absolute;
+        inset: 10%;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255,140,66,0.14), transparent 62%);
+        filter: blur(8px);
+        pointer-events: none;
+      }
+
+      .compass-ring-outer,
+      .compass-ring-mid,
+      .compass-ring-inner,
+      .compass-degree-ring,
+      .compass-ringshine,
+      .compass-face,
+      .compass-drift,
+      .compass-ticks {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .compass-ring-outer {
+        inset: 2.5%;
+        border: 1px solid rgba(168,180,199,0.22);
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      }
+
+      .compass-ring-mid {
+        inset: 9%;
+        border: 1px solid rgba(255,140,66,0.25);
+      }
+
+      .compass-ring-inner {
+        inset: 16%;
+        border: 1px solid rgba(168,180,199,0.18);
+      }
+
+      .compass-face {
+        inset: 18%;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
+          radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
+        box-shadow: inset 0 0 30px rgba(0,0,0,0.18);
+      }
+
+      .compass-degree-ring {
+        inset: 7%;
+        border: 1px dashed rgba(168,180,199,0.18);
+      }
+
+      .compass-ringshine {
+        inset: 13%;
+        border: 1px solid rgba(255,255,255,0.05);
+        box-shadow: inset 0 0 50px rgba(255,255,255,0.02);
+      }
+
+      .compass-drift {
+        inset: 0;
+        background:
+          conic-gradient(
+            from 0deg,
+            rgba(255,255,255,0.00) 0deg,
+            rgba(255,255,255,0.05) 6deg,
+            rgba(255,255,255,0.00) 12deg,
+            rgba(255,255,255,0.00) 45deg,
+            rgba(255,255,255,0.04) 51deg,
+            rgba(255,255,255,0.00) 57deg
+          );
+        mix-blend-mode: screen;
+        opacity: 0.35;
+        animation: drift-spin 30s linear infinite;
+      }
+
+      .compass-ticks {
+        inset: 0;
+        background:
+          repeating-conic-gradient(
+            from 0deg,
+            rgba(168,180,199,0.32) 0deg 1deg,
+            transparent 1deg 6deg
+          );
+        -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
+                mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
+        opacity: 0.75;
+      }
+
+      .compass-cardinal {
+        position: absolute;
+        inset: 0;
+        display: block;
+        font-family: 'JetBrains Mono', monospace;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #F5F1E8;
+      }
+
+      .compass-cardinal span {
+        position: absolute;
+        text-shadow: 0 0 18px rgba(255,255,255,0.12);
+      }
+
+      .compass-cardinal .n { top: 7%; left: 50%; transform: translateX(-50%); color: #FF8C42; }
+      .compass-cardinal .e { right: 8%; top: 50%; transform: translateY(-50%); }
+      .compass-cardinal .s { bottom: 7%; left: 50%; transform: translateX(-50%); }
+      .compass-cardinal .w { left: 8%; top: 50%; transform: translateY(-50%); }
+
+      .compass-needle {
+        --angle: 0deg;
+        position: absolute;
+        width: 74%;
+        height: 74%;
+        border-radius: 50%;
+        transform: rotate(var(--angle));
+        transition: transform 260ms cubic-bezier(.2,.9,.2,1);
+        will-change: transform;
+      }
+
+      .compass-needle::before,
+      .compass-needle::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform-origin: center;
+      }
+
+      .compass-needle::before {
+        width: 1.8rem;
+        height: 46%;
+        transform: translate(-50%, -100%);
+        background: linear-gradient(180deg, #FF8C42 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
+        clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
+        filter: drop-shadow(0 0 18px rgba(255,140,66,0.22));
+      }
+
+      .compass-needle::after {
+        width: 1.8rem;
+        height: 46%;
+        transform: translate(-50%, 0) rotate(180deg);
+        background: linear-gradient(180deg, rgba(245,241,232,0.95) 0%, rgba(168,180,199,0.92) 55%, rgba(168,180,199,0.05) 100%);
+        clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
+        filter: drop-shadow(0 0 16px rgba(168,180,199,0.18));
+      }
+
+      .compass-cap {
+        position: absolute;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #FFFFFF, #A8B4C7 36%, #0F1A2E 72%);
+        box-shadow:
+          0 0 0 6px rgba(255,255,255,0.04),
+          0 0 30px rgba(255,140,66,0.22);
+        z-index: 2;
+      }
+
+      .compass-legend {
+        position: absolute;
+        bottom: 8%;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.2rem;
+        padding: 0.55rem 0.85rem;
+        border-radius: 999px;
+        background: rgba(15,26,46,0.42);
+        border: 1px solid rgba(168,180,199,0.16);
+        backdrop-filter: blur(10px);
+      }
+
+      .compass-legend span {
+        font-size: 0.74rem;
+        color: #A8B4C7;
+        letter-spacing: 0.02em;
+      }
+
+      .compass-legend strong {
+        font-size: 0.92rem;
+        color: #F5F1E8;
+        font-weight: 700;
+      }
+
+      .compass-controls {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .compass-btn {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 999px;
+        border: 1px solid rgba(168,180,199,0.18);
+        background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+        color: #F5F1E8;
+        font-size: 1.15rem;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 10px 28px rgba(0,0,0,0.22);
+        transition: transform 140ms ease, border-color 140ms ease, background 140ms ease;
+      }
+
+      .compass-btn:hover {
+        transform: translateY(-1px) scale(1.03);
+        border-color: rgba(255,140,66,0.45);
+        background: linear-gradient(180deg, rgba(255,140,66,0.16), rgba(255,255,255,0.05));
+      }
+
+      .compass-readout {
+        min-width: 8.5rem;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+        color: #A8B4C7;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        font-family: 'JetBrains Mono', monospace;
+      }
+
+      .compass-readout .deg {
+        color: #F5F1E8;
+        font-size: 1.1rem;
+        letter-spacing: 0.02em;
+        text-transform: none;
+      }
+
+      @keyframes drift-spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      @media (max-width: 640px) {
+        .compass-shell { width: min(92vw, 380px); }
+        .compass-legend { bottom: 6%; }
+      }
+    </style>
+
+    <div class="compass-wrap" id="__WIDGET_ID__" data-angle="__ANGLE__" tabindex="0">
       <div class="compass-shell">
         <div class="compass-glow"></div>
         <div class="compass-ring-outer"></div>
@@ -1120,98 +1395,106 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
         <div class="compass-face"></div>
         <div class="compass-degree-ring"></div>
         <div class="compass-ringshine"></div>
+
         <div class="compass-cardinal">
           <span class="n">N</span>
           <span class="e">E</span>
           <span class="s">S</span>
           <span class="w">W</span>
         </div>
-        <div class="compass-needle" id="{widget_id}-needle">
+
+        <div class="compass-needle" id="__WIDGET_ID__-needle">
           <div class="compass-cap" style="left:50%; top:50%; transform: translate(-50%, -50%);"></div>
         </div>
+
         <div class="compass-legend">
           <span>Rotate with the arrows</span>
-          <strong id="{widget_id}-readout">N · 0°</strong>
+          <strong id="__WIDGET_ID__-readout">N · 000°</strong>
         </div>
       </div>
+
       <div class="compass-controls">
-        <button class="compass-btn" id="{widget_id}-left" aria-label="Rotate compass left">◀</button>
+        <button class="compass-btn" id="__WIDGET_ID__-left" aria-label="Rotate compass left">◀</button>
         <div class="compass-readout">
           heading
-          <span class="deg" id="{widget_id}-deg">0°</span>
+          <span class="deg" id="__WIDGET_ID__-deg">000°</span>
         </div>
-        <button class="compass-btn" id="{widget_id}-right" aria-label="Rotate compass right">▶</button>
+        <button class="compass-btn" id="__WIDGET_ID__-right" aria-label="Rotate compass right">▶</button>
       </div>
     </div>
+
     <script>
-    (function() {{
-      const root = document.getElementById("{widget_id}");
+    (function() {
+      const root = document.getElementById("__WIDGET_ID__");
       if (!root) return;
-      const needle = document.getElementById("{widget_id}-needle");
-      const left = document.getElementById("{widget_id}-left");
-      const right = document.getElementById("{widget_id}-right");
-      const readout = document.getElementById("{widget_id}-readout");
-      const deg = document.getElementById("{widget_id}-deg");
+
+      const needle = document.getElementById("__WIDGET_ID__-needle");
+      const left = document.getElementById("__WIDGET_ID__-left");
+      const right = document.getElementById("__WIDGET_ID__-right");
+      const readout = document.getElementById("__WIDGET_ID__-readout");
+      const deg = document.getElementById("__WIDGET_ID__-deg");
+
       let angle = Number(root.dataset.angle || 0);
 
       const dirs = [
-        { label: "N", deg: 0 },
-        { label: "NE", deg: 45 },
-        { label: "E", deg: 90 },
+        { label: "N",  deg: 0   },
+        { label: "NE", deg: 45  },
+        { label: "E",  deg: 90  },
         { label: "SE", deg: 135 },
-        { label: "S", deg: 180 },
+        { label: "S",  deg: 180 },
         { label: "SW", deg: 225 },
-        { label: "W", deg: 270 },
+        { label: "W",  deg: 270 },
         { label: "NW", deg: 315 },
       ];
 
-      function wrap(n) {{
+      function wrap(n) {
         n = n % 360;
         return n < 0 ? n + 360 : n;
-      }}
+      }
 
-      function nearestCardinal(a) {{
+      function nearestCardinal(a) {
         let best = dirs[0];
         let bestDist = 9999;
-        for (const d of dirs) {{
+        for (const d of dirs) {
           const dist = Math.min(Math.abs(a - d.deg), 360 - Math.abs(a - d.deg));
-          if (dist < bestDist) {{
+          if (dist < bestDist) {
             best = d;
             bestDist = dist;
-          }}
-        }}
+          }
+        }
         return best;
-      }}
+      }
 
-      function render() {{
+      function render() {
         const a = wrap(angle);
         needle.style.setProperty('--angle', a + 'deg');
-        needle.style.transform = 'rotate(' + a + 'deg)';
         const c = nearestCardinal(a);
         const delta = a.toFixed(0).padStart(3, '0') + '°';
         deg.textContent = delta;
         readout.textContent = c.label + ' · ' + delta;
-      }}
+      }
 
-      left.addEventListener('click', function() {{
+      left.addEventListener('click', function() {
         angle -= 15;
         render();
-      }});
-      right.addEventListener('click', function() {{
+      });
+
+      right.addEventListener('click', function() {
         angle += 15;
         render();
-      }});
+      });
 
-      root.addEventListener('keydown', function(e) {{
-        if (e.key === 'ArrowLeft') {{ angle -= 15; render(); }}
-        if (e.key === 'ArrowRight') {{ angle += 15; render(); }}
-      }});
+      root.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') { angle -= 15; render(); }
+        if (e.key === 'ArrowRight') { angle += 15; render(); }
+      });
 
       render();
-    }})();
+    })();
     </script>
     """
 
+    return template.replace("__WIDGET_ID__", widget_id).replace("__ANGLE__", f"{angle:.1f}")
 
 
 hero_left, hero_right = st.columns([1.05, 1])
