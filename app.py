@@ -10,8 +10,7 @@ from typing import Any, Dict, List, Optional
 
 import streamlit as st
 
-# Config
-st.set_page_config(page_title="First Gen Compass", page_icon="\U0001F9ED", layout="centered")
+st.set_page_config(page_title="Compass — plan your next step", page_icon="🧭", layout="centered")
 
 NVIDIA_BASE_URL    = "https://integrate.api.nvidia.com/v1"
 NVIDIA_MODEL       = "meta/llama-3.3-70b-instruct"
@@ -26,292 +25,185 @@ SCENARIOS = [
     ("Graduate school becomes goal",  "You might want to continue beyond the degree."),
 ]
 
-# Design system
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Public+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
 :root {
-  --paper:     #FAF6EC;
-  --paper-2:   #F3EDDC;
-  --ink:       #221C14;
-  --ink-soft:  #4A4032;
-  --pencil:    #8C7F66;
-  --rule:      #D9CFB6;
-  --clay:      #B8512E;
-  --clay-soft: #DDA28A;
-  --moss:      #3F6B4C;
-  --moss-soft: #A9C2AB;
-  --indigo:    #2E4569;
-  --indigo-soft:#AEC0DC;
-  --gold:      #B8862E;
-  --r-sm: 3px;
-  --r-md: 7px;
+  --night:      #0F1A2E;
+  --night-2:    #142münchen;
+  --dusk:       #1B2A45;
+  --dusk-2:     #223457;
+  --line:       rgba(168,180,199,0.16);
+  --line-hi:    rgba(168,180,199,0.30);
+  --bone:       #F5F1E8;
+  --fog:        #A8B4C7;
+  --fog-dim:    #7A88A0;
+  --flare:      #FF8C42;
+  --flare-dim:  rgba(255,140,66,0.16);
+  --sage:       #6FA888;
+  --sage-dim:   rgba(111,168,136,0.16);
+  --coral:      #E8694F;
+  --coral-dim:  rgba(232,105,79,0.16);
+  --gold:       #E0B05C;
 }
+
+* { box-sizing: border-box; }
 
 .stApp {
-  background: var(--paper);
+  background: var(--night);
   background-image:
-    radial-gradient(rgba(34,28,20,0.02) 1px, transparent 1px);
-  background-size: 4px 4px;
-  color: var(--ink);
-  font-family: 'IBM Plex Sans', sans-serif;
+    radial-gradient(circle at 18% 8%, rgba(255,140,66,0.05) 0%, transparent 38%),
+    radial-gradient(circle at 85% 92%, rgba(111,168,136,0.04) 0%, transparent 42%);
+  color: var(--bone);
+  font-family: 'Public Sans', -apple-system, sans-serif;
   font-size: 15.5px;
 }
-.block-container { padding-top: 2.2rem; padding-bottom: 4rem; max-width: 1180px; }
-footer { visibility:hidden; height:0; }
-#MainMenu { visibility:hidden; }
-h1,h2,h3,h4 { font-family:'Source Serif 4',serif !important; letter-spacing:-0.01em; color:var(--ink); }
-a { color: var(--indigo); }
-code, .mono { font-family:'IBM Plex Mono', monospace; }
+.block-container { padding-top: 1.4rem; padding-bottom: 5rem; max-width: 920px; }
+footer, #MainMenu { visibility: hidden; height: 0; }
+h1, h2, h3, h4 { font-family: 'Spectral', serif !important; color: var(--bone); letter-spacing: -0.01em; }
+a { color: var(--flare); }
+::selection { background: var(--flare-dim); }
 
-/* Streamlit overrides */
+/* form controls */
 div[data-testid="stSlider"] label,
-.stTextInput label, .stTextArea label,
-.stSelectbox label, .stMultiSelect label {
-  color: var(--ink-soft) !important; font-size:0.78rem !important;
-  font-family:'IBM Plex Mono', monospace !important;
-  letter-spacing: 0.03em; text-transform: uppercase;
+.stTextInput label, .stTextArea label, .stSelectbox label {
+  color: var(--fog) !important; font-size: 0.74rem !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  letter-spacing: 0.07em; text-transform: uppercase; font-weight: 500 !important;
 }
 .stTextInput input, .stTextArea textarea {
-  background: #FFFDF7 !important;
-  border: 1.5px solid var(--rule) !important;
-  border-radius: var(--r-sm) !important;
-  color: var(--ink) !important;
-  font-family: 'IBM Plex Sans', sans-serif !important;
+  background: rgba(255,255,255,0.035) !important;
+  border: 1px solid var(--line) !important;
+  border-radius: 10px !important;
+  color: var(--bone) !important;
+  font-family: 'Public Sans', sans-serif !important;
 }
+.stTextInput input::placeholder, .stTextArea textarea::placeholder { color: var(--fog-dim) !important; }
 .stTextInput input:focus, .stTextArea textarea:focus {
-  border-color: var(--clay) !important;
-  box-shadow: none !important;
+  border-color: var(--flare) !important;
+  box-shadow: 0 0 0 3px var(--flare-dim) !important;
 }
-div[data-testid="stCheckbox"] label { color: var(--ink) !important; font-size: 0.88rem !important; }
-div[data-baseweb="checkbox"] svg { fill: var(--clay) !important; }
+div[data-testid="stCheckbox"] label { color: var(--fog) !important; font-size: 0.87rem !important; }
+div[data-baseweb="checkbox"] span:first-child { background-color: rgba(255,255,255,0.04) !important; border-color: var(--line-hi) !important; }
+div[data-baseweb="checkbox"] input:checked + span { background-color: var(--flare) !important; border-color: var(--flare) !important; }
+
 .stSlider [data-baseweb="slider"] div[role="slider"] {
-  background-color: var(--clay) !important;
-  border: 2px solid var(--paper) !important;
+  background-color: var(--flare) !important; box-shadow: 0 0 0 4px var(--flare-dim) !important;
 }
 .stSlider [data-testid="stTickBar"] { display: none; }
+.stSlider [data-baseweb="slider"] > div > div { background: var(--line) !important; }
 
 .stButton button[kind="primary"] {
-  background: var(--ink) !important;
-  border: 1.5px solid var(--ink) !important; border-radius: var(--r-sm) !important;
-  font-family: 'IBM Plex Mono', monospace !important;
-  font-weight: 600 !important; letter-spacing: 0.04em !important;
-  text-transform: uppercase; font-size: 0.85rem !important;
-  padding: 0.7rem 1.4rem !important; color: var(--paper) !important;
-  box-shadow: 3px 3px 0 var(--clay) !important;
-  transition: transform 0.1s, box-shadow 0.1s !important;
+  background: var(--flare) !important; border: none !important; border-radius: 11px !important;
+  font-weight: 700 !important; font-size: 0.95rem !important; letter-spacing: 0.01em;
+  padding: 0.75rem 1.5rem !important; color: #1A0F05 !important;
+  box-shadow: 0 8px 24px rgba(255,140,66,0.28) !important;
+  transition: transform 0.12s ease, box-shadow 0.12s ease !important;
 }
 .stButton button[kind="primary"]:hover {
-  transform: translate(-2px,-2px) !important;
-  box-shadow: 5px 5px 0 var(--clay) !important;
+  transform: translateY(-1px) !important; box-shadow: 0 10px 30px rgba(255,140,66,0.4) !important;
 }
 .stButton button:not([kind="primary"]) {
-  background: transparent !important;
-  border: 1.5px solid var(--ink) !important;
-  border-radius: var(--r-sm) !important;
-  color: var(--ink) !important;
-  font-family: 'IBM Plex Mono', monospace !important;
-  font-size: 0.8rem !important; letter-spacing: 0.03em;
+  background: transparent !important; border: 1px solid var(--line-hi) !important;
+  border-radius: 10px !important; color: var(--fog) !important; font-weight: 500 !important;
 }
-.stButton button:not([kind="primary"]):hover {
-  background: var(--ink) !important; color: var(--paper) !important;
-}
-div[data-testid="stDivider"] { border-top: 1.5px dashed var(--rule); opacity:1; }
-[data-testid="stAlert"] {
-  border-radius: var(--r-sm) !important;
-  border-left: 4px solid var(--clay) !important;
-  font-family: 'IBM Plex Sans', sans-serif !important;
-}
+.stButton button:not([kind="primary"]):hover { border-color: var(--flare) !important; color: var(--bone) !important; }
+div[data-testid="stDivider"] { border-top: 1px solid var(--line); opacity: 1; margin: 2.2rem 0; }
+[data-testid="stAlert"] { border-radius: 10px !important; background: rgba(255,255,255,0.035) !important; border: 1px solid var(--line) !important; }
 
-/* Hero */
-.hero {
-  position: relative;
-  padding: 2rem 0 1.8rem;
-  border-bottom: 3px solid var(--ink);
-  margin-bottom: 2.2rem;
-}
-.hero-mark { display:flex; align-items:center; gap:0.9rem; margin-bottom: 1rem; }
-.hero-eyebrow {
-  font-family:'IBM Plex Mono', monospace;
-  font-size:0.78rem; font-weight:600; letter-spacing:0.1em;
-  text-transform:uppercase; color: var(--clay);
-}
+/* hero */
+.hero { position: relative; padding: 1.6rem 0 2.4rem; }
+.hero-top { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.6rem; }
+.hero-mark { width: 30px; height: 30px; flex-shrink: 0; }
+.hero-word { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--fog); }
 .hero-title {
-  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
-  font-weight: 600; line-height: 1.15;
-  color: var(--ink); margin: 0 0 0.7rem;
-  max-width: 720px;
+  font-size: clamp(2.1rem, 5vw, 3.1rem); font-weight: 500; line-height: 1.08;
+  color: var(--bone); margin: 0 0 1.1rem; max-width: 600px;
 }
-.hero-sub {
-  color: var(--ink-soft); font-size:1.02rem; line-height:1.65; max-width:600px; margin:0;
-  border-left: 3px solid var(--rule); padding-left: 1rem;
-}
+.hero-title .accent { color: var(--flare); font-style: italic; }
+.hero-sub { color: var(--fog); font-size: 1.05rem; line-height: 1.62; max-width: 540px; margin: 0; }
 
-/* Section header */
+/* section label */
 .section-label {
-  display:flex; align-items:baseline; gap:0.7rem;
-  margin: 2.1rem 0 0.85rem;
-  font-family:'IBM Plex Mono', monospace;
-  font-size:0.78rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
-  color: var(--ink);
+  display: flex; align-items: center; gap: 0.55rem; margin: 2.6rem 0 1rem;
+  font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--fog);
 }
-.section-label::before { content:'§'; color: var(--clay); font-family:'Source Serif 4',serif; font-size:1.1rem; }
-.section-label::after { content:''; flex:1; height:1.5px; background: repeating-linear-gradient(90deg, var(--rule) 0 6px, transparent 6px 9px); }
+.section-label .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--flare); flex-shrink: 0; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+.section-hint { color: var(--fog-dim); font-size: 0.88rem; margin: -0.5rem 0 1.1rem; line-height: 1.5; }
 
-/* Option input card */
+/* option input card */
 .opt-card {
-  padding: 1.1rem 1.3rem 0.6rem; margin-bottom: 1rem;
-  border-radius: var(--r-md);
-  background: #FFFDF7;
-  border: 1.5px solid var(--rule);
-  border-left: 4px solid var(--indigo);
-  box-shadow: 2px 2px 0 rgba(34,28,20,0.04);
+  padding: 1.1rem 1.25rem 0.5rem; margin-bottom: 0.9rem; border-radius: 14px;
+  background: rgba(255,255,255,0.025); border: 1px solid var(--line);
+  border-left: 2px solid var(--flare-dim);
 }
 
-/* Metric chip - ledger row style */
-.mc { padding: 0.55rem 0 0.6rem; border-bottom: 1px solid var(--rule); }
-.mc-label {
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 0.68rem; font-weight:600; letter-spacing:0.06em;
-  text-transform:uppercase; color:var(--pencil);
-}
-.mc-row { display:flex; align-items:baseline; gap:0.6rem; margin-top:0.25rem; }
-.mc-value {
-  font-family:'Source Serif 4',serif;
-  font-size: 1.5rem; font-weight:600; line-height:1; color:var(--ink);
-}
-.mc-bar-wrap { flex:1; height: 9px; position:relative; }
-.mc-bar { height: 100%; background: repeating-linear-gradient(90deg, var(--rule) 0 1px, transparent 1px 11px); }
-.mc-fill { display:block; height:100%; }
-.mc-tag {
-  font-family:'IBM Plex Mono', monospace;
-  font-size:0.62rem; font-weight:600; letter-spacing:0.05em;
-}
+/* metric */
+.mc { padding: 0.7rem 0; border-bottom: 1px solid var(--line); }
+.mc-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.45rem; }
+.mc-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fog); }
+.mc-value { font-family: 'Spectral', serif; font-size: 1.25rem; font-weight: 600; color: var(--bone); }
+.mc-bar { height: 4px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.mc-fill { display: block; height: 100%; border-radius: 999px; }
 
-/* Listbox - margin-note card */
-.lb {
-  padding: 0.95rem 1.1rem; border-radius: var(--r-md); height:100%;
-  background: #FFFDF7;
-  border: 1.5px solid var(--rule);
-  position: relative;
-}
-.lb-header {
-  display:flex; align-items:center; gap:0.5rem;
-  font-family:'IBM Plex Mono', monospace;
-  font-size: 0.72rem; font-weight:600; letter-spacing:0.06em;
-  text-transform:uppercase; color:var(--ink);
-  margin-bottom:0.65rem; padding-bottom:0.55rem;
-  border-bottom: 1.5px dashed var(--rule);
-}
-.lb-icon { font-size:0.95rem; }
-.lb ul { margin:0; padding:0; list-style:none; }
-.lb li {
-  display:flex; gap:0.5rem; align-items:flex-start;
-  padding: 0.32rem 0; color:var(--ink-soft); font-size:0.87rem;
-  line-height:1.5;
-}
-.lb li::before {
-  content:'—'; color:var(--pencil); flex-shrink:0;
-}
+/* listbox */
+.lb { padding: 1rem 1.15rem; border-radius: 13px; height: 100%; background: rgba(255,255,255,0.025); border: 1px solid var(--line); }
+.lb-header { display: flex; align-items: center; gap: 0.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.7rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--line); }
+.lb ul { margin: 0; padding: 0; list-style: none; }
+.lb li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.32rem 0; color: var(--fog); font-size: 0.87rem; line-height: 1.52; }
+.lb li::before { content: '·'; color: var(--flare); flex-shrink: 0; font-weight: 700; }
 
-/* Timeline - ledger steps */
-.tl-wrap { position:relative; padding: 0.3rem 0; }
-.tl-row {
-  display:grid; grid-template-columns: 2.6rem 1fr; gap:0 0.9rem;
-  margin-bottom: 0; position:relative;
-}
-.tl-node-col { display:flex; flex-direction:column; align-items:center; }
-.tl-dot {
-  width:2rem; height:2rem; border-radius:50%; flex-shrink:0;
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Source Serif 4',serif;
-  font-size:0.85rem; font-weight:600; color:var(--ink);
-  background: var(--paper-2);
-  border: 1.5px solid var(--ink);
-}
-.tl-connector { width:1.5px; flex:1; min-height:0.7rem; background: var(--rule); margin: 2px 0; }
-.tl-content {
-  padding: 0.6rem 0 0.85rem 0;
-  border-bottom: 1px dashed var(--rule);
-  margin-bottom: 0.5rem;
-}
-.tl-stage {
-  font-family:'IBM Plex Mono', monospace;
-  font-size:0.68rem; font-weight:600; letter-spacing:0.05em;
-  text-transform:uppercase; color:var(--clay); margin-bottom:0.2rem;
-}
-.tl-text { color:var(--ink-soft); font-size:0.88rem; line-height:1.55; }
+/* timeline */
+.tl-wrap { position: relative; padding: 0.3rem 0; }
+.tl-row { display: grid; grid-template-columns: 2.3rem 1fr; gap: 0 0.9rem; }
+.tl-node-col { display: flex; flex-direction: column; align-items: center; }
+.tl-dot { width: 1.9rem; height: 1.9rem; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.74rem; font-weight: 600; color: var(--night); background: var(--flare); }
+.tl-connector { width: 1.5px; flex: 1; min-height: 0.7rem; background: var(--line-hi); margin: 3px 0; }
+.tl-content { padding: 0.55rem 0 0.95rem; }
+.tl-stage { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--flare); margin-bottom: 0.22rem; }
+.tl-text { color: var(--fog); font-size: 0.88rem; line-height: 1.55; }
 
-/* Option result card - notebook page */
-.opt-result {
-  margin-bottom: 1.6rem;
-  border: 1.5px solid var(--rule);
-  border-radius: var(--r-md); overflow:hidden;
-  background: #FFFDF7;
-}
-.opt-result-head {
-  padding: 1.3rem 1.5rem 1.1rem;
-  background: var(--paper-2);
-  border-bottom: 2px solid var(--ink);
-  display:flex; align-items:flex-start; justify-content:space-between; gap:1rem;
-}
-.opt-result-name {
-  font-family:'Source Serif 4',serif; font-size:1.5rem;
-  font-weight:600; letter-spacing:-0.01em; color:var(--ink);
-  margin:0 0 0.35rem;
-}
-.opt-result-summary { color:var(--ink-soft); font-size:0.92rem; line-height:1.6; max-width:680px; }
+/* option result */
+.opt-result { margin-bottom: 1.5rem; border-radius: 16px; overflow: hidden; background: rgba(255,255,255,0.025); border: 1px solid var(--line); }
+.opt-result-head { padding: 1.35rem 1.5rem 1.1rem; background: rgba(255,255,255,0.025); border-bottom: 1px solid var(--line); }
+.opt-result-name { font-family: 'Spectral', serif; font-size: 1.5rem; font-weight: 600; color: var(--bone); margin: 0 0 0.4rem; }
+.opt-result-summary { color: var(--fog); font-size: 0.94rem; line-height: 1.6; max-width: 680px; }
 .opt-result-body { padding: 1.3rem 1.5rem; }
 
-/* Comparison panel */
-.cmp-panel {
-  padding: 1.2rem 1.4rem; border-radius: var(--r-md);
-  background: #FFFDF7;
-  border: 1.5px solid var(--rule);
-  border-left: 4px solid var(--clay);
-  margin-bottom: 1rem;
-}
-.cmp-panel-label {
-  font-family:'IBM Plex Mono', monospace;
-  font-size:0.7rem; font-weight:600; letter-spacing:0.07em;
-  text-transform:uppercase; color:var(--clay); margin-bottom:0.5rem;
-}
-.cmp-panel-text { color:var(--ink-soft); font-size:0.95rem; line-height:1.65; }
+/* comparison */
+.cmp-panel { padding: 1.25rem 1.4rem; border-radius: 14px; background: var(--flare-dim); border: 1px solid rgba(255,140,66,0.3); margin-bottom: 1rem; }
+.cmp-panel-label { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--flare); margin-bottom: 0.55rem; }
+.cmp-panel-text { color: var(--bone); font-size: 0.96rem; line-height: 1.65; opacity: 0.92; }
 
-/* Scenario badge */
-.sc-card {
-  padding: 0.8rem 1rem; border-radius:var(--r-sm); margin-bottom:0.55rem;
-  background:#FFFDF7; border:1.5px solid var(--gold); border-left: 4px solid var(--gold);
-}
-.sc-name { font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:0.8rem; letter-spacing:0.03em; color:var(--gold); text-transform:uppercase; }
-.sc-text { color:var(--ink-soft); font-size:0.85rem; margin-top:0.3rem; line-height:1.5; }
+/* scenario */
+.sc-card { padding: 0.85rem 1rem; border-radius: 11px; margin-bottom: 0.55rem; background: var(--gold)15; background: rgba(224,176,92,0.09); border: 1px solid rgba(224,176,92,0.3); }
+.sc-name { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-size: 0.76rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--gold); }
+.sc-text { color: var(--fog); font-size: 0.86rem; margin-top: 0.3rem; line-height: 1.5; }
 
-/* Stress-test result */
-.stress-panel {
-  padding: 0.9rem 1.1rem; border-radius:var(--r-sm); margin-top:1rem;
-  background: var(--paper-2); border:1.5px solid var(--indigo-soft); border-left: 4px solid var(--indigo);
-  display:flex; align-items:flex-start; gap:0.85rem;
-}
-.stress-icon { font-size:1.2rem; flex-shrink:0; line-height:1.4; }
-.stress-label { font-family:'IBM Plex Mono', monospace; font-size:0.68rem; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; color:var(--indigo); margin-bottom:0.3rem; }
-.stress-delta { font-size:0.9rem; font-weight:400; color:var(--ink-soft); line-height:1.5; }
+/* stress */
+.stress-panel { padding: 0.95rem 1.1rem; border-radius: 12px; margin-top: 1.1rem; background: var(--sage-dim); border: 1px solid rgba(111,168,136,0.32); display: flex; gap: 0.8rem; align-items: flex-start; }
+.stress-label { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.3rem; }
+.stress-delta { font-size: 0.9rem; color: var(--fog); line-height: 1.5; }
 
-/* Empty state */
-.empty-state {
-  padding: 3rem 2rem; text-align:center;
-  border: 1.5px dashed var(--rule); border-radius:var(--r-md);
-  background: rgba(255,255,255,0.4);
+/* empty */
+.empty-state { padding: 3.4rem 2rem; text-align: center; border: 1px dashed var(--line-hi); border-radius: 18px; }
+.empty-state-title { font-family: 'Spectral', serif; font-size: 1.4rem; margin-bottom: 0.55rem; color: var(--bone); }
+.empty-state-text { color: var(--fog); max-width: 440px; margin: 0 auto; font-size: 0.93rem; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .hero-title { font-size: 2rem; }
 }
-.empty-state-title { font-family:'Source Serif 4',serif; font-size:1.35rem; margin-bottom:0.5rem; color:var(--ink); }
-.empty-state-text { color:var(--ink-soft); max-width:460px; margin:0 auto; font-size:0.92rem; line-height:1.6; }
 </style>
 """
 st.markdown(CSS, unsafe_allow_html=True)
 
-# Session state
+
 def new_option(n: int) -> Dict[str, str]:
     return {"id": uuid.uuid4().hex[:8], "name": f"Option {n}", "details": "", "gut_take": ""}
+
 
 _DEFAULT_PROFILE = {
     "name": "", "context_note": "", "risk_tolerance": 5,
@@ -325,19 +217,26 @@ if "engine_result"    not in st.session_state: st.session_state.engine_result   
 if "show_results"     not in st.session_state: st.session_state.show_results     = False
 if "scenario_checks"  not in st.session_state: st.session_state.scenario_checks  = {n: False for n, _ in SCENARIOS}
 
+
 def profile() -> Dict[str, Any]:
     return {k: st.session_state[k] for k in _DEFAULT_PROFILE}
 
-# API
+
 def get_api_key() -> str:
+    def _clean(v: str) -> str:
+        v = v.strip()
+        if len(v) >= 2 and v[0] == v[-1] and v[0] in ("'", '"'):
+            v = v[1:-1].strip()
+        return v
     try:
         for k in ("NVIDIA_API_KEY", "nvidia_api_key", "api_key"):
             if k in st.secrets:
-                v = str(st.secrets[k]).strip()
+                v = _clean(str(st.secrets[k]))
                 if v: return v
     except Exception:
         pass
-    return os.getenv("NVIDIA_API_KEY", "").strip()
+    return _clean(os.getenv("NVIDIA_API_KEY", ""))
+
 
 def nvidia_post(payload: Dict[str, Any], timeout: int = 90, retries: int = 3) -> Dict[str, Any]:
     key = get_api_key()
@@ -366,6 +265,7 @@ def nvidia_post(payload: Dict[str, Any], timeout: int = 90, retries: int = 3) ->
             raise RuntimeError(f"API call failed: {e}") from e
     raise RuntimeError(f"Exhausted retries: {last}")
 
+
 def llm(messages: List[Dict], *, temperature: float = 0.15, max_tokens: int = 2800) -> str:
     data = nvidia_post({"model": NVIDIA_MODEL, "messages": messages,
                         "temperature": temperature, "top_p": 0.9,
@@ -377,7 +277,7 @@ def llm(messages: List[Dict], *, temperature: float = 0.15, max_tokens: int = 28
     except Exception: pass
     raise RuntimeError(f"No text in response: {data}")
 
-# Utilities
+
 def parse_json(text: str) -> Optional[Any]:
     if not text: return None
     s = text.strip()
@@ -390,8 +290,10 @@ def parse_json(text: str) -> Optional[Any]:
             except Exception: pass
     return None
 
+
 def clip(values: List[str], limit: int = 4) -> List[str]:
     return [str(v).strip() for v in (values or []) if str(v).strip()][:limit]
+
 
 def coerce(value: Any, default: float = 5.0) -> float:
     if value is None: return float(default)
@@ -411,7 +313,9 @@ def coerce(value: Any, default: float = 5.0) -> float:
             except Exception: pass
     return float(default)
 
+
 def clamp(v: float) -> float: return round(max(0.0, min(10.0, v)), 1)
+
 
 def default_timeline(name: str = "", details: str = "") -> List[Dict[str, str]]:
     t = f"{name} {details}".lower()
@@ -440,13 +344,16 @@ def default_timeline(name: str = "", details: str = "") -> List[Dict[str, str]]:
                  ("First job","Translate the degree into the first role.")]
     return [{"stage": s, "what_happens": w} for s, w in beats]
 
+
 _STALE_FILLER_RE = re.compile(
     r"covid|pandemic|coronavirus|post-covid|unprecedented times|remote learning shift",
     re.IGNORECASE
 )
 
+
 def _drop_stale_filler(items: List[str]) -> List[str]:
     return [s for s in items if not _STALE_FILLER_RE.search(s)]
+
 
 def normalize(opt: Dict[str, Any]) -> Dict[str, Any]:
     o = dict(opt)
@@ -473,6 +380,7 @@ def normalize(opt: Dict[str, Any]) -> Dict[str, Any]:
         o[key] = clamp(coerce(o.get(key, 5)))
     o["summary"] = str(o.get("summary") or "Analysis pending.")
     return o
+
 
 def heuristic(prof: Dict[str, Any], opt: Dict[str, Any]) -> Dict[str, Any]:
     txt = f"{opt.get('name','')} {opt.get('details','')} {prof.get('context_note','')} {prof.get('home_location','')}".lower()
@@ -504,7 +412,7 @@ def heuristic(prof: Dict[str, Any], opt: Dict[str, Any]) -> Dict[str, Any]:
         "time_commitment":tc,"geographic_mobility":gm,"flexibility":fl,"recovery_difficulty":rd,
         "confidence_level":cl,"summary":"Keyword estimate — AI unavailable."})
 
-# Scoring
+
 def weights(prof: Dict[str, Any]) -> Dict[str, float]:
     risk = float(prof.get("risk_tolerance", 5))
     money = float(prof.get("financial_pressure", 5))
@@ -513,6 +421,7 @@ def weights(prof: Dict[str, Any]) -> Dict[str, float]:
             "path_change_ease": risk, "networking":5., "family_support_required":10-support,
             "mental_workload": money, "bureaucracy":4., "time_commitment":4.,
             "geographic_mobility":4., "flexibility": risk, "recovery_difficulty":10-risk, "confidence_level":4.}
+
 
 def score(opt: Dict[str, Any], w: Dict[str, float]) -> float:
     pos = {"salary_potential":opt["salary_potential"],"career_flexibility":opt["career_flexibility"],
@@ -526,6 +435,7 @@ def score(opt: Dict[str, Any], w: Dict[str, float]) -> float:
     for k,v in {**pos,**neg}.items():
         wt=w.get(k,1.); total+=wt*v; wsum+=wt
     return round(total/max(wsum,1.),1)
+
 
 def apply_scenarios(opt: Dict[str, Any], scenarios: List[str]) -> Dict[str, Any]:
     a = dict(opt)
@@ -546,8 +456,10 @@ def apply_scenarios(opt: Dict[str, Any], scenarios: List[str]) -> Dict[str, Any]
             a["career_flexibility"]=min(10,a["career_flexibility"]+1); a["confidence_level"]=min(10,a["confidence_level"]+1)
     return a
 
+
 def active_scenarios() -> List[str]:
     return [n for n,_ in SCENARIOS if st.session_state.scenario_checks.get(n)]
+
 
 _METRIC_LABELS = {
     "financial_risk": "financial risk", "salary_potential": "salary potential",
@@ -561,9 +473,8 @@ _METRIC_LABELS = {
 _BAD_WHEN_UP = {"financial_risk","family_support_required","mental_workload","bureaucracy",
                 "time_commitment","geographic_mobility","recovery_difficulty"}
 
+
 def scenario_impact_text(opt: Dict[str, Any], scenarios: List[str]) -> str:
-    """Describe, in plain language, which metrics shift for this option under the
-    selected scenarios — no numeric score."""
     before = opt
     after  = apply_scenarios(opt, scenarios)
     ups, downs = [], []
@@ -579,7 +490,7 @@ def scenario_impact_text(opt: Dict[str, Any], scenarios: List[str]) -> str:
     if ups:   parts.append(f"reduces {', '.join(ups)}")
     return "Under the selected scenario(s), this option " + " and ".join(parts) + "."
 
-# AI prompt
+
 def build_prompt(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     ctx = {"risk_tolerance_0_to_10": prof.get("risk_tolerance"),
            "financial_pressure_0_to_10": prof.get("financial_pressure"),
@@ -661,6 +572,7 @@ Return ONLY this JSON object:
   ]
 }}"""
 
+
 def fallback_comparison(opts: List[Dict[str, Any]]) -> Dict[str, Any]:
     if not opts:
         return {"biggest_tradeoff":"Not enough information to compare yet.",
@@ -680,12 +592,13 @@ def fallback_comparison(opts: List[Dict[str, Any]]) -> Dict[str, Any]:
                 "What happens to your aid if your family situation changes after year one?",
                 "How easy is it to switch programs, transfer, or pause if needed?"]}
 
-# Engine
+
 NUMERIC_KEYS = ["flexibility","recovery_difficulty","confidence_level","financial_risk",
                 "salary_potential","career_flexibility","path_change_ease","networking",
                 "family_support_required","mental_workload","bureaucracy","time_commitment","geographic_mobility"]
 TEXT_KEYS    = ["summary","hidden_costs","hidden_benefits","opportunity_costs",
                 "first_gen_insights","timeline","unknowns","questions_to_investigate"]
+
 
 def run_engine(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> Dict[str, Any]:
     try:
@@ -724,7 +637,6 @@ def run_engine(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> Dict[str, An
                 if rv is not None: row[key] = clamp(coerce(rv))
             merged.append(normalize(row))
 
-        # Sanity: if all financial_risk scores are exactly 5.0, override with heuristics
         if len(merged) >= 2 and len({o.get("financial_risk",5) for o in merged}) == 1:
             for i,(m,src) in enumerate(zip(merged, opts)):
                 h = heuristic(prof, src)
@@ -746,49 +658,49 @@ def run_engine(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> Dict[str, An
         fb_opts = [heuristic(prof, o) for o in opts]
         return {"options": fb_opts, "comparison": fallback_comparison(fb_opts), "used_ai": False}
 
-# Rendering
+
 _POSITIVE_KEYS = {"salary_potential","networking","career_flexibility","flexibility","confidence_level","path_change_ease"}
+
 
 def _bar_color(key: str, val: float) -> str:
     if key in _POSITIVE_KEYS:
-        if val >= 7: return "linear-gradient(90deg, #059669, #34d399)"
-        if val >= 4: return "linear-gradient(90deg, #0d9488, #5eead4)"
-        return "linear-gradient(90deg, #1e40af, #60a5fa)"
+        if val >= 7: return "#6FA888"
+        if val >= 4: return "#8FBFA3"
+        return "#7A88A0"
     else:
-        if val >= 7: return "linear-gradient(90deg, #dc2626, #f87171)"
-        if val >= 4: return "linear-gradient(90deg, #b45309, #fbbf24)"
-        return "linear-gradient(90deg, #059669, #34d399)"
+        if val >= 7: return "#E8694F"
+        if val >= 4: return "#E0B05C"
+        return "#6FA888"
 
-def _risk_tag(key: str) -> str:
-    if key in _POSITIVE_KEYS: return "UPSIDE"
-    return "RISK"
 
 def metric_chip(label: str, key: str, val: float) -> str:
     color = _bar_color(key, val)
-    tag   = _risk_tag(key)
     return (f'<div class="mc">'
-            f'<div class="mc-label">{html_escape(label)}</div>'
-            f'<div class="mc-value">{val:.1f}</div>'
+            f'<div class="mc-top"><span class="mc-label">{html_escape(label)}</span>'
+            f'<span class="mc-value">{val:.1f}</span></div>'
             f'<div class="mc-bar"><span class="mc-fill" style="width:{val*10:.0f}%;background:{color}"></span></div>'
-            f'<div class="mc-tag">{tag}</div>'
             f'</div>')
 
+
 _LB_ICONS = {
-    "Hidden costs":              ("\U0001F4B8", "rgba(248,113,113,0.10)", "rgba(248,113,113,0.22)"),
-    "Hidden benefits":           ("\u2728", "rgba(52,211,153,0.10)",  "rgba(52,211,153,0.22)"),
-    "Opportunity costs":         ("\u2696\uFE0F", "rgba(251,191,36,0.10)",  "rgba(251,191,36,0.22)"),
-    "First-generation insights": ("\U0001F9ED", "rgba(90,158,255,0.10)",  "rgba(90,158,255,0.22)"),
-    "Unknowns":                  ("\u2753", "rgba(167,139,250,0.10)", "rgba(167,139,250,0.22)"),
-    "Questions to investigate":  ("\U0001F50D", "rgba(94,234,212,0.10)",  "rgba(94,234,212,0.22)"),
+    "Hidden costs":              "weighs against you",
+    "Hidden benefits":           "weighs for you",
+    "Opportunity costs":         "what you give up",
+    "First-generation insights": "what families don't always know",
+    "Unknowns":                  "still uncertain",
+    "Questions to investigate":  "ask the school directly",
 }
 
+
 def render_listbox(title: str, items: List[str]) -> str:
-    icon, bg, border = _LB_ICONS.get(title, ("\u203A", "rgba(255,255,255,0.03)", "rgba(255,255,255,0.08)"))
+    sub = _LB_ICONS.get(title, "")
     if not items: items = ["—"]
     lis = "".join(f"<li>{html_escape(i)}</li>" for i in items)
-    return (f'<div class="lb" style="background:{bg};border-color:{border};">'
-            f'<div class="lb-header"><span class="lb-icon">{icon}</span>{html_escape(title)}</div>'
+    sub_html = f'<span style="color:var(--fog-dim);font-weight:400;text-transform:none;letter-spacing:0;margin-left:0.4rem">— {html_escape(sub)}</span>' if sub else ""
+    return (f'<div class="lb">'
+            f'<div class="lb-header">{html_escape(title)}{sub_html}</div>'
             f'<ul>{lis}</ul></div>')
+
 
 def render_timeline(opt: Dict[str, Any]) -> str:
     stages = opt.get("timeline") or []
@@ -806,93 +718,96 @@ def render_timeline(opt: Dict[str, Any]) -> str:
         )
     return f'<div class="tl-wrap">{"".join(rows)}</div>'
 
+
 def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     n = max(len(opts), 1)
-    cw, ch, gap = 320, 240, 40
-    width   = max(1100, n * (cw + gap) + 140)
-    height  = 740
+    cw, ch, gap = 300, 232, 36
+    width   = max(900, n * (cw + gap) + 120)
+    height  = 600
     cx      = width // 2
-    ry, py, cy2 = 56, 150, 268
+    ry, py, cy2 = 50, 132, 226
 
     def e(s): return html_escape(str(s))
-    def t(x, y, txt, sz=13, fw=500, col="#EEF2F9", anchor="middle", ff="Inter"):
+    def t(x, y, txt, sz=13, fw=500, col="#F5F1E8", anchor="middle", ff="'Public Sans',sans-serif"):
         return (f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" fill="{col}" '
                 f'font-size="{sz}" font-weight="{fw}" font-family="{ff}">{e(txt)}</text>')
 
     out = [f'<svg viewBox="0 0 {width} {height}" width="100%" height="{height}" xmlns="http://www.w3.org/2000/svg">']
     out.append("""<defs>
-      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#050d17"/><stop offset="100%" stop-color="#081525"/>
+      <linearGradient id="bgg" x1="0" y1="0" x2="0.3" y2="1">
+        <stop offset="0%" stop-color="#0F1A2E"/><stop offset="100%" stop-color="#162644"/>
       </linearGradient>
-      <linearGradient id="card" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#f1f5fb"/><stop offset="100%" stop-color="#dde5f4"/>
+      <linearGradient id="cardg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1B2A45"/><stop offset="100%" stop-color="#162038"/>
       </linearGradient>
-      <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#6366f1"/>
-      </linearGradient>
-      <filter id="sh"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity="0.4"/></filter>
-      <filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="glow2"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
       <style>
-        .ln{stroke-dasharray:900;stroke-dashoffset:900;animation:draw 1.2s ease-out forwards}
-        .cd{opacity:0;animation:rise .65s ease-out forwards}
-        @keyframes draw{to{stroke-dashoffset:0}}
-        @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+        .ln2{stroke-dasharray:700;stroke-dashoffset:700;animation:draw2 1s ease-out forwards}
+        .cd2{opacity:0;animation:rise2 .55s ease-out forwards}
+        @keyframes draw2{to{stroke-dashoffset:0}}
+        @keyframes rise2{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
       </style>
     </defs>""")
-    out.append(f'<rect width="{width}" height="{height}" fill="url(#bg)"/>')
-    out.append(f'<circle cx="{cx}" cy="{ry+18}" r="28" fill="rgba(90,158,255,0.15)" filter="url(#glow)"/>')
-    out.append(f'<circle cx="{cx}" cy="{ry+18}" r="8" fill="#5a9eff"/>')
-    out.append(t(cx, ry-4, "YOU ARE HERE", 10, 700, "#5a9eff"))
-    out.append(t(cx, ry+44, prof.get("name") or "This decision", 22, 700, "#EEF2F9", ff="Fraunces"))
-    out.append(t(cx, py, "Which path to take", 13, 600, "rgba(238,242,249,0.55)"))
-    out.append(f'<line x1="{cx}" y1="{ry+50}" x2="{cx}" y2="{py-10}" stroke="rgba(90,158,255,0.25)" stroke-width="1.5" stroke-dasharray="4,3"/>')
+    out.append(f'<rect width="{width}" height="{height}" fill="url(#bgg)"/>')
+    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="22" fill="rgba(255,140,66,0.16)" filter="url(#glow2)"/>')
+    out.append(f'<circle cx="{cx}" cy="{ry+14}" r="6" fill="#FF8C42"/>')
+    out.append(t(cx, ry-8, "YOU ARE HERE", 9.5, 600, "#FF8C42", ff="'JetBrains Mono',monospace"))
+    out.append(t(cx, ry+38, prof.get("name") or "Your decision", 21, 600, "#F5F1E8", ff="'Spectral',serif"))
+    out.append(f'<line x1="{cx}" y1="{ry+44}" x2="{cx}" y2="{py-8}" stroke="rgba(168,180,199,0.25)" stroke-width="1.3" stroke-dasharray="3,4"/>')
 
     sx = cx - ((n-1)*(cw+gap))/2
     mkeys  = ["financial_risk","salary_potential","networking","recovery_difficulty"]
-    mlabels = ["Financial risk","Salary potential","Networking","Recovery diff."]
-    mcols  = ["#f87171","#34d399","#60a5fa","#fbbf24"]
+    mlabels = ["Financial risk","Salary potential","Networking","Recovery difficulty"]
     mhigh_bad = [True, False, False, True]
 
     for i, opt in enumerate(opts):
         x   = sx + i*(cw+gap)
         mid = x + cw/2
-        d   = 0.13*i
-        out.append(f'<path class="ln" d="M{cx:.0f} {py+16} Q{cx:.0f} {cy2-48} {mid:.0f} {cy2-12}" '
-                   f'fill="none" stroke="rgba(90,158,255,0.20)" stroke-width="1.5" style="animation-delay:{d:.2f}s"/>')
-        g = [f'<g class="cd" style="animation-delay:{d+0.38:.2f}s">']
-        g.append(f'<rect x="{x:.1f}" y="{cy2}" width="{cw}" height="{ch}" rx="22" '
-                 f'fill="url(#card)" stroke="rgba(90,158,255,0.14)" stroke-width="1" filter="url(#sh)"/>')
-        g.append(t(mid, cy2+30, opt["name"], 16, 800, "#0f172a", ff="Fraunces"))
-        summary = str(opt.get("summary",""))[:58]
-        g.append(t(mid, cy2+50, summary, 10, 400, "#475569"))
-        base_y = cy2+74
-        for j,(mk,ml,mc,hi_bad) in enumerate(zip(mkeys,mlabels,mcols,mhigh_bad)):
-            dy = base_y + j*38
+        d   = 0.11*i
+        out.append(f'<path class="ln2" d="M{cx:.0f} {py+12} Q{cx:.0f} {cy2-40} {mid:.0f} {cy2-10}" '
+                   f'fill="none" stroke="rgba(255,140,66,0.22)" stroke-width="1.3" style="animation-delay:{d:.2f}s"/>')
+        g = [f'<g class="cd2" style="animation-delay:{d+0.32:.2f}s">']
+        g.append(f'<rect x="{x:.1f}" y="{cy2}" width="{cw}" height="{ch}" rx="16" '
+                 f'fill="url(#cardg)" stroke="rgba(168,180,199,0.18)" stroke-width="1"/>')
+        g.append(t(mid, cy2+28, opt["name"], 15.5, 600, "#F5F1E8", ff="'Spectral',serif"))
+        summary = str(opt.get("summary",""))[:54]
+        g.append(t(mid, cy2+47, summary, 9.5, 400, "#A8B4C7"))
+        base_y = cy2+70
+        for j,(mk,ml,hi_bad) in enumerate(zip(mkeys,mlabels,mhigh_bad)):
+            dy = base_y + j*36
             val = coerce(opt.get(mk, 5))
-            bar_col = mc if not hi_bad else ("#34d399" if val < 4 else ("#fbbf24" if val < 7 else "#f87171"))
-            g.append(t(x+16, dy, ml, 8, 600, "#475569", anchor="start"))
-            g.append(t(x+cw-16, dy, f"{val:.1f}", 10, 700, "#0f172a", anchor="end"))
-            g.append(f'<rect x="{x+16:.1f}" y="{dy+6:.1f}" width="{cw-32}" height="6" rx="999" fill="rgba(15,23,42,0.12)"/>')
-            g.append(f'<rect x="{x+16:.1f}" y="{dy+6:.1f}" width="{val/10*(cw-32):.1f}" height="6" rx="999" fill="{bar_col}"/>')
+            bar_col = "#6FA888" if (hi_bad and val < 4) or (not hi_bad and val >= 7) else ("#E0B05C" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#E8694F")
+            g.append(t(x+15, dy, ml, 8.5, 500, "#7A88A0", anchor="start", ff="'JetBrains Mono',monospace"))
+            g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 600, "#F5F1E8", anchor="end", ff="'JetBrains Mono',monospace"))
+            g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(255,255,255,0.07)"/>')
+            g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{val/10*(cw-30):.1f}" height="5" rx="999" fill="{bar_col}"/>')
         g.append("</g>")
         out.append("".join(g))
     out.append("</svg>")
     return "".join(out)
 
-# UI — Hero
-st.markdown("""
+
+HERO_MARK = """<svg class="hero-mark" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="16" cy="16" r="14.5" stroke="#A8B4C7" stroke-width="1.3" opacity="0.45"/>
+<path d="M16 6 L19.5 16 L16 26 L12.5 16 Z" fill="#FF8C42"/>
+<circle cx="16" cy="16" r="2.3" fill="#0F1A2E"/>
+</svg>"""
+
+st.markdown(f"""
 <div class="hero">
-  <div class="hero-eyebrow">First Gen Compass</div>
-  <h1 class="hero-title">See the hidden realities before you decide.</h1>
+  <div class="hero-top">
+    {HERO_MARK}
+    <span class="hero-word">Compass</span>
+  </div>
+  <h1 class="hero-title">Most college guidance assumes<br>someone already showed you<br>the <span class="accent">unwritten rules</span>.</h1>
   <p class="hero-sub">
-    The AI draws on real knowledge of specific colleges, cities, costs, and career paths —
-    not generic defaults. No verdicts. No "best choice." Just a clearer map of what each
-    path truly asks from you.
+    This won't tell you which option is "best." It'll show you what each one actually
+    costs, who it quietly depends on, and what tends to surprise people who didn't grow up
+    with a roadmap for this.
   </p>
 </div>
 """, unsafe_allow_html=True)
 
-# API key status
 if not get_api_key():
     st.warning(
         "No NVIDIA API key configured. Add `NVIDIA_API_KEY` to this app's "
@@ -900,11 +815,10 @@ if not get_api_key():
         "Without it, results fall back to keyword-based estimates."
     )
 
-# Profile
-st.markdown('<div class="section-label">Your situation</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-label"><span class="dot"></span>WHERE YOU\'RE STARTING FROM</div>', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 with c1:
-    st.session_state["name"]         = st.text_input("Your name (optional)",    value=st.session_state["name"],         placeholder="For the map label")
+    st.session_state["name"]         = st.text_input("Your name (optional)",    value=st.session_state["name"],         placeholder="for the map")
 with c2:
     st.session_state["context_note"] = st.text_input("One-line context",         value=st.session_state["context_note"], placeholder="e.g. first in family to study abroad")
 with c3:
@@ -914,10 +828,10 @@ s1, s2, s3 = st.columns(3)
 with s1: st.session_state["risk_tolerance"]    = st.slider("Risk tolerance",           0, 10, int(st.session_state["risk_tolerance"]))
 with s2: st.session_state["financial_pressure"]= st.slider("Financial pressure",       0, 10, int(st.session_state["financial_pressure"]))
 with s3: st.session_state["family_support"]    = st.slider("Family support / guidance",0, 10, int(st.session_state["family_support"]))
-st.caption("These sliders weight the scores toward what matters most in your situation.")
+st.markdown('<p class="section-hint">These three numbers tilt every score below toward what actually matters in your situation — there\'s no universal right answer here.</p>', unsafe_allow_html=True)
 
-# Scenarios
-st.markdown('<div class="section-label">Scenario stress-test</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-label"><span class="dot"></span>WHAT COULD GO SIDEWAYS</div>', unsafe_allow_html=True)
+st.markdown('<p class="section-hint">Tick anything that feels plausible. Each option gets re-read through that lens further down.</p>', unsafe_allow_html=True)
 scols = st.columns(4)
 for i, (name, desc) in enumerate(SCENARIOS):
     with scols[i % 4]:
@@ -925,14 +839,13 @@ for i, (name, desc) in enumerate(SCENARIOS):
 
 st.divider()
 
-# Option inputs
-st.markdown('<div class="section-label">Your options</div>', unsafe_allow_html=True)
+st.markdown('<div class="section-label"><span class="dot"></span>THE OPTIONS ON THE TABLE</div>', unsafe_allow_html=True)
 ac, rc = st.columns([1, 1])
 with ac:
-    if st.button("Add option", use_container_width=True):
+    if st.button("Add another option", use_container_width=True):
         st.session_state.options.append(new_option(len(st.session_state.options)+1))
 with rc:
-    if st.button("Start over", use_container_width=True):
+    if st.button("Clear everything", use_container_width=True):
         for k in ["options","engine_result","show_results"]:
             st.session_state[k] = [new_option(1), new_option(2)] if k == "options" else (None if k == "engine_result" else False)
         st.rerun()
@@ -943,20 +856,20 @@ for opt in list(st.session_state.options):
     h1, h2 = st.columns([5, 1])
     with h1:
         opt["name"] = st.text_input("Option name", value=opt["name"], key=f"n_{oid}", label_visibility="collapsed",
-                                    placeholder="e.g. UCLA, MIT, Local community college, Coding bootcamp…")
+                                    placeholder="UCLA, MIT, the community college down the road, a coding bootcamp…")
     with h2:
         if st.button("Remove", key=f"rm_{oid}", use_container_width=True) and len(st.session_state.options) > 2:
             st.session_state.options = [o for o in st.session_state.options if o["id"] != oid]
             st.session_state.engine_result = None; st.session_state.show_results = False; st.rerun()
     opt["details"]  = st.text_area("Details", value=opt.get("details",""), key=f"d_{oid}",
                                    label_visibility="collapsed", height=80,
-                                   placeholder="Optional extra context — cost, location, major, situation. Just a school name works too.")
+                                   placeholder="Anything you already know — cost, location, program. A name alone is enough to start with.")
     opt["gut_take"] = st.text_input("Gut take", value=opt.get("gut_take",""), key=f"g_{oid}",
-                                    placeholder="Your intuition — the AI will engage with it, not override it.")
+                                    placeholder="What's your instinct telling you? The analysis will engage with it, not talk you out of it.")
     st.markdown('</div>', unsafe_allow_html=True)
 
-if st.button("Chart the paths", type="primary", use_container_width=True):
-    with st.spinner("AI is reasoning about your specific options — usually 15-25 seconds…"):
+if st.button("Map out these paths", type="primary", use_container_width=True):
+    with st.spinner("Working through each option — this usually takes 15–25 seconds…"):
         prof = profile()
         result = run_engine(prof, st.session_state.options)
     st.session_state.engine_result = result
@@ -964,7 +877,6 @@ if st.button("Chart the paths", type="primary", use_container_width=True):
 
 st.divider()
 
-# Results
 if st.session_state.show_results and st.session_state.engine_result:
     result = st.session_state.engine_result
     ranked = list(result["options"])
@@ -973,19 +885,17 @@ if st.session_state.show_results and st.session_state.engine_result:
     w      = weights(prof)
 
     if result.get("used_ai"):
-        st.success("AI reasoning used — scores reflect real knowledge of these specific institutions and paths.")
+        st.success("Reasoning is grounded in real knowledge of these specific places and paths.")
     else:
-        st.warning("Showing keyword-based estimates — AI was unavailable. Add your NVIDIA API key for accurate scores.")
+        st.warning("Running on keyword estimates only — the AI connection wasn't available. Add an NVIDIA API key for sharper analysis.")
 
-    # Map
-    st.markdown('<div class="section-label">Decision map</div>', unsafe_allow_html=True)
-    st.caption("Visual ranks are not a recommendation — they show the structure of the trade-off given your profile.")
-    st.components.v1.html(render_map_svg(prof, ranked), height=740, scrolling=True)
+    st.markdown('<div class="section-label"><span class="dot"></span>THE LAY OF THE LAND</div>', unsafe_allow_html=True)
+    st.markdown('<p class="section-hint">Positions here describe the shape of the trade-off for your profile — not a ranking of which to pick.</p>', unsafe_allow_html=True)
+    st.components.v1.html(render_map_svg(prof, ranked), height=600, scrolling=True)
 
-    # Comparison
-    st.markdown('<div class="section-label">Comparison</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label"><span class="dot"></span>HOW THEY STACK UP AGAINST EACH OTHER</div>', unsafe_allow_html=True)
     st.markdown(
-        f'<div class="cmp-panel"><div class="cmp-panel-label">Biggest trade-off</div>'
+        f'<div class="cmp-panel"><div class="cmp-panel-label">The core tension</div>'
         f'<div class="cmp-panel-text">{html_escape(result["comparison"]["biggest_tradeoff"])}</div></div>',
         unsafe_allow_html=True)
 
@@ -1020,18 +930,17 @@ if st.session_state.show_results and st.session_state.engine_result:
                     unsafe_allow_html=True)
         else:
             st.markdown(render_listbox("Unknowns",[
-                "Toggle scenarios above to stress-test which path breaks first.",
-                "Each scenario shows the most exposed option and the score shift."]), unsafe_allow_html=True)
+                "Tick a scenario above to see which path bends first.",
+                "Each one highlights the option most exposed to that shift."]), unsafe_allow_html=True)
 
-    # Per-option breakdown
-    st.markdown('<div class="section-label">Option-by-option breakdown</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label"><span class="dot"></span>EACH OPTION, IN DETAIL</div>', unsafe_allow_html=True)
 
     for opt in ranked:
         st.markdown(
             f'<div class="opt-result">'
             f'<div class="opt-result-head">'
-            f'<div><div class="opt-result-name">{html_escape(opt["name"])}</div>'
-            f'<div class="opt-result-summary">{html_escape(opt.get("summary",""))}</div></div>'
+            f'<div class="opt-result-name">{html_escape(opt["name"])}</div>'
+            f'<div class="opt-result-summary">{html_escape(opt.get("summary",""))}</div>'
             f'</div><div class="opt-result-body">',
             unsafe_allow_html=True)
 
@@ -1065,42 +974,44 @@ if st.session_state.show_results and st.session_state.engine_result:
 
         st.markdown("<div style='height:1.1rem'></div>", unsafe_allow_html=True)
 
-        st.markdown("**Step-by-step timeline**", unsafe_allow_html=True)
+        st.markdown("**How this plays out, roughly**", unsafe_allow_html=True)
         st.components.v1.html(
-            f"<style>*{{box-sizing:border-box;font-family:'Inter',sans-serif}}"
-            f".tl-wrap{{padding:0.5rem 0}}"
-            f".tl-row{{display:grid;grid-template-columns:2.4rem 1fr;gap:0 0.9rem;margin-bottom:0}}"
-            f".tl-node-col{{display:flex;flex-direction:column;align-items:center}}"
-            f".tl-dot{{width:2.2rem;height:2.2rem;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#6366f1);"
-            f"display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:800;color:#fff;"
-            f"box-shadow:0 0 0 3px rgba(59,130,246,0.18);flex-shrink:0}}"
-            f".tl-connector{{width:2px;flex:1;min-height:0.8rem;background:linear-gradient(to bottom,rgba(99,102,241,0.4),rgba(99,102,241,0.08));margin:2px 0}}"
-            f".tl-content{{background:rgba(248,250,252,0.06);border:1px solid rgba(255,255,255,0.09);"
-            f"border-radius:14px;padding:0.7rem 1rem 0.8rem;margin-bottom:0.55rem;color:#cdd6e8}}"
-            f".tl-stage{{font-size:0.66rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;"
-            f"color:#60a5fa;margin-bottom:0.2rem}}"
-            f".tl-text{{font-size:0.86rem;line-height:1.55;color:rgba(205,214,232,0.82)}}</style>"
+            "<style>*{box-sizing:border-box;font-family:'Public Sans',sans-serif}"
+            "body{margin:0}"
+            ".tl-wrap{padding:0.4rem 0}"
+            ".tl-row{display:grid;grid-template-columns:2.3rem 1fr;gap:0 0.9rem;margin-bottom:0}"
+            ".tl-node-col{display:flex;flex-direction:column;align-items:center}"
+            ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#FF8C42;"
+            "display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;"
+            "font-size:0.74rem;font-weight:600;color:#0F1A2E;flex-shrink:0}"
+            ".tl-connector{width:1.5px;flex:1;min-height:0.7rem;background:rgba(168,180,199,0.3);margin:3px 0}"
+            ".tl-content{padding:0.55rem 0 0.95rem;color:#E5E0D4}"
+            ".tl-stage{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;"
+            "text-transform:uppercase;color:#FF8C42;margin-bottom:0.22rem}"
+            ".tl-text{font-size:0.88rem;line-height:1.55;color:#A8B4C7}</style>"
             + render_timeline(opt),
-            height=max(280, len(opt.get("timeline",[])) * 88), scrolling=False)
+            height=max(260, len(opt.get("timeline",[])) * 84), scrolling=False)
 
         if act:
             impact_text = scenario_impact_text(opt, act)
             st.markdown(
                 f'<div class="stress-panel">'
-                f'<div class="stress-icon">\u2696\uFE0F</div>'
                 f'<div><div class="stress-label">Under your selected scenario(s)</div>'
                 f'<div class="stress-delta">{html_escape(impact_text)}</div>'
                 f'</div></div>', unsafe_allow_html=True)
 
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+
+    with st.expander("Raw data behind this analysis"):
+        st.code(json.dumps(result, indent=2, ensure_ascii=False), language="json")
+
 else:
     st.markdown("""
     <div class="empty-state">
-      <div class="empty-state-icon">\U0001F5FA\uFE0F</div>
-      <div class="empty-state-title">Your map will appear here</div>
+      <div class="empty-state-title">Nothing mapped yet</div>
       <div class="empty-state-text">
-        Enter any college names, paths, or options above and click <b>Chart the paths</b>.
-        Just a name is enough — the AI already knows UCLA, MIT, community colleges, and thousands more.
+        Add the names of whatever you're weighing above and select Map out these paths.
+        A name by itself is enough — it already knows UCLA from a community college from a bootcamp.
       </div>
     </div>""", unsafe_allow_html=True)
