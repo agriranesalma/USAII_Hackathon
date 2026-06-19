@@ -28,7 +28,7 @@ SCENARIOS = [
 
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@500;600;700&family=Dancing+Script:wght@600;700&display=swap');
 
 :root {
   --bg: #FBF7F1;
@@ -201,56 +201,61 @@ div[data-baseweb="checkbox"] input:checked + span {
 
 .hero-copy{ padding-top:.15rem; }
 
-.hero-top {
-  display: flex;
-  align-items: center;
-  gap: 0.85rem;
-  margin-bottom: 1.25rem;
+.hero-top{ display:none; }
+
+.hero-copy{ display:flex; flex-direction:column; gap:.15rem; }
+
+.hero-title{
+  display:flex;
+  flex-direction:column;
+  gap:.02em;
+  font-size:clamp(3rem, 6vw, 5.1rem);
+  line-height:.92;
+  font-weight:800;
+  letter-spacing:-.055em;
+  color:var(--text);
+  margin:0 0 .85rem;
+  max-width:8.2ch;
 }
 
-.hero-word {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 0.58rem 0.9rem;
-  border: 1px solid rgba(58,44,45,0.10);
-  border-radius: 999px;
-  background: rgba(255,255,255,0.60);
-  box-shadow: var(--shadow-soft);
+.hero-title-line{ display:block; }
+
+.hero-title-top{
+  font-size:.56em;
+  letter-spacing:-.06em;
+  color:var(--text);
 }
 
-.hero-title {
-  font-size: clamp(2.5rem, 5.3vw, 4.2rem);
-  font-weight: 700;
-  line-height: 0.98;
-  letter-spacing: -0.05em;
-  color: var(--text);
-  margin: 0 0 1.15rem;
-  max-width: 760px;
+.hero-title-bottom{
+  font-size:1.12em;
+  letter-spacing:-.075em;
+  color:var(--accent-2);
+  text-shadow:0 1px 0 rgba(255,255,255,.42);
 }
 
-.hero-title .accent { color: var(--accent-2); font-style: italic; }
-
-.hero-banner {
-  max-width: 700px;
-  padding: 1rem 1.15rem;
-  border-radius: 20px;
-  background:
-    linear-gradient(180deg, rgba(245,235,223,0.98), rgba(238,226,211,0.96));
-  border: 1px solid rgba(158,122,74,0.18);
-  box-shadow: var(--shadow-soft);
-  color: #3B2C2A;
-  font-size: 0.92rem;
-  line-height: 1.75;
-  font-weight: 600;
+.hero-slogan{
+  display:block;
+  position:relative;
+  max-width:34rem;
+  margin:0;
+  padding:0 0 0 1rem;
+  font-family:'Dancing Script', cursive;
+  font-size:1.45rem;
+  line-height:1.35;
+  font-weight:700;
+  color:var(--fog);
 }
 
-.hero-banner em {
-  font-style: normal;
-  color: var(--accent-2);
+.hero-slogan::before{
+  content:'';
+  position:absolute;
+  left:0;
+  top:.42em;
+  width:.55rem;
+  height:.55rem;
+  border-radius:999px;
+  background:var(--accent);
+  box-shadow:0 0 0 4px rgba(201,130,114,.12);
 }
 
 .hero-shell {
@@ -2057,15 +2062,9 @@ st.markdown('<div class="hero-grid">', unsafe_allow_html=True)
 with hero_left:
     st.markdown("""
     <div class="hero">
-      <div class="hero-top">
-        <span class="hero-word">FIRST-GEN NAVIGATION</span>
-      </div>
       <div class="hero-copy">
         <h1 class="hero-title"><span class="hero-title-line hero-title-top">First-Gen</span><span class="hero-title-line hero-title-bottom">Compass</span></h1>
-        <div class="hero-slogan">A calm, intelligent map for high-stakes choices—built to make the hidden parts visible without making the decision feel colder.</div>
-        <div class="hero-banner">
-          Designed for students making life-shaping decisions without inherited playbooks. It turns pressure, trade-offs, and hidden costs into something you can actually read.
-        </div>
+        <div class="hero-slogan">A calm, intelligent map for high-stakes choices—made for students who were never handed the unwritten rules.</div>
       </div>
     </div>
     """, unsafe_allow_html=True)
