@@ -1104,7 +1104,6 @@ def render_hero(angle: float = 0.0) -> str:
     return f"""
     <div style="font-family:'Inter',sans-serif;">
       <div class="hero-titlecard-standalone">
-        <div class="hero-kicker"><span class="dot"></span></div>
         <h1 class="hero-title">First-Gen <span class="accent">Compass</span></h1>
         <div class="hero-compass-slot">{compass_inner}</div>
         <div class="hero-slogan">Giving you the transparency to own your trajectory.</div>
