@@ -604,22 +604,45 @@ def score(opt: Dict[str, Any], w: Dict[str, float]) -> float:
 
 
 def apply_scenarios(opt: Dict[str, Any], scenarios: List[str]) -> Dict[str, Any]:
+    """
+    Deltas scale with the option's OWN existing metrics, not a flat number for
+    everyone. This is what makes the stress-test meaningful instead of generic:
+    a path that already depends heavily on family money gets hit much harder by
+    "family cannot support" than a self-sufficient one; a path that looked cheap
+    mostly because of assumed aid swings hardest when "scholarship lost" is ticked.
+    """
     a = dict(opt)
     for s in scenarios:
         if s == "Scholarship lost":
-            a["financial_risk"]=min(10,a["financial_risk"]+3); a["confidence_level"]=max(0,a["confidence_level"]-1)
+            # the cheaper an option looked, the more room it has to swing if that
+            # cheapness was aid-dependent — headroom-scaled, not flat
+            headroom = 10 - a["financial_risk"]
+            a["financial_risk"] = min(10, a["financial_risk"] + round(1.5 + headroom * 0.45, 1))
+            a["confidence_level"] = max(0, a["confidence_level"] - round(0.5 + headroom * 0.12, 1))
         elif s == "Family cannot support":
-            a["family_support_required"]=min(10,a["family_support_required"]+3); a["mental_workload"]=min(10,a["mental_workload"]+1)
+            reliance = a["family_support_required"]
+            a["family_support_required"] = min(10, a["family_support_required"] + round(0.8 + reliance * 0.32, 1))
+            a["mental_workload"] = min(10, a["mental_workload"] + round(0.4 + reliance * 0.14, 1))
         elif s == "Housing costs rise":
-            a["financial_risk"]=min(10,a["financial_risk"]+2); a["time_commitment"]=min(10,a["time_commitment"]+1)
+            exposure = a["geographic_mobility"]  # living away from home = paying market rent
+            a["financial_risk"] = min(10, a["financial_risk"] + round(0.8 + exposure * 0.32, 1))
+            a["time_commitment"] = min(10, a["time_commitment"] + round(0.3 + exposure * 0.1, 1))
         elif s == "Need part-time work":
-            a["time_commitment"]=min(10,a["time_commitment"]+2); a["mental_workload"]=min(10,a["mental_workload"]+2)
+            load = a["mental_workload"]  # an already-heavy path leaves less room to also work
+            a["time_commitment"] = min(10, a["time_commitment"] + round(1.0 + load * 0.22, 1))
+            a["mental_workload"] = min(10, a["mental_workload"] + round(0.8 + load * 0.18, 1))
         elif s == "Family emergency":
-            a["path_change_ease"]=max(0,a["path_change_ease"]-1); a["recovery_difficulty"]=min(10,a["recovery_difficulty"]+2)
+            rigidity = 10 - a["path_change_ease"]
+            a["path_change_ease"] = max(0, a["path_change_ease"] - round(0.4 + rigidity * 0.12, 1))
+            a["recovery_difficulty"] = min(10, a["recovery_difficulty"] + round(0.8 + rigidity * 0.18, 1))
         elif s == "Internship offer arrives":
-            a["networking"]=min(10,a["networking"]+2); a["salary_potential"]=min(10,a["salary_potential"]+1)
+            base = a["networking"]  # strong networks compound a new opportunity more
+            a["networking"] = min(10, a["networking"] + round(0.8 + base * 0.16, 1))
+            a["salary_potential"] = min(10, a["salary_potential"] + round(0.4 + base * 0.08, 1))
         elif s == "Graduate school becomes goal":
-            a["career_flexibility"]=min(10,a["career_flexibility"]+1); a["confidence_level"]=min(10,a["confidence_level"]+1)
+            base = a["career_flexibility"]
+            a["career_flexibility"] = min(10, a["career_flexibility"] + round(0.4 + base * 0.08, 1))
+            a["confidence_level"] = min(10, a["confidence_level"] + round(0.4 + base * 0.08, 1))
     return a
 
 
@@ -643,18 +666,33 @@ _BAD_WHEN_UP = {"financial_risk","family_support_required","mental_workload","bu
 def scenario_impact_text(opt: Dict[str, Any], scenarios: List[str]) -> str:
     before = opt
     after  = apply_scenarios(opt, scenarios)
-    ups, downs = [], []
+    changes = []  # (label, delta, worse)
     for key, label in _METRIC_LABELS.items():
         b, a = before.get(key, 5), after.get(key, 5)
-        if a == b: continue
-        worse = (a > b) if key in _BAD_WHEN_UP else (a < b)
-        (downs if worse else ups).append(label)
-    if not ups and not downs:
+        d = round(a - b, 1)
+        if abs(d) < 0.05: continue
+        worse = (d > 0) if key in _BAD_WHEN_UP else (d < 0)
+        changes.append((label, d, worse))
+    if not changes:
         return "This option is largely unaffected by the scenario(s) you selected."
-    parts = []
-    if downs: parts.append(f"raises {', '.join(downs)}")
-    if ups:   parts.append(f"reduces {', '.join(ups)}")
-    return "Under the selected scenario(s), this option " + " and ".join(parts) + "."
+
+    changes.sort(key=lambda c: abs(c[1]), reverse=True)
+    top = changes[:2]
+    bits = []
+    for label, d, worse in top:
+        verb = "climbs" if d > 0 else "eases"
+        bits.append(f"{label} {verb} by {abs(d):.1f} pt{'s' if abs(d) != 1 else ''}")
+    sentence = " and ".join(bits)
+
+    bad_n  = sum(1 for _, _, w in changes if w)
+    good_n = len(changes) - bad_n
+    if bad_n and not good_n:
+        verdict = "this path gets meaningfully harder to sustain."
+    elif good_n and not bad_n:
+        verdict = "this path actually loosens up a bit."
+    else:
+        verdict = "this path trades some upside for added pressure."
+    return f"{sentence} — {verdict}"
 
 
 def build_prompt(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
@@ -1112,7 +1150,7 @@ def render_hero(angle: float = 0.0) -> str:
         <div class="hero-kicker"><span class="dot"></span>DECISION COMPASS</div>
         <h1 class="hero-title">First-Gen <span class="accent">Compass</span></h1>
         <div class="hero-compass-slot">{compass_inner}</div>
-        <div class="hero-slogan">A calm, intelligent map for high-stakes choices.</div>
+        <div class="hero-slogan">The unwritten rules, finally written down.</div>
       </div>
     </div>
     <style>
@@ -1172,9 +1210,11 @@ st.components.v1.html(render_hero(), height=300, scrolling=False)
 st.markdown("""
 <div class="mission-panel">
   <strong>Why this exists</strong>
-  <p>This is a decision tool for first-gen students who are expected to translate a whole
-  system alone. It brings the real cost of each path into focus — money, mobility,
-  pressure, and the surprises people rarely say out loud.</p>
+  <p>Nobody in your family has already sat through a financial-aid appeal, knows what
+  "full ride" actually covers, or can name the unwritten rules that make some paths easier
+  than others. This tool won't hand you those rules — it gives you a structured way to
+  surface them, pressure-test each option against what could realistically go wrong, and
+  decide with the full picture in front of you, gut take included.</p>
 </div>
 """, unsafe_allow_html=True)
 
