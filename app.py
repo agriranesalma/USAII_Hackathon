@@ -12,111 +12,357 @@ import streamlit as st
 
 st.set_page_config(page_title="First-Gen Compass", page_icon="🧭", layout="centered")
 
-NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL = "meta/llama-3.3-70b-instruct"
+NVIDIA_BASE_URL    = "https://integrate.api.nvidia.com/v1"
+NVIDIA_MODEL       = "meta/llama-3.3-70b-instruct"
 
 SCENARIOS = [
-    ("Scholarship lost", "Financial aid is reduced or disappears."),
-    ("Family cannot support", "No extra family money or backup."),
-    ("Housing costs rise", "Rent and living costs are higher than expected."),
-    ("Need part-time work", "You must earn while studying."),
-    ("Family emergency", "You may need to pause or travel back home."),
-    ("Internship offer arrives", "A good internship becomes available."),
-    ("Graduate school becomes goal", "You might want to continue beyond the degree."),
+    ("Scholarship lost",              "Financial aid is reduced or disappears."),
+    ("Family cannot support",         "No extra family money or backup."),
+    ("Housing costs rise",            "Rent and living costs are higher than expected."),
+    ("Need part-time work",           "You must earn while studying."),
+    ("Family emergency",              "You may need to pause or travel back home."),
+    ("Internship offer arrives",      "A good internship becomes available."),
+    ("Graduate school becomes goal",  "You might want to continue beyond the degree."),
 ]
-
-# ──────────────────────────────────────────────────────────────────────────
-# STYLE
-# ──────────────────────────────────────────────────────────────────────────
 
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,800;8..60,900&family=Dancing+Script:wght@700&family=IBM+Plex+Mono:wght@500;700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700;8..60,800;8..60,900&family=IBM+Plex+Mono:wght@500;600;700&family=Dancing+Script:wght@600;700&display=swap');
 
-html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
+:root {
+  --bg: #FBF7F1;
+  --ink-strong: #1f1718;
+  --ink: #2d2224;
+  --text: #231B1C;
+  --fog: #6d6062;
+  --muted: #6D6062;
+  --muted-2: #887A7C;
 
+  --beige-deep: #3B2C2A;       /* deep beige/espresso for the hero title card */
+  --beige-deep-2: #4A372F;
+  --cream: #F4EADC;
+  --sand: #EFE2CF;
+
+  --accent: #C98272;
+  --accent-2: #A56A74;
+  --rose: #C98272;
+  --rose-2: #B86A79;
+  --gold: #9E7A4A;
+  --sage: #68806B;
+
+  --line: rgba(58, 44, 45, 0.10);
+  --line-strong: rgba(58, 44, 45, 0.18);
+  --shadow: 0 28px 70px rgba(54, 42, 44, 0.10);
+  --shadow-soft: 0 16px 38px rgba(54, 42, 44, 0.07);
+}
+
+* { box-sizing: border-box; }
+
+html, body, .stApp {
+  background:
+    radial-gradient(circle at 12% 10%, rgba(201,130,114,0.08) 0%, transparent 28%),
+    radial-gradient(circle at 82% 0%, rgba(158,122,74,0.06) 0%, transparent 26%),
+    linear-gradient(180deg, #FFFDF9 0%, var(--bg) 100%) !important;
+  color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+}
+
+[data-testid="stHeader"], [data-testid="stToolbar"], [data-testid="stDecoration"],
+[data-testid="collapsedControl"], header, footer, #MainMenu, .stDeployButton {
+  visibility: hidden !important;
+  display: none !important;
+  height: 0 !important;
+}
+
+.block-container {
+  max-width: 1140px;
+  padding-top: 0.6rem;
+  padding-bottom: 4.5rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Source Serif 4', Georgia, serif !important;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+p, li, input, textarea, button { font-family: 'Inter', sans-serif !important; }
+::selection { background: rgba(201,130,114,0.22); color: var(--text); }
+a { color: var(--accent); }
+
+hr, div[data-testid="stDivider"] {
+  border-top: 1px solid var(--line) !important;
+  opacity: 1 !important;
+  margin: 2rem 0 !important;
+}
+
+[data-testid="stAlert"] {
+  border-radius: 18px !important;
+  border: 1px solid var(--line) !important;
+  background: rgba(255,255,255,0.85) !important;
+  box-shadow: var(--shadow-soft);
+}
+
+/* ---------- Form controls ---------- */
+div[data-testid="stSlider"] label,
+.stTextInput label, .stTextArea label, .stSelectbox label,
+div[data-testid="stCheckbox"] label {
+  color: var(--text) !important;
+  font-size: 0.75rem !important;
+  font-family: 'IBM Plex Mono', monospace !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700 !important;
+}
+
+div[data-testid="stCheckbox"] label,
+div[data-testid="stCheckbox"] label p,
+div[data-testid="stCheckbox"] [data-testid="stMarkdownContainer"],
+div[data-testid="stCheckbox"] [data-testid="stMarkdownContainer"] p {
+  color: var(--text) !important;
+  font-size: 0.92rem !important;
+  font-family: 'Inter', sans-serif !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-weight: 600 !important;
+  line-height: 1.3 !important;
+  -webkit-text-fill-color: var(--text) !important;
+}
+
+.stTextInput input, .stTextArea textarea {
+  background: rgba(255,255,255,0.95) !important;
+  border: 1px solid rgba(58,44,45,0.16) !important;
+  border-radius: 14px !important;
+  color: var(--text) !important;
+  font-weight: 500 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.65);
+}
+.stTextInput input::placeholder, .stTextArea textarea::placeholder { color: var(--muted-2) !important; opacity: 1 !important; }
+.stTextInput input:focus, .stTextArea textarea:focus {
+  border-color: rgba(201,130,114,0.72) !important;
+  box-shadow: 0 0 0 4px rgba(201,130,114,0.14) !important;
+}
+
+div[data-baseweb="checkbox"] span:first-child { background-color: rgba(58,44,45,0.04) !important; border-color: rgba(58,44,45,0.20) !important; border-radius: 6px !important; }
+div[data-baseweb="checkbox"] input:checked + span { background-color: var(--accent) !important; border-color: var(--accent) !important; }
+
+.stSlider [data-baseweb="slider"] div[role="slider"] { background-color: var(--accent) !important; box-shadow: 0 0 0 5px rgba(201,130,114,0.14) !important; }
+.stSlider [data-testid="stTickBar"] { display: none; }
+.stSlider [data-baseweb="slider"] > div > div { background: rgba(58,44,45,0.14) !important; }
+
+.stButton button[kind="primary"] {
+  background: linear-gradient(135deg, #D69B89 0%, #C98272 55%, #B86A79 100%) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  font-weight: 800 !important;
+  font-size: 1.02rem !important;
+  padding: 0.95rem 1.4rem !important;
+  color: #fffaf6 !important;
+  box-shadow: 0 16px 40px rgba(201,130,114,0.30) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.stButton button[kind="primary"]:hover { transform: translateY(-1px) !important; box-shadow: 0 20px 46px rgba(201,130,114,0.36) !important; }
+
+.stButton button:not([kind="primary"]) {
+  background: rgba(255,255,255,0.8) !important;
+  border: 1px solid rgba(58,44,45,0.16) !important;
+  border-radius: 999px !important;
+  color: var(--text) !important;
+  font-weight: 700 !important;
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.stButton button:not([kind="primary"]):hover { border-color: rgba(201,130,114,0.5) !important; transform: translateY(-1px) !important; }
+
+/* ===================================================================== */
+/* HERO mission panel — lives in normal page background, below the card  */
+/* ===================================================================== */
+.mission-panel {
+  max-width: 760px;
+  margin: 0.9rem auto 1.6rem;
+  padding: 1.2rem 1.5rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(245,235,223,0.95), rgba(238,226,211,0.9));
+  border: 1px solid rgba(158,122,74,0.18);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
+}
+.mission-panel strong {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rose-2);
+  margin-bottom: 0.45rem;
+  font-weight: 700;
+}
+.mission-panel p {
+  margin: 0;
+  color: #3b2c2a;
+  font-size: 0.97rem;
+  line-height: 1.75;
+  font-weight: 500;
+}
+
+/* ===================================================================== */
+/* Sections, cards, etc.                                                  */
+/* ===================================================================== */
 .section-label {
-    display: flex; align-items: center; gap: 0.5rem;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.14em; text-transform: uppercase; color: #FF8C42;
-    margin: 1.6rem 0 0.3rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 1rem;
+  margin: 2.4rem 0 1rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(242,228,211,0.95), rgba(247,239,230,0.92));
+  border: 1px solid rgba(58,44,45,0.10);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.73rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  box-shadow: 0 10px 22px rgba(57,42,56,0.05);
 }
-.section-label .dot {
-    width: 7px; height: 7px; border-radius: 50%; background: #FF8C42;
-    box-shadow: 0 0 0 4px rgba(255,140,66,0.18);
-}
-.section-hint { color: #A8B4C7; font-size: 0.88rem; margin: 0 0 0.8rem; }
+.section-label .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; box-shadow: 0 0 0 4px rgba(201,130,114,0.12); }
 
+.section-hint {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(58,44,45,0.07);
+  border-radius: 16px;
+  padding: 0.85rem 1rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin: -0.3rem 0 1.1rem;
+  max-width: 760px;
+}
+
+.opt-card, .lb, .opt-result, .cmp-panel, .sc-card, .stress-panel, .empty-state {
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,239,230,0.8));
+  border: 1px solid rgba(58,44,45,0.10);
+  border-radius: 22px;
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(12px);
+}
+
+.opt-card { padding: 1.05rem 1.15rem 0.7rem; margin-bottom: 1rem; border-left: 4px solid rgba(201,130,114,0.45); }
+
+.mc { padding: 0.8rem 0; border-bottom: 1px solid rgba(58,44,45,0.10); }
+.mc-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.42rem; }
+.mc-label { font-size: 0.7rem; letter-spacing: 0.07em; color: var(--muted); font-family: 'IBM Plex Mono', monospace; font-weight: 700; text-transform: uppercase; }
+.mc-value { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.35rem; font-weight: 700; color: var(--text); }
+.mc-bar { height: 6px; border-radius: 999px; background: rgba(58,44,45,0.08); overflow: hidden; }
+.mc-fill { display: block; height: 100%; border-radius: 999px; }
+
+.lb { padding: 1.05rem 1.1rem; height: 100%; }
+.lb-header { display: flex; align-items: center; gap: 0.5rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.75rem; padding-bottom: 0.65rem; border-bottom: 1px solid rgba(58,44,45,0.10); color: var(--text); }
+.lb ul { margin: 0; padding: 0; list-style: none; }
+.lb li { display: flex; gap: 0.5rem; align-items: flex-start; padding: 0.4rem 0; color: var(--fog); font-size: 0.96rem; font-weight: 500; line-height: 1.65; }
+.lb li::before { content: '•'; color: var(--accent); flex-shrink: 0; font-weight: 800; }
+
+.tl-wrap { position: relative; padding: 0.15rem 0; }
+.tl-row { display: grid; grid-template-columns: 2.25rem 1fr; gap: 0 0.85rem; }
+.tl-node-col { display: flex; flex-direction: column; align-items: center; }
+.tl-dot { width: 1.9rem; height: 1.9rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem; font-weight: 700; color: #fff9f6; background: linear-gradient(135deg, #D69B89, #B86A79); box-shadow: 0 10px 22px rgba(201,130,114,0.25); }
+.tl-connector { width: 1.5px; flex: 1; min-height: 0.9rem; background: rgba(58,44,45,0.14); margin: 4px 0; }
+.tl-content { padding: 0.5rem 0 0.95rem; }
+.tl-stage { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 0.25rem; }
+.tl-text { color: var(--fog); font-size: 0.94rem; font-weight: 500; line-height: 1.65; }
+
+.opt-result { margin-bottom: 1.5rem; overflow: hidden; border-radius: 24px; }
+.opt-result-head { padding: 1.45rem 1.5rem 1.15rem; background: linear-gradient(180deg, rgba(242,228,211,0.95), rgba(255,255,255,0.4)); border-bottom: 1px solid rgba(58,44,45,0.08); }
+.opt-result-name { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.75rem; font-weight: 800; color: var(--text); margin: 0 0 0.4rem; }
+.opt-result-summary { color: var(--fog); font-size: 1rem; font-weight: 500; line-height: 1.75; max-width: 760px; }
+.opt-result-body { padding: 1.35rem 1.5rem 1.4rem; }
+
+.cmp-panel { padding: 1.3rem 1.45rem; margin-bottom: 1rem; background: linear-gradient(180deg, rgba(245,235,223,0.92), rgba(255,255,255,0.7)); }
+.cmp-panel-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 0.6rem; }
+.cmp-panel-text { color: var(--text); font-size: 1.02rem; font-weight: 500; line-height: 1.75; }
+
+.sc-card { padding: 0.95rem 1.05rem; margin-bottom: 0.55rem; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(245,235,223,0.6)); }
+.sc-name { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.sc-text { color: var(--fog); font-size: 0.92rem; font-weight: 500; margin-top: 0.3rem; line-height: 1.6; }
+
+.stress-panel { padding: 1rem 1.1rem; margin-top: 1rem; display: flex; gap: 0.8rem; align-items: flex-start; background: linear-gradient(180deg, rgba(232,245,234,0.78), rgba(255,255,255,0.7)); border-color: rgba(104,128,107,0.25); }
+.stress-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.28rem; }
+.stress-delta { font-size: 0.94rem; color: var(--text); font-weight: 500; line-height: 1.6; }
+
+.empty-state { padding: 3.4rem 2rem; text-align: center; border-style: dashed; }
+.empty-state-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.55rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text); }
+.empty-state-text { color: var(--fog); max-width: 500px; margin: 0 auto; font-size: 0.97rem; font-weight: 500; line-height: 1.75; }
+
+/* ===================================================================== */
+/* Responsible-AI disclosure banner                                       */
+/* ===================================================================== */
+.disclosure-banner {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  max-width: 760px;
+  margin: 0 auto 1.4rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(245,235,223,0.7));
+  border: 1px solid rgba(58,44,45,0.14);
+  box-shadow: var(--shadow-soft);
+}
+.disclosure-banner .ic { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
+.disclosure-banner-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 0.25rem; }
+.disclosure-banner-text { color: var(--text); font-size: 0.92rem; font-weight: 500; line-height: 1.6; }
+
+/* Confidence framing for AI vs fallback outputs */
 .confidence-badge {
-    display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 0.74rem;
-    font-weight: 700; letter-spacing: 0.04em; padding: 0.3rem 0.7rem; border-radius: 999px;
-    margin-bottom: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
 }
-.confidence-badge.grounded { background: rgba(111,168,136,0.16); color: #6FA888; border: 1px solid rgba(111,168,136,0.35); }
-.confidence-badge.fallback { background: rgba(224,176,92,0.16); color: #E0B05C; border: 1px solid rgba(224,176,92,0.35); }
+.confidence-badge.grounded { background: rgba(104,128,107,0.12); color: var(--sage); border: 1px solid rgba(104,128,107,0.3); }
+.confidence-badge.fallback { background: rgba(232,105,79,0.10); color: #C2543B; border: 1px solid rgba(232,105,79,0.28); }
 
-.opt-result {
-    border: 1px solid rgba(168,180,199,0.18); border-radius: 18px; padding: 1.2rem 1.3rem 0.4rem;
-    margin: 0.9rem 0; background: linear-gradient(180deg, rgba(28,39,66,0.5), rgba(22,32,57,0.5));
+/* Human-in-the-loop decision commitment */
+.decision-box {
+  max-width: 760px;
+  margin: 1.6rem auto 0;
+  padding: 1.3rem 1.45rem;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,239,230,0.85));
+  border: 1px solid rgba(58,44,45,0.12);
+  box-shadow: var(--shadow-soft);
 }
-.opt-result-head { margin-bottom: 0.7rem; }
-.opt-result-name { font-family: 'Source Serif 4', serif; font-weight: 800; font-size: 1.25rem; color: #F6F1EA; }
-.opt-result-summary { color: #A8B4C7; font-size: 0.9rem; margin-top: 0.15rem; }
-.opt-result-body { margin-top: 0.3rem; }
+.decision-box-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 0.4rem; }
+.decision-box-hint { color: var(--muted); font-size: 0.92rem; line-height: 1.65; margin-bottom: 0.85rem; }
+.decision-card {
+  max-width: 760px;
+  margin: 1.1rem auto 0;
+  padding: 1.2rem 1.4rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(232,245,234,0.55), rgba(255,255,255,0.85));
+  border: 1px solid rgba(104,128,107,0.3);
+}
+.decision-card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.45rem; }
+.decision-card-text { color: var(--text); font-size: 1.02rem; font-weight: 600; line-height: 1.6; }
+.decision-card-meta { color: var(--muted); font-size: 0.82rem; margin-top: 0.5rem; }
 
-.metric-chip { margin-bottom: 0.6rem; }
-.metric-chip-row { display: flex; justify-content: space-between; font-size: 0.78rem; color: #A8B4C7; margin-bottom: 0.25rem; }
-.metric-chip-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; }
-.metric-chip-track { height: 6px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
-.metric-chip-fill { height: 6px; border-radius: 999px; }
-
-.listbox { margin-bottom: 0.6rem; }
-.listbox-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700;
-    letter-spacing: 0.04em; text-transform: uppercase; color: #F6F1EA; }
-.listbox-sub { font-size: 0.68rem; font-weight: 500; text-transform: none; letter-spacing: 0; color: #7A88A0; }
-.listbox-items { margin: 0.35rem 0 0; padding-left: 1.05rem; color: #C9D2E0; font-size: 0.86rem; line-height: 1.5; }
-.listbox-items li { margin-bottom: 0.25rem; }
-
-.cmp-panel { border-left: 3px solid #FF8C42; background: rgba(255,140,66,0.06); border-radius: 0 12px 12px 0;
-    padding: 0.85rem 1.1rem; margin-bottom: 1rem; }
-.cmp-panel-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.08em; text-transform: uppercase; color: #FF8C42; margin-bottom: 0.25rem; }
-.cmp-panel-text { color: #E5E0D4; font-size: 0.92rem; line-height: 1.55; }
-
-.sc-card { border: 1px solid rgba(232,105,79,0.3); background: rgba(232,105,79,0.07);
-    border-radius: 12px; padding: 0.7rem 0.9rem; margin-bottom: 0.55rem; }
-.sc-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.05em; text-transform: uppercase; color: #E8694F; margin-bottom: 0.2rem; }
-.sc-text { color: #C9D2E0; font-size: 0.85rem; line-height: 1.5; }
-
-.stress-panel { border: 1px dashed rgba(255,140,66,0.4); border-radius: 12px; padding: 0.75rem 1rem; margin: 0.6rem 0 0.9rem; }
-.stress-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 700;
-    letter-spacing: 0.06em; text-transform: uppercase; color: #FF8C42; margin-bottom: 0.2rem; }
-.stress-delta { color: #E5E0D4; font-size: 0.88rem; line-height: 1.5; }
-
-.decision-box { border: 1px solid rgba(111,168,136,0.35); background: rgba(111,168,136,0.07);
-    border-radius: 16px; padding: 1rem 1.2rem; margin: 0.6rem 0 1rem; }
-.decision-box-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 700;
-    letter-spacing: 0.07em; text-transform: uppercase; color: #6FA888; margin-bottom: 0.3rem; }
-.decision-box-hint { color: #C9D2E0; font-size: 0.9rem; line-height: 1.55; }
-
-.decision-card { border: 1px solid rgba(255,140,66,0.4); background: rgba(255,140,66,0.07);
-    border-radius: 16px; padding: 1.1rem 1.3rem; margin-top: 0.8rem; }
-.decision-card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 700;
-    letter-spacing: 0.07em; text-transform: uppercase; color: #FF8C42; margin-bottom: 0.3rem; }
-.decision-card-text { font-family: 'Source Serif 4', serif; font-size: 1.05rem; color: #F6F1EA; line-height: 1.4; }
-.decision-card-meta { color: #A8B4C7; font-size: 0.82rem; margin-top: 0.4rem; }
-
-.empty-state { text-align: center; color: #7A88A0; font-size: 0.9rem; padding: 1.4rem 0; }
-.empty-state-title { font-family: 'Source Serif 4', serif; color: #C9D2E0; font-size: 1.05rem; margin-bottom: 0.3rem; }
+@media (max-width: 640px) {
+  .hero-title { font-size: 2.2rem; }
+  .section-label { padding: 0.6rem 0.9rem; }
+}
 </style>
 """
 
 st.markdown(CSS, unsafe_allow_html=True)
-
-# ──────────────────────────────────────────────────────────────────────────
-# STATE
-# ──────────────────────────────────────────────────────────────────────────
 
 
 def new_option(n: int) -> Dict[str, str]:
@@ -124,37 +370,22 @@ def new_option(n: int) -> Dict[str, str]:
 
 
 _DEFAULT_PROFILE = {
-    "name": "",
-    "context_note": "",
-    "risk_tolerance": 5,
-    "financial_pressure": 5,
-    "family_support": 5,
-    "home_location": "",
+    "name": "", "context_note": "", "risk_tolerance": 5,
+    "financial_pressure": 5, "family_support": 5, "home_location": "",
 }
 for _k, _v in _DEFAULT_PROFILE.items():
     if _k not in st.session_state:
         st.session_state[_k] = _v
-if "options" not in st.session_state:
-    st.session_state.options = [new_option(1), new_option(2)]
-if "engine_result" not in st.session_state:
-    st.session_state.engine_result = None
-if "show_results" not in st.session_state:
-    st.session_state.show_results = False
-if "scenario_checks" not in st.session_state:
-    st.session_state.scenario_checks = {n: False for n, _ in SCENARIOS}
-if "committed_action" not in st.session_state:
-    st.session_state.committed_action = ""
-if "committed_who" not in st.session_state:
-    st.session_state.committed_who = ""
+if "options"          not in st.session_state: st.session_state.options          = [new_option(1), new_option(2)]
+if "engine_result"    not in st.session_state: st.session_state.engine_result    = None
+if "show_results"     not in st.session_state: st.session_state.show_results     = False
+if "scenario_checks"  not in st.session_state: st.session_state.scenario_checks  = {n: False for n, _ in SCENARIOS}
+if "committed_action" not in st.session_state: st.session_state.committed_action = ""
+if "committed_who"    not in st.session_state: st.session_state.committed_who    = ""
 
 
 def profile() -> Dict[str, Any]:
     return {k: st.session_state[k] for k in _DEFAULT_PROFILE}
-
-
-# ──────────────────────────────────────────────────────────────────────────
-# NVIDIA NIM CLIENT
-# ──────────────────────────────────────────────────────────────────────────
 
 
 def get_api_key() -> str:
@@ -163,13 +394,11 @@ def get_api_key() -> str:
         if len(v) >= 2 and v[0] == v[-1] and v[0] in ("'", '"'):
             v = v[1:-1].strip()
         return v
-
     try:
         for k in ("NVIDIA_API_KEY", "nvidia_api_key", "api_key"):
             if k in st.secrets:
                 v = _clean(str(st.secrets[k]))
-                if v:
-                    return v
+                if v: return v
     except Exception:
         pass
     return _clean(os.getenv("NVIDIA_API_KEY", ""))
@@ -179,150 +408,112 @@ def nvidia_post(payload: Dict[str, Any], timeout: int = 90, retries: int = 3) ->
     key = get_api_key()
     if not key:
         raise RuntimeError("No NVIDIA API key configured.")
-    url = f"{NVIDIA_BASE_URL.rstrip('/')}/chat/completions"
+    url  = f"{NVIDIA_BASE_URL.rstrip('/')}/chat/completions"
     body = json.dumps(payload).encode()
-    headers = {
-        "Authorization": f"Bearer {key}",
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "User-Agent": "FirstGenCompass/2.2",
-    }
+    hdrs = {"Authorization": f"Bearer {key}", "Content-Type": "application/json",
+            "Accept": "application/json", "User-Agent": "FirstGenCompass/2.1"}
     last: Optional[Exception] = None
     for attempt in range(retries):
-        req = urllib.request.Request(url, data=body, headers=headers, method="POST")
+        req = urllib.request.Request(url, data=body, headers=hdrs, method="POST")
         try:
             with urllib.request.urlopen(req, timeout=timeout) as r:
                 return json.loads(r.read().decode("utf-8", errors="replace"))
         except urllib.error.HTTPError as e:
             detail = ""
-            try:
-                detail = e.read().decode("utf-8", errors="replace")
-            except Exception:
-                pass
-            if e.code in (408, 425, 429, 500, 502, 503, 504) and attempt < retries - 1:
-                time.sleep(1.5 * (attempt + 1))
-                last = RuntimeError(f"HTTP {e.code}")
-                continue
+            try: detail = e.read().decode("utf-8", errors="replace")
+            except Exception: pass
+            if e.code in (408,425,429,500,502,503,504) and attempt < retries - 1:
+                time.sleep(1.5 * (attempt + 1)); last = RuntimeError(f"HTTP {e.code}"); continue
             raise RuntimeError(f"NVIDIA HTTP {e.code}: {detail[:800] or e.reason}") from e
         except Exception as e:
             if attempt < retries - 1:
-                time.sleep(1.5 * (attempt + 1))
-                last = e
-                continue
+                time.sleep(1.5 * (attempt + 1)); last = e; continue
             raise RuntimeError(f"API call failed: {e}") from e
     raise RuntimeError(f"Exhausted retries: {last}")
 
 
 def llm(messages: List[Dict], *, temperature: float = 0.15, max_tokens: int = 2800) -> str:
-    data = nvidia_post(
-        {
-            "model": NVIDIA_MODEL,
-            "messages": messages,
-            "temperature": temperature,
-            "top_p": 0.9,
-            "max_tokens": max_tokens,
-            "stream": False,
-        }
-    )
+    data = nvidia_post({"model": NVIDIA_MODEL, "messages": messages,
+                        "temperature": temperature, "top_p": 0.9,
+                        "max_tokens": max_tokens, "stream": False})
     try:
         c0 = data["choices"][0]
         txt = (c0.get("message") or {}).get("content") or c0.get("text", "")
-        if isinstance(txt, str) and txt.strip():
-            return txt
-    except Exception:
-        pass
+        if isinstance(txt, str) and txt.strip(): return txt
+    except Exception: pass
     raise RuntimeError(f"No text in response: {data}")
 
 
 def parse_json(text: str) -> Optional[Any]:
-    if not text:
-        return None
+    if not text: return None
     s = text.strip()
-    s = re.sub(r"^```(?:json)?\s*", "", s, flags=re.IGNORECASE)
-    s = re.sub(r"\s*```$", "", s)
-    candidates = [s]
-    if "{" in s and "}" in s:
-        candidates.append(s[s.find("{"): s.rfind("}") + 1])
-    for cand in candidates:
-        cand = cand.strip()
+    if s.startswith("```"):
+        s = re.sub(r"^```(?:json)?\s*", "", s, flags=re.IGNORECASE)
+        s = re.sub(r"\s*```$", "", s)
+    for cand in [s, s[s.find("{"):s.rfind("}")+1] if "{" in s else ""]:
         if cand:
-            try:
-                return json.loads(cand)
-            except Exception:
-                continue
+            try: return json.loads(cand)
+            except Exception: pass
     return None
 
 
 def clip(values: List[str], limit: int = 4) -> List[str]:
-    items = [str(v).strip() for v in (values or []) if str(v).strip()]
-    return items[:limit]
+    return [str(v).strip() for v in (values or []) if str(v).strip()][:limit]
 
 
 def coerce(value: Any, default: float = 5.0) -> float:
-    if value is None:
-        return float(default)
-    if isinstance(value, (int, float)):
-        return float(value)
+    if value is None: return float(default)
+    if isinstance(value, (int, float)): return float(value)
     if isinstance(value, dict):
-        for k in ("score", "value", "rating", "amount"):
-            if k in value:
-                return coerce(value[k], default)
+        for k in ("score","value","rating","amount"):
+            if k in value: return coerce(value[k], default)
         return float(default)
     if isinstance(value, list):
         ns = [coerce(v, None) for v in value]
         ns = [n for n in ns if n is not None]
-        return round(sum(ns) / len(ns), 1) if ns else float(default)
+        return round(sum(ns)/len(ns), 1) if ns else float(default)
     if isinstance(value, str):
         m = re.search(r"(\d+(?:\.\d+)?)", value)
         if m:
-            try:
-                return float(m.group(1))
-            except Exception:
-                pass
+            try: return float(m.group(1))
+            except Exception: pass
     return float(default)
 
 
-def clamp(v: float) -> float:
-    return round(max(0.0, min(10.0, v)), 1)
+def clamp(v: float) -> float: return round(max(0.0, min(10.0, v)), 1)
 
 
 def default_timeline(name: str = "", details: str = "") -> List[Dict[str, str]]:
     t = f"{name} {details}".lower()
-    if any(k in t for k in ["community college", "two-year", "2-year", "transfer"]):
-        beats = [
-            ("Apply", "Submit application and check registration."),
-            ("Financial aid", "Confirm tuition, books, transit costs after aid."),
-            ("Schedule", "Plan around work, commuting, and class times."),
-            ("First semester", "Learn advising, support services, and transfer rules."),
-            ("Transfer planning", "Map credits early if a four-year move is likely."),
-            ("Next step", "Decide whether to transfer, work, or continue locally."),
-        ]
-    elif any(k in t for k in ["abroad", "international", "relocat"]):
-        beats = [
-            ("Apply", "Compare deadlines, visa paperwork, and entry requirements."),
-            ("Financial aid", "Check tuition, deposits, travel, and first-month costs."),
-            ("Housing", "Secure room, transport, and arrival logistics."),
-            ("Move / settle in", "Handle paperwork, orientation, and basic routines."),
-            ("First semester", "Learn local systems, campus norms, and support channels."),
-            ("Internships", "Start earlier — location changes what's available."),
-            ("Graduation", "Check whether you can stay, leave, or convert to work status."),
-        ]
+    if any(k in t for k in ["community college","two-year","2-year","transfer"]):
+        beats = [("Apply","Submit application and check registration."),
+                 ("Financial aid","Confirm tuition, books, transit costs after aid."),
+                 ("Schedule","Plan around work, commuting, and class times."),
+                 ("First semester","Learn advising, support services, and transfer rules."),
+                 ("Transfer planning","Map credits early if a four-year move is likely."),
+                 ("Next step","Decide whether to transfer, work, or continue locally.")]
+    elif any(k in t for k in ["abroad","international","relocat"]):
+        beats = [("Apply","Compare deadlines, visa paperwork, and entry requirements."),
+                 ("Financial aid","Check tuition, deposits, travel, and first-month costs."),
+                 ("Housing","Secure room, transport, and arrival logistics."),
+                 ("Move / settle in","Handle paperwork, orientation, and basic routines."),
+                 ("First semester","Learn local systems, campus norms, and support channels."),
+                 ("Internships","Start earlier — location changes what's available."),
+                 ("Graduation","Check whether you can stay, leave, or convert to work status.")]
     else:
-        beats = [
-            ("Apply", "Submit applications and gather documents."),
-            ("Financial aid", "Confirm the real cost after aid, loans, and fees."),
-            ("Housing", "Check residence, commute, and living expenses."),
-            ("First semester", "Learn the academic and social system fast."),
-            ("Internship search", "Start applying earlier than you think."),
-            ("Graduation", "Decide whether this path opens or narrows options."),
-            ("First job", "Translate the degree into the first role."),
-        ]
+        beats = [("Apply","Submit applications and gather documents."),
+                 ("Financial aid","Confirm the real cost after aid, loans, and fees."),
+                 ("Housing","Check residence, commute, and living expenses."),
+                 ("First semester","Learn the academic and social system fast."),
+                 ("Internship search","Start applying earlier than you think."),
+                 ("Graduation","Decide whether this path opens or narrows options."),
+                 ("First job","Translate the degree into the first role.")]
     return [{"stage": s, "what_happens": w} for s, w in beats]
 
 
 _STALE_FILLER_RE = re.compile(
     r"covid|pandemic|coronavirus|post-covid|unprecedented times|remote learning shift",
-    re.IGNORECASE,
+    re.IGNORECASE
 )
 
 
@@ -332,176 +523,108 @@ def _drop_stale_filler(items: List[str]) -> List[str]:
 
 def normalize(opt: Dict[str, Any]) -> Dict[str, Any]:
     o = dict(opt)
-    for key in [
-        "hidden_costs", "hidden_benefits", "opportunity_costs",
-        "first_gen_insights", "unknowns", "questions_to_investigate",
-    ]:
+    for key in ["hidden_costs","hidden_benefits","opportunity_costs","first_gen_insights","unknowns","questions_to_investigate"]:
         val = o.get(key, [])
-        if isinstance(val, list):
-            items = [str(x).strip() for x in val if str(x).strip()]
-        elif isinstance(val, str):
-            items = [s.strip() for s in re.split(r"[\n;•]+", val) if s.strip()]
-        else:
-            items = []
+        if isinstance(val, list):   items = [str(x).strip() for x in val if str(x).strip()]
+        elif isinstance(val, str):  items = [s.strip() for s in re.split(r"[\n;•]+", val) if s.strip()]
+        else:                       items = []
         items = _drop_stale_filler(items)
         o[key] = items
-
     if not o["unknowns"]:
         o["unknowns"] = ["Exact costs, support systems, and timelines need direct verification with the school."]
-
-    tl = o.get("timeline", [])
-    timeline = []
+    tl, timeline = o.get("timeline", []), []
     if isinstance(tl, list):
         for item in tl:
             if isinstance(item, dict):
-                s = str(item.get("stage", "")).strip()
-                w = str(item.get("what_happens", "")).strip()
-                if s or w:
-                    timeline.append({"stage": s or "Stage", "what_happens": w or "—"})
-    if not timeline:
-        timeline = default_timeline(o.get("name", ""), o.get("details", ""))
+                s = str(item.get("stage","")).strip(); w = str(item.get("what_happens","")).strip()
+                if s or w: timeline.append({"stage": s or "Stage", "what_happens": w or "—"})
+    if not timeline: timeline = default_timeline(o.get("name",""), o.get("details",""))
     o["timeline"] = timeline
-
-    for key in [
-        "flexibility", "recovery_difficulty", "confidence_level", "financial_risk",
-        "salary_potential", "career_flexibility", "path_change_ease", "networking",
-        "family_support_required", "mental_workload", "bureaucracy", "time_commitment",
-        "geographic_mobility",
-    ]:
+    for key in ["flexibility","recovery_difficulty","confidence_level","financial_risk",
+                "salary_potential","career_flexibility","path_change_ease","networking",
+                "family_support_required","mental_workload","bureaucracy","time_commitment","geographic_mobility"]:
         o[key] = clamp(coerce(o.get(key, 5)))
-
     o["summary"] = str(o.get("summary") or "Analysis pending.")
     return o
 
 
 def heuristic(prof: Dict[str, Any], opt: Dict[str, Any]) -> Dict[str, Any]:
-    """Keyword-based estimate used only when the model call fails. Deliberately
-    labeled as a fallback everywhere it surfaces — it is not a substitute for
-    the grounded reasoning pass, just a way to avoid a dead end."""
     txt = f"{opt.get('name','')} {opt.get('details','')} {prof.get('context_note','')} {prof.get('home_location','')}".lower()
-
-    def bmp(v, a):
-        return max(0.0, min(10.0, v + a))
-
-    fr = sp = cf = pce = nw = fsr = mw = bu = tc = gm = fl = rd = cl = 5.0
-    hc, hb, oc, fgi, un, qi = [], [], [], [], [], []
-
-    if any(w in txt for w in ["abroad", "overseas", "international", "out of state", "relocat"]):
-        fr = bmp(fr, 2); gm = bmp(gm, 3); fsr = bmp(fsr, 2); bu = bmp(bu, 1)
+    def bmp(v, a): return max(0.0, min(10.0, v + a))
+    fr=5.;sp=5.;cf=5.;pce=5.;nw=5.;fsr=5.;mw=5.;bu=5.;tc=5.;gm=5.;fl=5.;rd=5.;cl=5.
+    hc,hb,oc,fgi,un,qi=[],[],[],[],[],[]
+    if any(w in txt for w in ["abroad","overseas","international","out of state","relocat"]):
+        fr=bmp(fr,2);gm=bmp(gm,3);fsr=bmp(fsr,2);bu=bmp(bu,1)
         hc.append("Relocation, visa, deposit, and first-month setup costs.")
         qi.append("Can I cover relocation, deposits, and first month of living without help?")
-    if any(w in txt for w in ["scholarship", "funded", "financial aid", "full ride", "stipend"]):
-        fr = bmp(fr, -2)
-        hb.append("The real net cost may be much lower than the sticker price.")
-    if any(w in txt for w in ["loan", "debt", "expensive", "private", "elite", "prestigious"]):
-        fr = bmp(fr, 3)
-        hc.append("Debt and living costs often stack beyond the headline price.")
-    if any(w in txt for w in ["community college", "local", "commute", "live at home", "public"]):
-        fr = bmp(fr, -1); fl = bmp(fl, 1); pce = bmp(pce, 1); fsr = bmp(fsr, -2)
+    if any(w in txt for w in ["scholarship","funded","financial aid","full ride","stipend"]):
+        fr=bmp(fr,-2); hb.append("The real net cost may be much lower than the sticker price.")
+    if any(w in txt for w in ["loan","debt","expensive","private","elite","prestigious"]):
+        fr=bmp(fr,3); hc.append("Debt and living costs often stack beyond the headline price.")
+    if any(w in txt for w in ["community college","local","commute","live at home","public"]):
+        fr=bmp(fr,-1);fl=bmp(fl,1);pce=bmp(pce,1);fsr=bmp(fsr,-2)
         hb.append("Proximity reduces logistics, travel cost, and emotional load.")
-
-    if not hc:
-        hc = ["Costs beyond tuition — books, transport, housing, activity fees."]
-    if not hb:
-        hb = ["There may be an opening here not obvious from the name alone."]
-    if not oc:
-        oc = ["Choosing this means giving up some alternative stability or flexibility."]
-    if not fgi:
-        fgi = ["This path may include unwritten rules that experienced families navigate early."]
-    if not un:
-        un = ["Exact costs, support systems, and timelines need verification."]
-    if not qi:
-        qi = ["What is the hardest part of this path you cannot tell from the brochure?"]
-
-    return normalize({
-        **opt,
-        "hidden_costs": hc, "hidden_benefits": hb, "opportunity_costs": oc,
-        "first_gen_insights": fgi, "unknowns": un, "questions_to_investigate": qi,
-        "timeline": default_timeline(opt.get("name", ""), opt.get("details", "")),
-        "financial_risk": fr, "salary_potential": sp, "career_flexibility": cf,
-        "path_change_ease": pce, "networking": nw, "family_support_required": fsr,
-        "mental_workload": mw, "bureaucracy": bu, "time_commitment": tc,
-        "geographic_mobility": gm, "flexibility": fl, "recovery_difficulty": rd,
-        "confidence_level": cl,
-        "summary": "Keyword estimate — AI unavailable.",
-    })
+    if not hc:  hc  = ["Costs beyond tuition — books, transport, housing, activity fees."]
+    if not hb:  hb  = ["There may be an opening here not obvious from the name alone."]
+    if not oc:  oc  = ["Choosing this means giving up some alternative stability or flexibility."]
+    if not fgi: fgi = ["This path may include unwritten rules that experienced families navigate early."]
+    if not un:  un  = ["Exact costs, support systems, and timelines need verification."]
+    if not qi:  qi  = ["What is the hardest part of this path you cannot tell from the brochure?"]
+    return normalize({**opt, "hidden_costs":hc,"hidden_benefits":hb,"opportunity_costs":oc,
+        "first_gen_insights":fgi,"unknowns":un,"questions_to_investigate":qi,
+        "timeline":default_timeline(opt.get("name",""), opt.get("details","")),
+        "financial_risk":fr,"salary_potential":sp,"career_flexibility":cf,"path_change_ease":pce,
+        "networking":nw,"family_support_required":fsr,"mental_workload":mw,"bureaucracy":bu,
+        "time_commitment":tc,"geographic_mobility":gm,"flexibility":fl,"recovery_difficulty":rd,
+        "confidence_level":cl,"summary":"Keyword estimate — AI unavailable."})
 
 
 def weights(prof: Dict[str, Any]) -> Dict[str, float]:
     risk = float(prof.get("risk_tolerance", 5))
     money = float(prof.get("financial_pressure", 5))
     support = float(prof.get("family_support", 5))
-    return {
-        "financial_risk": 10 - risk, "salary_potential": 5.0, "career_flexibility": 6.0,
-        "path_change_ease": risk, "networking": 5.0, "family_support_required": 10 - support,
-        "mental_workload": money, "bureaucracy": 4.0, "time_commitment": 4.0,
-        "geographic_mobility": 4.0, "flexibility": risk, "recovery_difficulty": 10 - risk,
-        "confidence_level": 4.0,
-    }
+    return {"financial_risk": 10-risk, "salary_potential":5., "career_flexibility":6.,
+            "path_change_ease": risk, "networking":5., "family_support_required":10-support,
+            "mental_workload": money, "bureaucracy":4., "time_commitment":4.,
+            "geographic_mobility":4., "flexibility": risk, "recovery_difficulty":10-risk, "confidence_level":4.}
 
 
 def score(opt: Dict[str, Any], w: Dict[str, float]) -> float:
-    pos = {k: opt[k] for k in ("salary_potential", "career_flexibility", "path_change_ease",
-                                "networking", "flexibility", "confidence_level")}
-    neg = {
-        "financial_risk": 10 - opt["financial_risk"],
-        "family_support_required": 10 - opt["family_support_required"],
-        "mental_workload": 10 - opt["mental_workload"],
-        "bureaucracy": 10 - opt["bureaucracy"],
-        "time_commitment": 10 - opt["time_commitment"],
-        "geographic_mobility": 10 - opt["geographic_mobility"],
-        "recovery_difficulty": 10 - opt["recovery_difficulty"],
-    }
-    total = wsum = 0.0
-    for k, v in {**pos, **neg}.items():
-        wt = w.get(k, 1.0)
-        total += wt * v
-        wsum += wt
-    return round(total / max(wsum, 1.0), 1)
+    pos = {"salary_potential":opt["salary_potential"],"career_flexibility":opt["career_flexibility"],
+           "path_change_ease":opt["path_change_ease"],"networking":opt["networking"],
+           "flexibility":opt["flexibility"],"confidence_level":opt["confidence_level"]}
+    neg = {"financial_risk":10-opt["financial_risk"],"family_support_required":10-opt["family_support_required"],
+           "mental_workload":10-opt["mental_workload"],"bureaucracy":10-opt["bureaucracy"],
+           "time_commitment":10-opt["time_commitment"],"geographic_mobility":10-opt["geographic_mobility"],
+           "recovery_difficulty":10-opt["recovery_difficulty"]}
+    total=wsum=0.0
+    for k,v in {**pos,**neg}.items():
+        wt=w.get(k,1.); total+=wt*v; wsum+=wt
+    return round(total/max(wsum,1.),1)
 
 
 def apply_scenarios(opt: Dict[str, Any], scenarios: List[str]) -> Dict[str, Any]:
-    """Deltas scale with the option's OWN existing metrics, not a flat number for
-    everyone. A path that already depends heavily on family money gets hit much
-    harder by 'family cannot support' than a self-sufficient one; a path that
-    looked cheap mostly because of assumed aid swings hardest when 'scholarship
-    lost' is ticked. This is fixed arithmetic, not a model guessing — the same
-    inputs always produce the same shift."""
     a = dict(opt)
     for s in scenarios:
         if s == "Scholarship lost":
-            headroom = 10 - a["financial_risk"]
-            a["financial_risk"] = min(10, a["financial_risk"] + round(1.5 + headroom * 0.45, 1))
-            a["confidence_level"] = max(0, a["confidence_level"] - round(0.5 + headroom * 0.12, 1))
+            a["financial_risk"]=min(10,a["financial_risk"]+3); a["confidence_level"]=max(0,a["confidence_level"]-1)
         elif s == "Family cannot support":
-            reliance = a["family_support_required"]
-            a["family_support_required"] = min(10, a["family_support_required"] + round(0.8 + reliance * 0.32, 1))
-            a["mental_workload"] = min(10, a["mental_workload"] + round(0.4 + reliance * 0.14, 1))
+            a["family_support_required"]=min(10,a["family_support_required"]+3); a["mental_workload"]=min(10,a["mental_workload"]+1)
         elif s == "Housing costs rise":
-            exposure = a["geographic_mobility"]
-            a["financial_risk"] = min(10, a["financial_risk"] + round(0.8 + exposure * 0.32, 1))
-            a["time_commitment"] = min(10, a["time_commitment"] + round(0.3 + exposure * 0.1, 1))
+            a["financial_risk"]=min(10,a["financial_risk"]+2); a["time_commitment"]=min(10,a["time_commitment"]+1)
         elif s == "Need part-time work":
-            load = a["mental_workload"]
-            a["time_commitment"] = min(10, a["time_commitment"] + round(1.0 + load * 0.22, 1))
-            a["mental_workload"] = min(10, a["mental_workload"] + round(0.8 + load * 0.18, 1))
+            a["time_commitment"]=min(10,a["time_commitment"]+2); a["mental_workload"]=min(10,a["mental_workload"]+2)
         elif s == "Family emergency":
-            rigidity = 10 - a["path_change_ease"]
-            a["path_change_ease"] = max(0, a["path_change_ease"] - round(0.4 + rigidity * 0.12, 1))
-            a["recovery_difficulty"] = min(10, a["recovery_difficulty"] + round(0.8 + rigidity * 0.18, 1))
+            a["path_change_ease"]=max(0,a["path_change_ease"]-1); a["recovery_difficulty"]=min(10,a["recovery_difficulty"]+2)
         elif s == "Internship offer arrives":
-            base = a["networking"]
-            a["networking"] = min(10, a["networking"] + round(0.8 + base * 0.16, 1))
-            a["salary_potential"] = min(10, a["salary_potential"] + round(0.4 + base * 0.08, 1))
+            a["networking"]=min(10,a["networking"]+2); a["salary_potential"]=min(10,a["salary_potential"]+1)
         elif s == "Graduate school becomes goal":
-            base = a["career_flexibility"]
-            a["career_flexibility"] = min(10, a["career_flexibility"] + round(0.4 + base * 0.08, 1))
-            a["confidence_level"] = min(10, a["confidence_level"] + round(0.4 + base * 0.08, 1))
+            a["career_flexibility"]=min(10,a["career_flexibility"]+1); a["confidence_level"]=min(10,a["confidence_level"]+1)
     return a
 
 
 def active_scenarios() -> List[str]:
-    return [n for n, _ in SCENARIOS if st.session_state.scenario_checks.get(n)]
+    return [n for n,_ in SCENARIOS if st.session_state.scenario_checks.get(n)]
 
 
 _METRIC_LABELS = {
@@ -513,93 +636,59 @@ _METRIC_LABELS = {
     "flexibility": "flexibility", "recovery_difficulty": "recovery difficulty",
     "confidence_level": "confidence in the path",
 }
-_BAD_WHEN_UP = {
-    "financial_risk", "family_support_required", "mental_workload",
-    "bureaucracy", "time_commitment", "geographic_mobility", "recovery_difficulty",
-}
+_BAD_WHEN_UP = {"financial_risk","family_support_required","mental_workload","bureaucracy",
+                "time_commitment","geographic_mobility","recovery_difficulty"}
 
 
 def scenario_impact_text(opt: Dict[str, Any], scenarios: List[str]) -> str:
     before = opt
-    after = apply_scenarios(opt, scenarios)
-    changes = []
+    after  = apply_scenarios(opt, scenarios)
+    ups, downs = [], []
     for key, label in _METRIC_LABELS.items():
         b, a = before.get(key, 5), after.get(key, 5)
-        d = round(a - b, 1)
-        if abs(d) < 0.05:
-            continue
-        worse = (d > 0) if key in _BAD_WHEN_UP else (d < 0)
-        changes.append((label, d, worse))
-    if not changes:
+        if a == b: continue
+        worse = (a > b) if key in _BAD_WHEN_UP else (a < b)
+        (downs if worse else ups).append(label)
+    if not ups and not downs:
         return "This option is largely unaffected by the scenario(s) you selected."
-
-    changes.sort(key=lambda c: abs(c[1]), reverse=True)
-    top = changes[:2]
-    bits = []
-    for label, d, worse in top:
-        verb = "climbs" if d > 0 else "eases"
-        bits.append(f"{label} {verb} by {abs(d):.1f} pt{'s' if abs(d) != 1 else ''}")
-    sentence = " and ".join(bits)
-
-    bad_n = sum(1 for _, _, w in changes if w)
-    good_n = len(changes) - bad_n
-    if bad_n and not good_n:
-        verdict = "this path gets meaningfully harder to sustain."
-    elif good_n and not bad_n:
-        verdict = "this path actually loosens up a bit."
-    else:
-        verdict = "this path trades some upside for added pressure."
-    return f"{sentence} — {verdict}"
-
-
-# ──────────────────────────────────────────────────────────────────────────
-# AI REASONING LAYER
-# ──────────────────────────────────────────────────────────────────────────
+    parts = []
+    if downs: parts.append(f"raises {', '.join(downs)}")
+    if ups:   parts.append(f"reduces {', '.join(ups)}")
+    return "Under the selected scenario(s), this option " + " and ".join(parts) + "."
 
 
 def build_prompt(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
-    ctx = {
-        "risk_tolerance_0_to_10": prof.get("risk_tolerance"),
-        "financial_pressure_0_to_10": prof.get("financial_pressure"),
-        "family_support_0_to_10": prof.get("family_support"),
-        "home_location": prof.get("home_location") or "not specified",
-        "extra_context": prof.get("context_note") or "none",
-        "active_scenarios": active_scenarios(),
-    }
+    ctx = {"risk_tolerance_0_to_10": prof.get("risk_tolerance"),
+           "financial_pressure_0_to_10": prof.get("financial_pressure"),
+           "family_support_0_to_10": prof.get("family_support"),
+           "home_location": prof.get("home_location") or "not specified",
+           "extra_context": prof.get("context_note") or "none",
+           "active_scenarios": active_scenarios()}
     opts_block = ""
     for i, o in enumerate(opts, 1):
-        opts_block += (
-            f"\nOption {i}:\n  name: {o['name']}\n"
-            f"  student notes: {o.get('details','none')}\n"
-            f"  gut take: {o.get('gut_take','none')}\n"
-        )
-
-    return f"""You are an expert college and career advisor with deep knowledge of US universities, international institutions, living costs, financial aid, and career outcomes.
+        opts_block += f"\nOption {i}:\n  name: {o['name']}\n  student notes: {o.get('details','none')}\n  gut take: {o.get('gut_take','none')}\n"
+    return f"""You are an expert college advisor with deep knowledge of US universities, international institutions, living costs, financial aid, and career outcomes.
 
 === CRITICAL RULES ===
-USE YOUR TRAINING KNOWLEDGE. "UCLA" = UC system, LA, ~$14k in-state + ~$20k living, ~$44k out-of-state total, strong entertainment/tech alumni network, quarter system. "MIT" = Cambridge MA, ~$60k tuition, elite networking, demanding workload. "Community college" = $1-3k/yr, flexible, transfer pathway. USE THIS KNOWLEDGE for whatever institutions or paths the student names.
-
-NEVER output 5 as a default score. Every number must reflect your actual knowledge. A score of 5 is only correct if you genuinely judge something average.
-
-DIFFERENTIATE MEANINGFULLY. Two very different options must look completely different in the output.
-
-Return ONLY valid JSON. No preamble, markdown, or text outside the JSON.
-
-NEVER mention COVID-19, the pandemic, "unprecedented times," or other stale 2020-2022-era uncertainty as an "unknown." That period has passed and is not a live risk factor. Every "unknown" must be a concrete, present-day uncertainty specific to this student and this option (e.g. "Whether this major's funding model changes before you graduate") — never a generic disclaimer about the future being unpredictable.
+1. USE YOUR TRAINING KNOWLEDGE. "UCLA" = UC system, LA, ~$14k in-state + ~$20k living, ~$44k out-of-state total, massive entertainment/tech alumni network, quarter system. "MIT" = Cambridge MA, ~$60k tuition, elite networking, crushing workload. "Community college" = $1-3k/yr, flexible, transfer pathway. USE THIS KNOWLEDGE.
+2. NEVER output 5 as a default score. Every number must reflect your actual knowledge. Scores of 5 are only correct if you genuinely judge something average.
+3. DIFFERENTIATE MEANINGFULLY. UCLA vs community college must look completely different in the output.
+4. Return ONLY valid JSON. No preamble, markdown, or text outside the JSON.
+5. NEVER mention COVID-19, the pandemic, "unprecedented times," or other stale 2020-2022-era uncertainty as an "unknown." That period has long passed and is not a live risk factor. Every "unknown" must be a concrete, present-day uncertainty specific to this student and this option (e.g. "Whether this major's funding model changes before you graduate," "How your specific financial aid package is recalculated after year one") — never generic disclaimers about the future being unpredictable.
 
 === SCORING SCALE ===
-financial_risk:          0=fully funded/free, 3=very affordable, 5=~$25k/yr total, 7=$40-60k/yr, 9=extreme debt, 10=financial catastrophe
-salary_potential:        0=very low earnings path, 5=median, 7=above average, 9=elite field
-networking:              0=no alumni/connections, 5=average, 8=strong industry ties, 10=elite placement
-family_support_required: 0=fully self-sufficient, 5=moderate logistics need, 10=totally dependent on family money/help
-mental_workload:         0=very light, 5=normal college, 8=demanding, 10=extremely intensive
-bureaucracy:             0=simple, 5=normal paperwork, 8=multiple aid forms + visa + housing lottery, 10=nightmare
-geographic_mobility:     0=stay home, 5=different city, 7=different state, 10=international relocation
-recovery_difficulty:     0=trivial to leave/pivot, 5=moderate friction, 10=very hard to recover
-career_flexibility:      0=locked into one role, 10=opens many career paths
-path_change_ease:        0=nearly impossible to switch, 10=very easy to transfer or pivot
-flexibility:             0=rigid fixed schedule, 10=fully flexible
-confidence_level:        0=very unclear path, 10=extremely well-mapped outcomes
+financial_risk:         0=fully funded/free, 3=very affordable, 5=~$25k/yr total, 7=$40-60k/yr, 9=extreme debt, 10=financial catastrophe
+salary_potential:       0=very low earnings path, 5=median, 7=above average, 9=elite field
+networking:             0=no alumni/connections, 5=average, 8=strong industry ties, 10=elite placement (MIT/Stanford level)
+family_support_required:0=fully self-sufficient, 5=moderate logistics need, 10=totally dependent on family money/help
+mental_workload:        0=very light, 5=normal college, 8=demanding, 10=med/law school intensity
+bureaucracy:            0=simple, 5=normal paperwork, 8=CSS+FAFSA+visa+housing lottery, 10=nightmare
+geographic_mobility:    0=stay home, 5=different city, 7=different state, 10=international relocation
+recovery_difficulty:    0=trivial to leave/pivot, 5=moderate friction, 10=very hard to recover (debt+niche+relocation)
+career_flexibility:     0=locked into one role, 10=opens many career paths
+path_change_ease:       0=nearly impossible to switch, 10=very easy to transfer or pivot
+flexibility:            0=rigid fixed schedule, 10=fully flexible
+confidence_level:       0=very unclear path, 10=extremely well-mapped outcomes
 
 === STUDENT PROFILE ===
 {json.dumps(ctx, ensure_ascii=False, indent=2)}
@@ -611,27 +700,27 @@ Return ONLY this JSON object:
 {{
   "comparison": {{
     "biggest_tradeoff": "one paragraph naming each option directly and explaining the core tension",
-    "what_first_gen_students_miss": ["specific insight about THESE options", "second", "third"],
-    "questions_to_research": ["specific question for financial aid office", "another", "third"]
+    "what_first_gen_students_miss": ["specific insight about THESE options","second","third"],
+    "questions_to_research": ["specific question for financial aid office","another","third"]
   }},
   "options": [
     {{
-      "name": "",
+      "name": "<exactly match input name>",
       "summary": "2 sentences: what this path really is and what it truly costs",
-      "hidden_costs": ["specific cost with dollar amount if possible", "another"],
-      "hidden_benefits": ["specific benefit unique to this option", "another"],
+      "hidden_costs": ["specific cost with dollar amount if possible","another"],
+      "hidden_benefits": ["specific benefit unique to this institution","another"],
       "opportunity_costs": ["what you concretely give up vs the other option(s)"],
-      "first_gen_insights": ["specific unwritten rule about this path", "another", "third"],
+      "first_gen_insights": ["specific unwritten rule at this institution","another","third"],
       "timeline": [
-        {{"stage":"Apply","what_happens":"specific deadlines and requirements for this path"}},
-        {{"stage":"Financial aid","what_happens":"specific aid process and deadlines"}},
-        {{"stage":"Housing","what_happens":"specific housing/living costs"}},
-        {{"stage":"First semester","what_happens":"what the environment is like here specifically"}},
-        {{"stage":"Internships","what_happens":"how opportunities work from this path"}},
-        {{"stage":"Graduation","what_happens":"placement and outcomes for this path"}}
+        {{"stage":"Apply","what_happens":"specific deadlines and essay requirements for this school"}},
+        {{"stage":"Financial aid","what_happens":"specific aid process and deadlines for this school"}},
+        {{"stage":"Housing","what_happens":"specific housing costs in this city/campus"}},
+        {{"stage":"First semester","what_happens":"what the academic environment is like here specifically"}},
+        {{"stage":"Internships","what_happens":"how recruiting works from this school"}},
+        {{"stage":"Graduation","what_happens":"placement rates and alumni network access at this school"}}
       ],
       "unknowns": ["something genuinely uncertain for this student"],
-      "questions_to_investigate": ["specific question to ask this option directly", "another"],
+      "questions_to_investigate": ["specific question to ask this school","another"],
       "financial_risk": <0-10, DO NOT default to 5>,
       "salary_potential": <0-10>,
       "career_flexibility": <0-10>,
@@ -652,215 +741,148 @@ Return ONLY this JSON object:
 
 def fallback_comparison(opts: List[Dict[str, Any]]) -> Dict[str, Any]:
     if not opts:
-        return {
-            "biggest_tradeoff": "Not enough information to compare yet.",
-            "what_first_gen_students_miss": [
-                "The real net cost — not tuition alone.",
-                "Unwritten networking expectations.",
-                "How hard it is to leave mid-path.",
-            ],
-            "questions_to_research": [
-                "What is the net price after aid for your income bracket?",
-                "What if aid changes after year one?",
-                "How easy is it to transfer or pause?",
-            ],
-        }
+        return {"biggest_tradeoff":"Not enough information to compare yet.",
+                "what_first_gen_students_miss":["The real net cost — not tuition alone.",
+                    "Unwritten networking expectations.","How hard it is to leave mid-path."],
+                "questions_to_research":["What is the net price after aid for your income bracket?",
+                    "What if aid changes after year one?","How easy is it to transfer or pause?"]}
     lo = min(opts, key=lambda o: o["financial_risk"])
-    hi = max(opts, key=lambda o: o["salary_potential"] + o["networking"])
-    tradeoff = (
-        f"{lo['name']} carries lower financial risk, while {hi['name']} offers stronger upside — "
-        f"but likely asks more upfront."
-        if lo["name"] != hi["name"]
-        else "The options are closer than they appear on the surface."
-    )
-    return {
-        "biggest_tradeoff": tradeoff,
-        "what_first_gen_students_miss": [
-            "Total cost of attendance including housing, books, transport — not tuition alone.",
-            "Unwritten networking expectations that experienced families navigate from day one.",
-            "How hard it is to leave, transfer, or recover if the plan changes.",
-        ],
-        "questions_to_research": [
-            "What does the net price calculator show for your family income?",
-            "What happens to your aid if your family situation changes after year one?",
-            "How easy is it to switch programs, transfer, or pause if needed?",
-        ],
-    }
+    hi = max(opts, key=lambda o: o["salary_potential"]+o["networking"])
+    tradeoff = (f"{lo['name']} carries lower financial risk, while {hi['name']} offers stronger upside — but likely asks more upfront."
+                if lo["name"] != hi["name"] else "The options are closer than they appear on the surface.")
+    return {"biggest_tradeoff": tradeoff,
+            "what_first_gen_students_miss":["Total cost of attendance including housing, books, transport — not tuition alone.",
+                "Unwritten networking expectations that experienced families navigate from day one.",
+                "How hard it is to leave, transfer, or recover if the plan changes."],
+            "questions_to_research":["What does the net price calculator show for your family income?",
+                "What happens to your aid if your family situation changes after year one?",
+                "How easy is it to switch programs, transfer, or pause if needed?"]}
 
 
-NUMERIC_KEYS = [
-    "flexibility", "recovery_difficulty", "confidence_level", "financial_risk",
-    "salary_potential", "career_flexibility", "path_change_ease", "networking",
-    "family_support_required", "mental_workload", "bureaucracy", "time_commitment",
-    "geographic_mobility",
-]
-TEXT_KEYS = [
-    "summary", "hidden_costs", "hidden_benefits", "opportunity_costs",
-    "first_gen_insights", "timeline", "unknowns", "questions_to_investigate",
-]
+NUMERIC_KEYS = ["flexibility","recovery_difficulty","confidence_level","financial_risk",
+                "salary_potential","career_flexibility","path_change_ease","networking",
+                "family_support_required","mental_workload","bureaucracy","time_commitment","geographic_mobility"]
+TEXT_KEYS    = ["summary","hidden_costs","hidden_benefits","opportunity_costs",
+                "first_gen_insights","timeline","unknowns","questions_to_investigate"]
 
 
 def run_engine(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> Dict[str, Any]:
     try:
         raw = llm([
-            {"role": "system", "content": "You are a college and career advisor with encyclopedic "
-                                            "knowledge of real institutions, paths, costs, aid policies, "
-                                            "and career outcomes. Return only valid JSON. Never default any score to 5."},
-            {"role": "user", "content": build_prompt(prof, opts)},
+            {"role":"system","content":"You are a college advisor with encyclopedic knowledge of real institutions, their costs, aid policies, and career outcomes. Return only valid JSON. Never default any score to 5."},
+            {"role":"user","content":build_prompt(prof, opts)},
         ])
         data = parse_json(raw)
-        if not isinstance(data, dict):
-            raise RuntimeError("No JSON object returned.")
+        if not isinstance(data, dict): raise RuntimeError("No JSON object.")
         ai_opts = data.get("options", [])
-        if not isinstance(ai_opts, list) or not ai_opts:
-            raise RuntimeError("Empty options in response.")
+        if not isinstance(ai_opts, list) or not ai_opts: raise RuntimeError("Empty options.")
 
         by_name: Dict[str, Dict] = {}
         for ao in ai_opts:
             if isinstance(ao, dict):
-                by_name[str(ao.get("name", "")).strip().lower()] = ao
+                by_name[str(ao.get("name","")).strip().lower()] = ao
 
         merged = []
         for src in opts:
-            sk = src.get("name", "").strip().lower()
+            sk = src.get("name","").strip().lower()
             ai = by_name.get(sk)
             if ai is None:
-                for k, v in by_name.items():
+                for k,v in by_name.items():
                     ws = sk.split()
-                    if ws and (ws[0] in k or (k.split() and k.split()[0] in sk)):
-                        ai = v
-                        break
+                    if ws and (ws[0] in k or k.split()[0] in sk): ai = v; break
             if ai is None:
-                merged.append(heuristic(prof, src))
-                continue
+                merged.append(heuristic(prof, src)); continue
 
-            row: Dict[str, Any] = {
-                "id": src.get("id", uuid.uuid4().hex[:8]),
-                "name": src["name"], "details": src.get("details", ""),
-                "gut_take": src.get("gut_take", ""),
-            }
+            row: Dict[str, Any] = {"id":src.get("id",uuid.uuid4().hex[:8]),
+                                   "name":src["name"],"details":src.get("details",""),"gut_take":src.get("gut_take","")}
             for key in TEXT_KEYS:
                 v = ai.get(key)
-                if v not in (None, "", []):
-                    row[key] = v
+                if v not in (None, "", []): row[key] = v
             for key in NUMERIC_KEYS:
                 rv = ai.get(key)
-                if rv is not None:
-                    row[key] = clamp(coerce(rv))
+                if rv is not None: row[key] = clamp(coerce(rv))
             merged.append(normalize(row))
 
-        if len(merged) >= 2 and len({o.get("financial_risk", 5) for o in merged}) == 1:
-            for m, src in zip(merged, opts):
+        if len(merged) >= 2 and len({o.get("financial_risk",5) for o in merged}) == 1:
+            for i,(m,src) in enumerate(zip(merged, opts)):
                 h = heuristic(prof, src)
                 for key in NUMERIC_KEYS:
-                    if m.get(key, 5.0) == 5.0:
-                        m[key] = h.get(key, 5.0)
+                    if m.get(key, 5.0) == 5.0: m[key] = h.get(key, 5.0)
 
         comp_raw = data.get("comparison", {})
-        if not isinstance(comp_raw, dict):
-            comp_raw = {}
+        if not isinstance(comp_raw, dict): comp_raw = {}
         fb = fallback_comparison(merged)
         comparison = {
             "biggest_tradeoff": str(comp_raw.get("biggest_tradeoff") or fb["biggest_tradeoff"]),
-            "what_first_gen_students_miss": clip(
-                comp_raw.get("what_first_gen_students_miss") or fb["what_first_gen_students_miss"], 5),
-            "questions_to_research": clip(
-                comp_raw.get("questions_to_research") or fb["questions_to_research"], 5),
+            "what_first_gen_students_miss": clip(comp_raw.get("what_first_gen_students_miss") or fb["what_first_gen_students_miss"], 5),
+            "questions_to_research": clip(comp_raw.get("questions_to_research") or fb["questions_to_research"], 5),
         }
         return {"options": merged, "comparison": comparison, "used_ai": True}
 
     except Exception as e:
-        st.warning(f"AI unavailable ({e}) — showing keyword estimates instead of grounded reasoning.")
+        st.warning(f"AI unavailable ({e}) — showing keyword estimates.")
         fb_opts = [heuristic(prof, o) for o in opts]
         return {"options": fb_opts, "comparison": fallback_comparison(fb_opts), "used_ai": False}
 
 
-# ──────────────────────────────────────────────────────────────────────────
-# RENDERING
-# ──────────────────────────────────────────────────────────────────────────
-
-_POSITIVE_KEYS = {"salary_potential", "networking", "career_flexibility", "flexibility",
-                   "confidence_level", "path_change_ease"}
+_POSITIVE_KEYS = {"salary_potential","networking","career_flexibility","flexibility","confidence_level","path_change_ease"}
 
 
 def _bar_color(key: str, val: float) -> str:
     if key in _POSITIVE_KEYS:
-        if val >= 7:
-            return "#6FA888"
-        if val >= 4:
-            return "#8FBFA3"
+        if val >= 7: return "#6FA888"
+        if val >= 4: return "#8FBFA3"
         return "#7A88A0"
     else:
-        if val >= 7:
-            return "#E8694F"
-        if val >= 4:
-            return "#E0B05C"
+        if val >= 7: return "#E8694F"
+        if val >= 4: return "#E0B05C"
         return "#6FA888"
 
 
 def metric_chip(label: str, key: str, val: float) -> str:
     color = _bar_color(key, val)
-    pct = max(0.0, min(100.0, val / 10 * 100))
-    return (
-        f'<div class="metric-chip">'
-        f'<div class="metric-chip-row"><span>{html_escape(label)}</span>'
-        f'<span class="metric-chip-val" style="color:{color}">{val:.1f}</span></div>'
-        f'<div class="metric-chip-track"><div class="metric-chip-fill" '
-        f'style="width:{pct:.0f}%;background:{color}"></div></div>'
-        f'</div>'
-    )
+    return (f'<div class="mc">'
+            f'<div class="mc-top"><span class="mc-label">{html_escape(label)}</span>'
+            f'<span class="mc-value">{val:.1f}</span></div>'
+            f'<div class="mc-bar"><span class="mc-fill" style="width:{val*10:.0f}%;background:{color}"></span></div>'
+            f'</div>')
 
 
 _LB_ICONS = {
-    "Hidden costs": "weighs against you",
-    "Hidden benefits": "weighs for you",
-    "Opportunity costs": "what you give up",
+    "Hidden costs":              "weighs against you",
+    "Hidden benefits":           "weighs for you",
+    "Opportunity costs":         "what you give up",
     "First-generation insights": "what families don't always know",
-    "Unknowns": "still uncertain",
-    "Questions to investigate": "ask the school directly",
-    "Questions to research": "ask the school directly",
-    "First-generation insights ": "",
+    "Unknowns":                  "still uncertain",
+    "Questions to investigate":  "ask the school directly",
 }
 
 
 def render_listbox(title: str, items: List[str]) -> str:
     sub = _LB_ICONS.get(title, "")
-    if not items:
-        items = ["—"]
+    if not items: items = ["—"]
     lis = "".join(f"<li>{html_escape(i)}</li>" for i in items)
-    sub_html = f' <span class="listbox-sub">— {html_escape(sub)}</span>' if sub else ""
-    return (
-        f'<div class="listbox"><div class="listbox-title">{html_escape(title)}{sub_html}</div>'
-        f'<ul class="listbox-items">{lis}</ul></div>'
-    )
+    sub_html = f'<span style="color:var(--muted-2);font-weight:400;text-transform:none;letter-spacing:0;margin-left:0.4rem">— {html_escape(sub)}</span>' if sub else ""
+    return (f'<div class="lb">'
+            f'<div class="lb-header">{html_escape(title)}{sub_html}</div>'
+            f'<ul>{lis}</ul></div>')
 
 
 def render_timeline(opt: Dict[str, Any]) -> str:
     stages = opt.get("timeline") or []
-    css = (
-        "<style>*{box-sizing:border-box;font-family:'Inter',sans-serif}body{margin:0}"
-        ".tl-row{display:grid;grid-template-columns:2.3rem 1fr;gap:0 0.9rem}"
-        ".tl-node-col{display:flex;flex-direction:column;align-items:center}"
-        ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#FF8C42;"
-        "display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;"
-        "font-size:0.74rem;font-weight:700;color:#0F1A2E;flex-shrink:0}"
-        ".tl-connector{width:1.5px;flex:1;min-height:0.7rem;background:rgba(168,180,199,0.3);margin:3px 0}"
-        ".tl-content{padding:0.55rem 0 0.95rem;color:#E5E0D4}"
-        ".tl-stage{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:700;letter-spacing:0.05em;"
-        "text-transform:uppercase;color:#FF8C42;margin-bottom:0.22rem}"
-        ".tl-text{font-size:0.88rem;line-height:1.55;color:#A8B4C7}</style>"
-    )
     rows = []
     for i, s in enumerate(stages):
         last = i == len(stages) - 1
         connector = "" if last else '<div class="tl-connector"></div>'
         rows.append(
-            f'<div class="tl-row"><div class="tl-node-col">'
-            f'<div class="tl-dot">{i+1}</div>{connector}</div>'
-            f'<div class="tl-content"><div class="tl-stage">{html_escape(s.get("stage","Stage"))}</div>'
-            f'<div class="tl-text">{html_escape(s.get("what_happens",""))}</div></div></div>'
+            f'<div class="tl-row">'
+            f'<div class="tl-node-col"><div class="tl-dot">{i+1}</div>{connector}</div>'
+            f'<div class="tl-content" style="align-self:start">'
+            f'<div class="tl-stage">{html_escape(s.get("stage","Stage"))}</div>'
+            f'<div class="tl-text">{html_escape(s.get("what_happens",""))}</div>'
+            f'</div></div>'
         )
-    return css + "".join(rows)
+    return f'<div class="tl-wrap">{"".join(rows)}</div>'
 
 
 def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
@@ -872,41 +894,37 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
     cx = width / 2
     ry, py, cy2 = 52, 136, 232
 
-    def e(s):
-        return html_escape(str(s))
-
+    def e(s): return html_escape(str(s))
     def t(x, y, txt, sz=13, fw=500, col="#F6F1EA", anchor="middle", ff="'Inter',sans-serif"):
         return (f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="{anchor}" fill="{col}" '
                 f'font-size="{sz}" font-weight="{fw}" font-family="{ff}">{e(txt)}</text>')
 
-    out = [f'<svg viewBox="0 0 {width} {height}" width="100%" height="{height}" '
-           f'preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">']
+    out = [f'<svg viewBox="0 0 {width} {height}" width="100%" height="{height}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">']
     out.append("""<defs>
-  <linearGradient id="bgg" x1="0" y1="0" x2="0.55" y2="1">
-    <stop offset="0%" stop-color="#121A2E"/><stop offset="100%" stop-color="#1A2440"/>
-  </linearGradient>
-  <linearGradient id="cardg" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="#1C2742"/><stop offset="100%" stop-color="#162039"/>
-  </linearGradient>
-  <filter id="glow2"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  <style>
-    .ln2{stroke-dasharray:760;stroke-dashoffset:760;animation:draw2 1s ease-out forwards}
-    .cd2{opacity:0;animation:rise2 .55s ease-out forwards}
-    @keyframes draw2{to{stroke-dashoffset:0}}
-    @keyframes rise2{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-  </style>
-</defs>""")
+      <linearGradient id="bgg" x1="0" y1="0" x2="0.55" y2="1">
+        <stop offset="0%" stop-color="#121A2E"/><stop offset="100%" stop-color="#1A2440"/>
+      </linearGradient>
+      <linearGradient id="cardg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#1C2742"/><stop offset="100%" stop-color="#162039"/>
+      </linearGradient>
+      <filter id="glow2"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <style>
+        .ln2{stroke-dasharray:760;stroke-dashoffset:760;animation:draw2 1s ease-out forwards}
+        .cd2{opacity:0;animation:rise2 .55s ease-out forwards}
+        @keyframes draw2{to{stroke-dashoffset:0}}
+        @keyframes rise2{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+      </style>
+    </defs>""")
     out.append(f'<rect width="{width}" height="{height}" rx="30" fill="url(#bgg)"/>')
     out.append(f'<circle cx="{cx}" cy="{ry+14}" r="22" fill="rgba(255,140,66,0.16)" filter="url(#glow2)"/>')
     out.append(f'<circle cx="{cx}" cy="{ry+14}" r="6" fill="#FF8C42"/>')
-    out.append(t(cx, ry - 8, "YOU ARE HERE", 9.5, 700, "#FF8C42", ff="'IBM Plex Mono',monospace"))
-    out.append(t(cx, ry + 38, prof.get("name") or "Your decision", 22, 700, "#F6F1EA", ff="'Source Serif 4',serif"))
-    out.append(f'<line x1="{cx}" y1="{ry+44}" x2="{cx}" y2="{py-8}" '
-               f'stroke="rgba(168,180,199,0.25)" stroke-width="1.3" stroke-dasharray="3,5"/>')
+    out.append(t(cx, ry-8, "YOU ARE HERE", 9.5, 700, "#FF8C42", ff="'IBM Plex Mono',monospace"))
+    out.append(t(cx, ry+38, prof.get("name") or "Your decision", 22, 700, "#F6F1EA", ff="'Source Serif 4',serif"))
+    out.append(f'<line x1="{cx}" y1="{ry+44}" x2="{cx}" y2="{py-8}" stroke="rgba(168,180,199,0.25)" stroke-width="1.3" stroke-dasharray="3,5"/>')
 
     sx = (width - total_cards) / 2
-    mkeys = ["financial_risk", "salary_potential", "networking", "recovery_difficulty"]
-    mlabels = ["Financial risk", "Salary potential", "Networking", "Recovery difficulty"]
+    mkeys  = ["financial_risk","salary_potential","networking","recovery_difficulty"]
+    mlabels = ["Financial risk","Salary potential","Networking","Recovery difficulty"]
     mhigh_bad = [True, False, False, True]
 
     for i, opt in enumerate(opts):
@@ -918,19 +936,20 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
             f'fill="none" stroke="rgba(255,140,66,0.24)" stroke-width="1.3" style="animation-delay:{d:.2f}s"/>'
         )
         g = [f'<g class="cd2" style="animation-delay:{d+0.32:.2f}s">']
-        g.append(f'<rect x="{x:.1f}" y="{cy2}" width="{cw}" height="{ch}" rx="18" '
-                  f'fill="url(#cardg)" stroke="rgba(168,180,199,0.18)" stroke-width="1"/>')
-        g.append(t(mid, cy2 + 28, opt["name"], 16, 700, "#F6F1EA", ff="'Source Serif 4',serif"))
-        summary = str(opt.get("summary", ""))[:58]
-        g.append(t(mid, cy2 + 47, summary, 9.7, 500, "#A8B4C7"))
+        g.append(
+            f'<rect x="{x:.1f}" y="{cy2}" width="{cw}" height="{ch}" rx="18" '
+            f'fill="url(#cardg)" stroke="rgba(168,180,199,0.18)" stroke-width="1"/>'
+        )
+        g.append(t(mid, cy2+28, opt["name"], 16, 700, "#F6F1EA", ff="'Source Serif 4',serif"))
+        summary = str(opt.get("summary",""))[:58]
+        g.append(t(mid, cy2+47, summary, 9.7, 500, "#A8B4C7"))
         base_y = cy2 + 70
         for j, (mk, ml, hi_bad) in enumerate(zip(mkeys, mlabels, mhigh_bad)):
             dy = base_y + j * 36
             val = coerce(opt.get(mk, 5))
-            bar_col = ("#6FA888" if (hi_bad and val < 4) or (not hi_bad and val >= 7)
-                       else ("#E0B05C" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#E8694F"))
-            g.append(t(x + 15, dy, ml, 8.5, 700, "#8FA0B8", anchor="start", ff="'IBM Plex Mono',monospace"))
-            g.append(t(x + cw - 15, dy, f"{val:.1f}", 10, 700, "#F6F1EA", anchor="end", ff="'IBM Plex Mono',monospace"))
+            bar_col = "#6FA888" if (hi_bad and val < 4) or (not hi_bad and val >= 7) else ("#E0B05C" if (hi_bad and val < 7) or (not hi_bad and val >= 4) else "#E8694F")
+            g.append(t(x+15, dy, ml, 8.5, 700, "#8FA0B8", anchor="start", ff="'IBM Plex Mono',monospace"))
+            g.append(t(x+cw-15, dy, f"{val:.1f}", 10, 700, "#F6F1EA", anchor="end", ff="'IBM Plex Mono',monospace"))
             g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{cw-30}" height="5" rx="999" fill="rgba(255,255,255,0.07)"/>')
             g.append(f'<rect x="{x+15:.1f}" y="{dy+6:.1f}" width="{val/10*(cw-30):.1f}" height="5" rx="999" fill="{bar_col}"/>')
         g.append("</g>")
@@ -941,161 +960,284 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
 
 
 def render_compass_widget(initial_angle: float = 0.0) -> str:
+    """
+    Fixed sizing: the shell is now a fraction of the iframe rather than viewport
+    units, so it never gets clipped by the fixed iframe height set in
+    st.components.v1.html. Everything fits comfortably inside a 260px box.
+    """
     angle = float(initial_angle) % 360
-    return f"""<style>
-  html, body {{ margin:0; padding:0; background: transparent; overflow: hidden; }}
-  .compass-wrap {{ width:100%; height:100%; display:grid; place-items:center; font-family:'Inter',sans-serif; }}
-  .compass-shell {{
-    --base-angle: {angle:.0f}deg;
-    position: relative; width: 130px; height: 130px; border-radius: 50%;
-    display: grid; place-items: center;
-    background:
-      radial-gradient(circle at 50% 40%, rgba(255,255,255,0.10), rgba(255,255,255,0.02) 38%, transparent 72%),
-      radial-gradient(circle at 50% 50%, rgba(255,140,66,0.14), rgba(255,140,66,0.03) 46%, transparent 70%),
-      linear-gradient(145deg, #1C2742, #131C32);
-    border: 1px solid rgba(168,180,199,0.22);
-    box-shadow: 0 22px 56px rgba(8,12,24,0.45), inset 0 0 0 1px rgba(255,255,255,0.05);
-    animation: shellFloat 7s ease-in-out infinite alternate;
-  }}
-  @keyframes shellFloat {{ 0%{{transform:translateY(0)}} 100%{{transform:translateY(-4px)}} }}
-  .compass-ticks {{
-    position:absolute; inset:0; border-radius:50%;
-    background: repeating-conic-gradient(from 0deg, rgba(168,180,199,0.35) 0deg 1deg, transparent 1deg 6deg);
-    -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-            mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
-    opacity: 0.75;
-  }}
-  .compass-ring {{ position:absolute; inset:16%; border-radius:50%; border:1px solid rgba(255,140,66,0.3); }}
-  .compass-needle {{
-    position: absolute; inset: 22%; transform: rotate(var(--base-angle));
-    animation: needleTurn 8.5s cubic-bezier(.4,0,.2,1) infinite alternate;
-  }}
-  @keyframes needleTurn {{
-    0% {{ transform: rotate(calc(var(--base-angle) - 6deg)); }}
-    100% {{ transform: rotate(calc(var(--base-angle) + 8deg)); }}
-  }}
-  .compass-needle::before, .compass-needle::after {{
-    content:""; position:absolute; left:50%; width:1.4rem; height:46%;
-    clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
-  }}
-  .compass-needle::before {{ top:0; transform:translateX(-50%);
-    background: linear-gradient(180deg,#FF8C42 0%,#E8694F 60%,transparent 100%); }}
-  .compass-needle::after {{ bottom:0; transform:translateX(-50%) rotate(180deg);
-    background: linear-gradient(180deg,#F6F1EA 0%,#A8B4C7 60%,transparent 100%); }}
-  .compass-cap {{
-    position:absolute; left:50%; top:50%; width:16px; height:16px; border-radius:50%;
-    transform:translate(-50%,-50%);
-    background: radial-gradient(circle at 35% 35%, #F6F1EA, #A8B4C7 40%, #0F1A2E 75%);
-    box-shadow: 0 0 18px rgba(255,140,66,0.3); z-index:2;
-  }}
-</style>
-<div class="compass-wrap"><div class="compass-shell">
-  <div class="compass-ticks"></div><div class="compass-ring"></div>
-  <div class="compass-needle"><div class="compass-cap"></div></div>
-</div></div>"""
+    return f"""
+    <style>
+      html, body {{ margin:0; padding:0; background: transparent; overflow: hidden; }}
+      .compass-wrap {{
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        color: #231B1C;
+        font-family: 'Inter', sans-serif;
+        user-select: none;
+      }}
+
+      .compass-shell {{
+        --base-angle: {angle:.0f}deg;
+        position: relative;
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 50% 40%, rgba(255,255,255,0.62), rgba(255,255,255,0.08) 30%, rgba(15,26,46,0.0) 72%),
+          radial-gradient(circle at 50% 50%, rgba(255,140,66,0.10), rgba(255,140,66,0.03) 42%, rgba(15,26,46,0.0) 70%),
+          linear-gradient(145deg, rgba(58,44,45,0.04), rgba(255,255,255,0.02));
+        border: 1px solid rgba(58,44,45,0.14);
+        box-shadow:
+          0 22px 56px rgba(54,42,44,0.24),
+          inset 0 0 0 1px rgba(255,255,255,0.55);
+        overflow: hidden;
+        animation: shellFloat 7s ease-in-out infinite alternate;
+      }}
+
+      @keyframes shellFloat {{
+        0% {{ transform: translateY(0px) scale(1); }}
+        100% {{ transform: translateY(-4px) scale(1.004); }}
+      }}
+
+      .compass-shell::before, .compass-shell::after {{
+        content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+      }}
+      .compass-shell::before {{
+        inset: 7%;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), transparent 54%),
+          conic-gradient(from 0deg, rgba(232,105,79,0.00) 0deg 12deg, rgba(57,42,56,0.05) 12deg 13deg, rgba(232,105,79,0.00) 13deg 24deg);
+        opacity: 0.55;
+      }}
+      .compass-shell::after {{
+        inset: 18%;
+        border: 1px solid rgba(57,42,56,0.07);
+        box-shadow: inset 0 0 30px rgba(255,255,255,0.08);
+      }}
+
+      .compass-glow {{
+        position: absolute; inset: 10%; border-radius: 50%;
+        background: radial-gradient(circle, rgba(214,133,149,0.20), transparent 62%);
+        filter: blur(9px); pointer-events: none;
+        animation: pulse 5.5s ease-in-out infinite;
+      }}
+      @keyframes pulse {{ 0%,100% {{opacity:.78; transform:scale(1);}} 50% {{opacity:1; transform:scale(1.03);}} }}
+
+      .compass-ring-outer, .compass-ring-mid, .compass-ring-inner,
+      .compass-degree-ring, .compass-ringshine, .compass-face, .compass-ticks {{
+        position: absolute; border-radius: 50%; pointer-events: none;
+      }}
+      .compass-ring-outer {{ inset: 2.5%; border: 1px solid rgba(168,180,199,0.26); }}
+      .compass-ring-mid   {{ inset: 9%;   border: 1px solid rgba(255,140,66,0.28); }}
+      .compass-ring-inner {{ inset: 16%;  border: 1px solid rgba(57,42,56,0.14); }}
+      .compass-face {{
+        inset: 18%;
+        background:
+          radial-gradient(circle at 50% 50%, rgba(255,255,255,0.03), transparent 58%),
+          radial-gradient(circle at 50% 50%, rgba(15,26,46,0.15), rgba(15,26,46,0.32));
+        box-shadow: inset 0 0 28px rgba(0,0,0,0.18);
+      }}
+      .compass-degree-ring {{ inset: 7%; border: 1px dashed rgba(168,180,199,0.20); }}
+      .compass-ringshine {{ inset: 13%; border: 1px solid rgba(57,42,56,0.07); box-shadow: inset 0 0 44px rgba(255,255,255,0.02); }}
+      .compass-ticks {{
+        inset: 0;
+        background: repeating-conic-gradient(from 0deg, rgba(168,180,199,0.32) 0deg 1deg, transparent 1deg 6deg);
+        -webkit-mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
+                mask: radial-gradient(circle, transparent 0 69%, #000 70% 100%);
+        opacity: 0.72;
+      }}
+
+      .compass-needle {{
+        position: absolute; inset: 16%; border-radius: 50%;
+        transform: rotate(var(--base-angle));
+        animation: needleTurn 8.5s cubic-bezier(.4,0,.2,1) infinite alternate;
+      }}
+      @keyframes needleTurn {{
+        0%   {{ transform: rotate(calc(var(--base-angle) - 6deg)); }}
+        100% {{ transform: rotate(calc(var(--base-angle) + 8deg)); }}
+      }}
+      .compass-needle::before, .compass-needle::after {{
+        content: ""; position: absolute; left: 50%; transform-origin: center;
+        width: 1.55rem; height: 46%;
+        clip-path: polygon(50% 0%, 100% 14%, 76% 100%, 24% 100%, 0% 14%);
+        filter: drop-shadow(0 0 14px rgba(0,0,0,0.14));
+      }}
+      .compass-needle::before {{
+        top: 0; transform: translateX(-50%);
+        background: linear-gradient(180deg, #FF8C42 0%, #E8694F 45%, rgba(232,105,79,0.08) 100%);
+        filter: drop-shadow(0 0 16px rgba(255,140,66,0.24));
+      }}
+      .compass-needle::after {{
+        bottom: 0; transform: translateX(-50%) rotate(180deg);
+        background: linear-gradient(180deg, rgba(245,241,232,0.95) 0%, rgba(168,180,199,0.92) 55%, rgba(168,180,199,0.05) 100%);
+        filter: drop-shadow(0 0 14px rgba(168,180,199,0.18));
+      }}
+
+      .compass-cap {{
+        position: absolute; left: 50%; top: 50%; width: 19px; height: 19px;
+        border-radius: 50%; transform: translate(-50%, -50%);
+        background: radial-gradient(circle at 35% 35%, #FFFFFF, #A8B4C7 36%, #0F1A2E 72%);
+        box-shadow: 0 0 0 6px rgba(57,42,56,0.06), 0 0 26px rgba(255,140,66,0.24);
+        z-index: 2;
+      }}
+    </style>
+
+    <div class="compass-wrap" aria-label="Compass illustration">
+      <div class="compass-shell">
+        <div class="compass-glow"></div>
+        <div class="compass-ring-outer"></div>
+        <div class="compass-ring-mid"></div>
+        <div class="compass-ring-inner"></div>
+        <div class="compass-degree-ring"></div>
+        <div class="compass-ringshine"></div>
+        <div class="compass-ticks"></div>
+        <div class="compass-face"></div>
+        <div class="compass-needle"><div class="compass-cap"></div></div>
+      </div>
+    </div>
+    """
 
 
+# ============================ HERO ============================
 def render_hero(angle: float = 0.0) -> str:
     compass_inner = render_compass_widget(angle)
-    return f"""<style>
-  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,800;8..60,900&family=Dancing+Script:wght@700&family=IBM+Plex+Mono:wght@700&display=swap');
-  html, body {{ margin:0; padding:0; background:transparent; }}
-  .hero-card {{
-    position: relative; overflow: hidden; display: flex; flex-direction: column;
-    align-items: center; text-align: center; gap: 0.55rem;
-    padding: 1.3rem 1.6rem 1.3rem; border-radius: 26px;
-    background:
-      radial-gradient(circle at 18% 12%, rgba(255,140,66,0.18) 0%, transparent 42%),
-      radial-gradient(circle at 88% 86%, rgba(111,168,136,0.14) 0%, transparent 40%),
-      linear-gradient(155deg, #1C2742 0%, #141D33 62%, #0F1729 100%);
-    box-shadow: 0 18px 44px rgba(8,12,24,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
-  }}
-  .hero-kicker {{
-    display: inline-flex; align-items: center; gap: 0.5rem;
-    padding: 0.3rem 0.75rem; border-radius: 999px;
-    background: rgba(255,255,255,0.06); border: 1px solid rgba(255,140,66,0.3);
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 700;
-    letter-spacing: 0.16em; text-transform: uppercase; color: #FF8C42;
-  }}
-  .hero-kicker .dot {{ width:5px; height:5px; border-radius:50%; background:#FF8C42; box-shadow:0 0 0 4px rgba(255,140,66,0.25); }}
-  .hero-compass-slot {{ width:110px; height:110px; display:flex; align-items:center; justify-content:center; }}
-  .hero-title {{
-    margin: 0; font-family: 'Source Serif 4', Georgia, serif; font-weight: 900;
-    letter-spacing: -0.03em; line-height: 1; font-size: clamp(1.6rem, 3.4vw, 2.6rem); color: #F6F1EA;
-  }}
-  .hero-slogan {{
-    max-width: 30rem; margin: 0; font-family: 'Dancing Script', cursive;
-    font-size: 1.15rem; font-weight: 700; line-height: 1.35; color: #E5C9A8;
-  }}
-  @media (max-width:480px) {{ .hero-title {{ font-size: clamp(1.4rem, 7vw, 2rem); }} }}
-</style>
-<div class="hero-card">
-  <div class="hero-kicker"><span class="dot"></span>A COMPASS, NOT A VERDICT</div>
-  <div class="hero-compass-slot">{compass_inner}</div>
-  <h1 class="hero-title">First-Gen Compass</h1>
-  <p class="hero-slogan">The unwritten rules, finally written down.</p>
-</div>"""
-
+    return f"""
+    <div style="font-family:'Inter',sans-serif;">
+      <div class="hero-titlecard-standalone">
+        <div class="hero-kicker"><span class="dot"></span>DECISION COMPASS</div>
+        <h1 class="hero-title">First-Gen <span class="accent">Compass</span></h1>
+        <div class="hero-compass-slot">{compass_inner}</div>
+        <div class="hero-slogan">A calm, intelligent map for high-stakes choices.</div>
+      </div>
+    </div>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,800;8..60,900&family=Dancing+Script:wght@700&family=IBM+Plex+Mono:wght@700&display=swap');
+      html, body {{ margin:0; padding:0; background:transparent; }}
+      .hero-titlecard-standalone {{
+        position: relative; overflow: hidden;
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        gap: 0.4rem;
+        padding: 1.1rem 1.4rem 1.05rem;
+        border-radius: 26px;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(201,130,114,0.22) 0%, transparent 42%),
+          radial-gradient(circle at 88% 86%, rgba(158,122,74,0.18) 0%, transparent 40%),
+          linear-gradient(155deg, #4A372F 0%, #3B2C2A 62%, #2E2220 100%);
+        box-shadow: 0 18px 44px rgba(35,24,22,0.28), inset 0 1px 0 rgba(255,255,255,0.06);
+      }}
+      .hero-titlecard-standalone::after {{
+        content: ""; position: absolute; inset: 0;
+        background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-size: 22px 22px; opacity: 0.5; pointer-events: none;
+      }}
+      .hero-kicker {{
+        position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem;
+        width: fit-content; padding: 0.3rem 0.7rem; border-radius: 999px;
+        background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+        font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 700;
+        letter-spacing: 0.16em; text-transform: uppercase; color: #E8C9A8;
+      }}
+      .hero-kicker .dot {{ width: 5px; height: 5px; border-radius: 50%; background: #C98272; box-shadow: 0 0 0 4px rgba(201,130,114,0.25); }}
+      .hero-title {{
+        position: relative; z-index: 1; margin: 0.05rem 0 0;
+        font-family: 'Source Serif 4', Georgia, serif; font-weight: 900;
+        letter-spacing: -0.03em; line-height: 1;
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
+        white-space: nowrap;
+        color: #FBF3E8;
+      }}
+      .hero-title .accent {{ display: inline; color: #C98272; font-style: italic; font-weight: 800; }}
+      .hero-slogan {{
+        position: relative; z-index: 1; max-width: 28rem; margin: 0.05rem 0 0;
+        font-family: 'Dancing Script', cursive; font-size: 1.05rem; font-weight: 700;
+        line-height: 1.35; color: #E8D9C8;
+      }}
+      .hero-compass-slot {{
+        position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
+        width: 100px; height: 100px; margin: 0 auto;
+      }}
+      @media (max-width: 480px) {{
+        .hero-title {{ white-space: normal; font-size: clamp(1.3rem, 7vw, 2rem); }}
+      }}
+    </style>
+    """
 
 st.components.v1.html(render_hero(), height=300, scrolling=False)
 
-with st.expander("How the compass actually thinks (and what it can't know)"):
+st.markdown("""
+<div class="mission-panel">
+  <strong>Why this exists</strong>
+  <p>This is a decision tool for first-gen students who are expected to translate a whole
+  system alone. It brings the real cost of each path into focus — money, mobility,
+  pressure, and the surprises people rarely say out loud.</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="disclosure-banner">
+  <div class="ic">🧭</div>
+  <div>
+    <div class="disclosure-banner-title">What this tool is — and isn't</div>
+    <div class="disclosure-banner-text">
+      This surfaces tradeoffs, not answers. It never ranks or picks a "best" option for you —
+      it structures the comparison so <em>you</em> can decide, with the real costs and unknowns
+      in view. Every number below is an AI-assisted estimate to verify directly with each school,
+      not a fact.
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+with st.expander("How this works, and what data it uses"):
     st.markdown(
-        "**Reasoning.** Every option you type — a school, a bootcamp, a city, a startup idea — "
-        "gets read by Llama 3.3 70B through NVIDIA's NIM API. That's the part doing the actual "
-        "thinking: pulling in what it already knows about a specific place or path (real costs, "
-        "real aid policies, real outcomes) instead of guessing from the name alone.\n\n"
-        "**Scoring.** The numbers and the what-if shifts below are not the model improvising — "
-        "they run through a fixed formula keyed to *your* sliders (risk tolerance, financial "
-        "pressure, family support). Same inputs, same output, every time. Nothing here is a "
-        "black-box re-roll.\n\n"
-        "**When the model can't be reached.** If the API call fails, the app doesn't fake a "
-        "confident answer — it switches to a plain keyword estimate and says so, clearly, above "
-        "the results.\n\n"
-        "**Your data.** What you type lives in this browser session only, long enough to build "
-        "one request to NVIDIA's API. Nothing is logged, stored, or reused. No other AI tool or "
-        "dataset touches it."
+        "- **Reasoning engine:** `meta/llama-3.3-70b-instruct`, called via the NVIDIA NIM API, "
+        "supplies institution-specific knowledge (costs, culture, outcomes) that no fixed rule "
+        "table could cover for every school or path a student might type in.\n"
+        "- **Scoring & scenario math is deterministic, not AI-generated.** Your sliders "
+        "(risk tolerance, financial pressure, family support) feed a fixed weighted formula, "
+        "and each 'what-if' scenario applies fixed point deltas. Same inputs always produce the "
+        "same comparison — nothing here is a black box re-roll.\n"
+        "- **If the AI call fails or returns unreliable output,** the app falls back to a "
+        "transparent keyword heuristic and says so plainly above the results — it does not "
+        "silently guess.\n"
+        "- **Data handling:** everything you type (name, context, option details) lives only in "
+        "this browser session to build the prompt sent to the NVIDIA API for that one request. "
+        "Nothing is logged or stored by this app, and no other AI tool or external dataset is used."
     )
+
 
 if not get_api_key():
     st.warning(
-        "No NVIDIA API key configured. Add `NVIDIA_API_KEY` under this app's Streamlit secrets "
-        "to turn on grounded reasoning. Without it, results fall back to a rough keyword estimate."
+        "No NVIDIA API key configured. Add `NVIDIA_API_KEY` to this app's "
+        "Streamlit secrets (Settings → Secrets) to enable AI reasoning. "
+        "Without it, results fall back to keyword-based estimates."
     )
 
 st.markdown('<div class="section-label"><span class="dot"></span>WHERE YOU\'RE STARTING FROM</div>', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 with c1:
-    st.session_state["name"] = st.text_input(
-        "Your name (optional)", value=st.session_state["name"], placeholder="for the map")
+    st.session_state["name"]         = st.text_input("Your name (optional)",    value=st.session_state["name"],         placeholder="for the map")
 with c2:
-    st.session_state["context_note"] = st.text_input(
-        "One-line context", value=st.session_state["context_note"],
-        placeholder="e.g. first in family to study abroad")
+    st.session_state["context_note"] = st.text_input("One-line context",         value=st.session_state["context_note"], placeholder="e.g. first in family to study abroad")
 with c3:
-    st.session_state["home_location"] = st.text_input(
-        "Home city / country", value=st.session_state["home_location"], placeholder="e.g. Connecticut")
+    st.session_state["home_location"]= st.text_input("Home city / country",      value=st.session_state["home_location"],placeholder="e.g. Connecticut")
 
 s1, s2, s3 = st.columns(3)
-with s1:
-    st.session_state["risk_tolerance"] = st.slider(
-        "Risk tolerance", 0, 10, int(st.session_state["risk_tolerance"]))
-with s2:
-    st.session_state["financial_pressure"] = st.slider(
-        "Financial pressure", 0, 10, int(st.session_state["financial_pressure"]))
-with s3:
-    st.session_state["family_support"] = st.slider(
-        "Family support / guidance", 0, 10, int(st.session_state["family_support"]))
+with s1: st.session_state["risk_tolerance"]    = st.slider("Risk tolerance",           0, 10, int(st.session_state["risk_tolerance"]))
+with s2: st.session_state["financial_pressure"]= st.slider("Financial pressure",       0, 10, int(st.session_state["financial_pressure"]))
+with s3: st.session_state["family_support"]    = st.slider("Family support / guidance",0, 10, int(st.session_state["family_support"]))
 
 st.markdown('<div class="section-label"><span class="dot"></span>WHAT COULD GO SIDEWAYS</div>', unsafe_allow_html=True)
-st.markdown(
-    '<p class="section-hint">Tick anything that feels plausible. Each option gets re-read through that lens further down — not just flagged, recalculated.</p>',
-    unsafe_allow_html=True)
+st.markdown('<p class="section-hint">Tick anything that feels plausible. Each option gets re-read through that lens further down.</p>', unsafe_allow_html=True)
 scols = st.columns(4)
 for i, (name, desc) in enumerate(SCENARIOS):
     with scols[i % 4]:
-        st.session_state.scenario_checks[name] = st.checkbox(
-            name, value=st.session_state.scenario_checks[name], help=desc)
+        st.session_state.scenario_checks[name] = st.checkbox(name, value=st.session_state.scenario_checks[name], help=desc)
 
 st.divider()
 
@@ -1103,73 +1245,64 @@ st.markdown('<div class="section-label"><span class="dot"></span>THE OPTIONS ON 
 ac, rc = st.columns([1, 1])
 with ac:
     if st.button("Add another option", use_container_width=True):
-        st.session_state.options.append(new_option(len(st.session_state.options) + 1))
+        st.session_state.options.append(new_option(len(st.session_state.options)+1))
 with rc:
     if st.button("Clear everything", use_container_width=True):
-        st.session_state.options = [new_option(1), new_option(2)]
-        st.session_state.engine_result = None
-        st.session_state.show_results = False
+        for k in ["options","engine_result","show_results"]:
+            st.session_state[k] = [new_option(1), new_option(2)] if k == "options" else (None if k == "engine_result" else False)
         st.rerun()
 
 for opt in list(st.session_state.options):
     oid = opt["id"]
+    st.markdown('<div class="opt-card">', unsafe_allow_html=True)
     h1, h2 = st.columns([5, 1])
     with h1:
-        opt["name"] = st.text_input(
-            "Option name", value=opt["name"], key=f"n_{oid}", label_visibility="collapsed",
-            placeholder="UCLA, MIT, the community college down the road, a coding bootcamp…")
+        opt["name"] = st.text_input("Option name", value=opt["name"], key=f"n_{oid}", label_visibility="collapsed",
+                                    placeholder="UCLA, MIT, the community college down the road, a coding bootcamp…")
     with h2:
         if st.button("Remove", key=f"rm_{oid}", use_container_width=True) and len(st.session_state.options) > 2:
             st.session_state.options = [o for o in st.session_state.options if o["id"] != oid]
-            st.session_state.engine_result = None
-            st.session_state.show_results = False
-            st.rerun()
-    opt["details"] = st.text_area(
-        "Details", value=opt.get("details", ""), key=f"d_{oid}",
-        label_visibility="collapsed", height=80,
-        placeholder="Anything you already know — cost, location, program. A name alone is enough to start with.")
-    opt["gut_take"] = st.text_input(
-        "Gut take", value=opt.get("gut_take", ""), key=f"g_{oid}",
-        placeholder="What's your instinct telling you? The analysis will engage with it, not talk you out of it.")
-    st.markdown("<div style='height:0.4rem'></div>", unsafe_allow_html=True)
+            st.session_state.engine_result = None; st.session_state.show_results = False; st.rerun()
+    opt["details"]  = st.text_area("Details", value=opt.get("details",""), key=f"d_{oid}",
+                                   label_visibility="collapsed", height=80,
+                                   placeholder="Anything you already know — cost, location, program. A name alone is enough to start with.")
+    opt["gut_take"] = st.text_input("Gut take", value=opt.get("gut_take",""), key=f"g_{oid}",
+                                    placeholder="What's your instinct telling you? The analysis will engage with it, not talk you out of it.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if st.button("Map out these paths", type="primary", use_container_width=True):
     with st.spinner("Working through each option — this usually takes 15–25 seconds…"):
         prof = profile()
         result = run_engine(prof, st.session_state.options)
-        st.session_state.engine_result = result
-        st.session_state.show_results = True
+    st.session_state.engine_result = result
+    st.session_state.show_results  = True
 
 st.divider()
 
 if st.session_state.show_results and st.session_state.engine_result:
     result = st.session_state.engine_result
     ranked = list(result["options"])
-    act = active_scenarios()
-    prof = profile()
-    w = weights(prof)
+    act    = active_scenarios()
+    prof   = profile()
+    w      = weights(prof)
 
     if result.get("used_ai"):
-        st.markdown('<div class="confidence-badge grounded">✓ Reasoned from institutional knowledge</div>',
-                    unsafe_allow_html=True)
+        st.markdown(
+            '<div class="confidence-badge grounded">✓ Grounded estimate</div>',
+            unsafe_allow_html=True)
         st.caption(
             "The model reasoned using its training knowledge of these specific places and paths. "
             "It can still be wrong or out of date — treat every figure as a starting estimate, "
-            "and use **Questions to investigate** below to confirm it directly with each option."
+            "and use the **Questions to investigate** below to confirm it directly with each option."
         )
     else:
-        st.markdown('<div class="confidence-badge fallback">⚠ Estimated by keyword shortcuts</div>',
-                    unsafe_allow_html=True)
-        st.warning(
-            "The AI connection wasn't available, so this run used a rough keyword heuristic instead "
-            "of real institutional knowledge — treat these numbers as placeholders, not analysis. "
-            "Add an NVIDIA API key for grounded results."
-        )
+        st.markdown(
+            '<div class="confidence-badge fallback">⚠ Keyword fallback only</div>',
+            unsafe_allow_html=True)
+        st.warning("The AI connection wasn't available, so this run used a rough keyword heuristic instead of real institutional knowledge — treat these numbers as placeholders, not analysis. Add an NVIDIA API key for grounded results.")
 
     st.markdown('<div class="section-label"><span class="dot"></span>THE LAY OF THE LAND</div>', unsafe_allow_html=True)
-    st.markdown(
-        '<p class="section-hint">Positions here describe the shape of the tradeoff for your profile — not a ranking of which to pick.</p>',
-        unsafe_allow_html=True)
+    st.markdown('<p class="section-hint">Positions here describe the shape of the trade-off for your profile — not a ranking of which to pick.</p>', unsafe_allow_html=True)
     st.components.v1.html(render_map_svg(prof, ranked), height=620, scrolling=False)
 
     st.markdown('<div class="section-label"><span class="dot"></span>HOW THEY STACK UP AGAINST EACH OTHER</div>', unsafe_allow_html=True)
@@ -1180,121 +1313,130 @@ if st.session_state.show_results and st.session_state.engine_result:
 
     cc1, cc2, cc3 = st.columns(3)
     with cc1:
-        st.markdown(render_listbox("First-generation insights", result["comparison"]["what_first_gen_students_miss"]),
-                    unsafe_allow_html=True)
+        st.markdown(render_listbox("First-generation insights",
+                                   result["comparison"]["what_first_gen_students_miss"]), unsafe_allow_html=True)
     with cc2:
-        st.markdown(render_listbox("Questions to research", result["comparison"]["questions_to_research"]),
-                    unsafe_allow_html=True)
+        st.markdown(render_listbox("Questions to research",
+                                   result["comparison"]["questions_to_research"]), unsafe_allow_html=True)
     with cc3:
         if act:
             IMPACT_MAP = {
-                "Scholarship lost": "Financial risk spikes — the most cost-exposed path feels it first.",
-                "Family cannot support": "The path leaning on family logistics becomes much harder.",
-                "Housing costs rise": "Living-cost buffer shrinks; the most expensive option is most exposed.",
-                "Need part-time work": "Time pressure and mental load increase significantly.",
-                "Family emergency": "Recovery difficulty rises and path-change ease drops.",
-                "Internship offer arrives": "Networking and salary upside become more decisive.",
+                "Scholarship lost":             "Financial risk spikes — the most cost-exposed path feels it first.",
+                "Family cannot support":        "The path leaning on family logistics becomes much harder.",
+                "Housing costs rise":           "Living cost buffer shrinks; most expensive option is most exposed.",
+                "Need part-time work":          "Time pressure and mental load increase significantly.",
+                "Family emergency":             "Recovery difficulty rises and path-change ease drops.",
+                "Internship offer arrives":     "Networking and salary upside become more decisive.",
                 "Graduate school becomes goal": "Long-term flexibility and career credentials matter more.",
             }
             for s in act:
                 worst, worst_d = "—", 0.0
                 for o in ranked:
-                    d = round(score(apply_scenarios(o, [s]), w) - score(o, w), 1)
-                    if abs(d) >= abs(worst_d):
-                        worst_d = d
-                        worst = o["name"]
+                    d = round(score(apply_scenarios(o,[s]),w) - score(o,w), 1)
+                    if abs(d) >= abs(worst_d): worst_d = d; worst = o["name"]
                 dt = f"{'+' if worst_d > 0 else ''}{worst_d:.1f}"
                 st.markdown(
                     f'<div class="sc-card"><div class="sc-name">{html_escape(s)}</div>'
-                    f'<div class="sc-text">{html_escape(IMPACT_MAP.get(s, "The scenario shifts the risk balance."))} '
+                    f'<div class="sc-text">{html_escape(IMPACT_MAP.get(s,"The scenario shifts the risk balance."))} '
                     f'Most exposed: <b>{html_escape(worst)}</b> ({html_escape(dt)} pts)</div></div>',
                     unsafe_allow_html=True)
         else:
-            st.markdown(render_listbox("Unknowns", [
+            st.markdown(render_listbox("Unknowns",[
                 "Tick a scenario above to see which path bends first.",
-                "Each one highlights the option most exposed to that shift.",
-            ]), unsafe_allow_html=True)
+                "Each one highlights the option most exposed to that shift."]), unsafe_allow_html=True)
 
     st.markdown('<div class="section-label"><span class="dot"></span>EACH OPTION, IN DETAIL</div>', unsafe_allow_html=True)
-    st.caption(
-        "Note: **confidence in the path** describes how well-mapped that path's outcomes typically "
-        "are — it is not a measure of how certain the model is about these numbers."
-    )
+    st.caption("Note: the **confidence in the path** metric below describes how well-mapped that path's outcomes typically are — it is not a measure of how certain the AI is about these numbers.")
 
     for opt in ranked:
         st.markdown(
-            f'<div class="opt-result"><div class="opt-result-head">'
+            f'<div class="opt-result">'
+            f'<div class="opt-result-head">'
             f'<div class="opt-result-name">{html_escape(opt["name"])}</div>'
             f'<div class="opt-result-summary">{html_escape(opt.get("summary",""))}</div>'
             f'</div><div class="opt-result-body">',
             unsafe_allow_html=True)
 
-        m1, m2, m3, m4 = st.columns(4)
+        m1,m2,m3,m4 = st.columns(4)
         with m1:
-            st.markdown(metric_chip("Financial risk", "financial_risk", opt["financial_risk"]), unsafe_allow_html=True)
-            st.markdown(metric_chip("Salary potential", "salary_potential", opt["salary_potential"]), unsafe_allow_html=True)
+            st.markdown(metric_chip("Financial risk",      "financial_risk",      opt["financial_risk"]),      unsafe_allow_html=True)
+            st.markdown(metric_chip("Salary potential",    "salary_potential",    opt["salary_potential"]),    unsafe_allow_html=True)
         with m2:
-            st.markdown(metric_chip("Career flexibility", "career_flexibility", opt["career_flexibility"]), unsafe_allow_html=True)
-            st.markdown(metric_chip("Path-change ease", "path_change_ease", opt["path_change_ease"]), unsafe_allow_html=True)
+            st.markdown(metric_chip("Career flexibility",  "career_flexibility",  opt["career_flexibility"]),  unsafe_allow_html=True)
+            st.markdown(metric_chip("Path-change ease",    "path_change_ease",    opt["path_change_ease"]),    unsafe_allow_html=True)
         with m3:
-            st.markdown(metric_chip("Networking", "networking", opt["networking"]), unsafe_allow_html=True)
+            st.markdown(metric_chip("Networking",          "networking",          opt["networking"]),          unsafe_allow_html=True)
             st.markdown(metric_chip("Family support req.", "family_support_required", opt["family_support_required"]), unsafe_allow_html=True)
         with m4:
-            st.markdown(metric_chip("Mental workload", "mental_workload", opt["mental_workload"]), unsafe_allow_html=True)
+            st.markdown(metric_chip("Mental workload",     "mental_workload",     opt["mental_workload"]),     unsafe_allow_html=True)
             st.markdown(metric_chip("Recovery difficulty", "recovery_difficulty", opt["recovery_difficulty"]), unsafe_allow_html=True)
 
         st.markdown("<div style='height:1.1rem'></div>", unsafe_allow_html=True)
 
         la, lb, lc = st.columns(3)
-        with la:
-            st.markdown(render_listbox("Hidden costs", opt["hidden_costs"]), unsafe_allow_html=True)
-        with lb:
-            st.markdown(render_listbox("Hidden benefits", opt["hidden_benefits"]), unsafe_allow_html=True)
-        with lc:
-            st.markdown(render_listbox("Opportunity costs", opt["opportunity_costs"]), unsafe_allow_html=True)
+        with la: st.markdown(render_listbox("Hidden costs",             opt["hidden_costs"]),             unsafe_allow_html=True)
+        with lb: st.markdown(render_listbox("Hidden benefits",          opt["hidden_benefits"]),          unsafe_allow_html=True)
+        with lc: st.markdown(render_listbox("Opportunity costs",        opt["opportunity_costs"]),        unsafe_allow_html=True)
 
         st.markdown("<div style='height:0.6rem'></div>", unsafe_allow_html=True)
 
         ld, le, lf = st.columns(3)
-        with ld:
-            st.markdown(render_listbox("First-generation insights", opt["first_gen_insights"]), unsafe_allow_html=True)
-        with le:
-            st.markdown(render_listbox("Unknowns", opt["unknowns"]), unsafe_allow_html=True)
-        with lf:
-            st.markdown(render_listbox("Questions to investigate", opt["questions_to_investigate"]), unsafe_allow_html=True)
+        with ld: st.markdown(render_listbox("First-generation insights",opt["first_gen_insights"]),       unsafe_allow_html=True)
+        with le: st.markdown(render_listbox("Unknowns",                 opt["unknowns"]),                 unsafe_allow_html=True)
+        with lf: st.markdown(render_listbox("Questions to investigate", opt["questions_to_investigate"]), unsafe_allow_html=True)
 
         st.markdown("<div style='height:1.1rem'></div>", unsafe_allow_html=True)
+
         st.markdown("**How this plays out, roughly**", unsafe_allow_html=True)
         st.components.v1.html(
-            render_timeline(opt), height=max(260, len(opt.get("timeline", [])) * 84), scrolling=False)
+            "<style>*{box-sizing:border-box;font-family:'Inter',sans-serif}"
+            "body{margin:0}"
+            ".tl-wrap{padding:0.4rem 0}"
+            ".tl-row{display:grid;grid-template-columns:2.3rem 1fr;gap:0 0.9rem;margin-bottom:0}"
+            ".tl-node-col{display:flex;flex-direction:column;align-items:center}"
+            ".tl-dot{width:1.9rem;height:1.9rem;border-radius:50%;background:#FF8C42;"
+            "display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;"
+            "font-size:0.74rem;font-weight:600;color:#0F1A2E;flex-shrink:0}"
+            ".tl-connector{width:1.5px;flex:1;min-height:0.7rem;background:rgba(168,180,199,0.3);margin:3px 0}"
+            ".tl-content{padding:0.55rem 0 0.95rem;color:#E5E0D4}"
+            ".tl-stage{font-family:'IBM Plex Mono',monospace;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;"
+            "text-transform:uppercase;color:#FF8C42;margin-bottom:0.22rem}"
+            ".tl-text{font-size:0.88rem;line-height:1.55;color:#A8B4C7}</style>"
+            + render_timeline(opt),
+            height=max(260, len(opt.get("timeline",[])) * 84), scrolling=False)
 
         if act:
             impact_text = scenario_impact_text(opt, act)
             st.markdown(
-                f'<div class="stress-panel"><div class="stress-label">Under your selected scenario(s)</div>'
-                f'<div class="stress-delta">{html_escape(impact_text)}</div></div>',
-                unsafe_allow_html=True)
+                f'<div class="stress-panel">'
+                f'<div><div class="stress-label">Under your selected scenario(s)</div>'
+                f'<div class="stress-delta">{html_escape(impact_text)}</div>'
+                f'</div></div>', unsafe_allow_html=True)
 
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
 
     st.markdown('<div class="section-label"><span class="dot"></span>YOUR MOVE, NOT THE AI\'S</div>', unsafe_allow_html=True)
     st.markdown(
-        '<div class="decision-box"><div class="decision-box-label">Decision moment</div>'
+        '<div class="decision-box">'
+        '<div class="decision-box-label">Decision moment</div>'
         '<div class="decision-box-hint">Everything above is a tradeoff map, not a verdict. '
         'The one decision this tool will never make for you is which path is "right." '
-        'Before you close this tab, write down the one concrete thing you\'ll actually do next.</div></div>',
+        'Before you close this tab, write down the one concrete thing you\'ll actually do next.</div>'
+        '</div>',
         unsafe_allow_html=True)
 
     dc1, dc2 = st.columns([3, 2])
     with dc1:
         action_draft = st.text_area(
-            "Your next concrete step", value=st.session_state.committed_action,
+            "Your next concrete step",
+            value=st.session_state.committed_action,
             placeholder="e.g. Email UCLA financial aid to ask how my package changes after year one",
             height=80, key="action_draft_input")
     with dc2:
         who_draft = st.text_input(
-            "Who or what you're asking", value=st.session_state.committed_who,
+            "Who or what you're asking",
+            value=st.session_state.committed_who,
             placeholder="e.g. UCLA financial aid office", key="who_draft_input")
 
     if st.button("Lock in my next step", use_container_width=True):
@@ -1303,16 +1445,20 @@ if st.session_state.show_results and st.session_state.engine_result:
 
     if st.session_state.committed_action:
         st.markdown(
-            f'<div class="decision-card"><div class="decision-card-label">You decided</div>'
+            f'<div class="decision-card">'
+            f'<div class="decision-card-label">You decided</div>'
             f'<div class="decision-card-text">{html_escape(st.session_state.committed_action)}</div>'
             + (f'<div class="decision-card-meta">Next: {html_escape(st.session_state.committed_who)}</div>'
                if st.session_state.committed_who else "")
-            + '<div class="decision-card-meta">The AI surfaced the tradeoffs — you made the call.</div></div>',
-            unsafe_allow_html=True)
-    else:
-        st.markdown(
-            '<div class="empty-state"><div class="empty-state-title">Nothing mapped yet</div>'
-            "Add the names of whatever you're weighing above and select "
-            '"Map out these paths." A name by itself is enough — it already knows '
-            'UCLA from a community college from a bootcamp.</div>',
-            unsafe_allow_html=True)
+            + '<div class="decision-card-meta">The AI surfaced the tradeoffs — you made the call.</div>'
+            f'</div>', unsafe_allow_html=True)
+
+else:
+    st.markdown("""
+    <div class="empty-state">
+      <div class="empty-state-title">Nothing mapped yet</div>
+      <div class="empty-state-text">
+        Add the names of whatever you're weighing above and select Map out these paths.
+        A name by itself is enough — it already knows UCLA from a community college from a bootcamp.
+      </div>
+    </div>""", unsafe_allow_html=True)
