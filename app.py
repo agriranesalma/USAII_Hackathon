@@ -25,7 +25,6 @@ SCENARIOS = [
     ("Graduate school becomes goal",  "You might want to continue beyond the degree."),
 ]
 
-
 CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700;8..60,800;8..60,900&family=IBM+Plex+Mono:wght@500;600;700&family=Dancing+Script:wght@600;700&display=swap');
@@ -916,8 +915,8 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
       .compass-shell {{
         --base-angle: {angle:.0f}deg;
         position: relative;
-        width: 200px;
-        height: 200px;
+        width: 170px;
+        height: 170px;
         border-radius: 50%;
         display: grid;
         place-items: center;
@@ -1055,14 +1054,14 @@ def render_hero(angle: float = 0.0) -> str:
       .hero-titlecard-standalone {{
         position: relative; overflow: hidden;
         display: flex; flex-direction: column; align-items: center; text-align: center;
-        gap: 0.9rem;
-        padding: 3.2rem 2.5rem 2.8rem;
-        border-radius: 36px;
+        gap: 0.7rem;
+        padding: 2.2rem 2rem 2rem;
+        border-radius: 32px;
         background:
           radial-gradient(circle at 18% 12%, rgba(201,130,114,0.22) 0%, transparent 42%),
           radial-gradient(circle at 88% 86%, rgba(158,122,74,0.18) 0%, transparent 40%),
           linear-gradient(155deg, #4A372F 0%, #3B2C2A 62%, #2E2220 100%);
-        box-shadow: 0 30px 70px rgba(35,24,22,0.32), inset 0 1px 0 rgba(255,255,255,0.06);
+        box-shadow: 0 24px 56px rgba(35,24,22,0.30), inset 0 1px 0 rgba(255,255,255,0.06);
       }}
       .hero-titlecard-standalone::after {{
         content: ""; position: absolute; inset: 0;
@@ -1071,32 +1070,32 @@ def render_hero(angle: float = 0.0) -> str:
       }}
       .hero-kicker {{
         position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem;
-        width: fit-content; padding: 0.4rem 0.85rem; border-radius: 999px;
+        width: fit-content; padding: 0.35rem 0.8rem; border-radius: 999px;
         background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
-        font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 700;
+        font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 700;
         letter-spacing: 0.18em; text-transform: uppercase; color: #E8C9A8;
       }}
       .hero-kicker .dot {{ width: 6px; height: 6px; border-radius: 50%; background: #C98272; box-shadow: 0 0 0 4px rgba(201,130,114,0.25); }}
       .hero-title {{
-        position: relative; z-index: 1; margin: 0.2rem 0 0;
+        position: relative; z-index: 1; margin: 0.1rem 0 0;
         font-family: 'Source Serif 4', Georgia, serif; font-weight: 900;
         letter-spacing: -0.03em; line-height: 0.96;
-        font-size: clamp(3.6rem, 7.2vw, 6.4rem); color: #FBF3E8;
+        font-size: clamp(2.6rem, 5.2vw, 4.4rem); color: #FBF3E8;
       }}
       .hero-title .accent {{ display: block; color: #C98272; font-style: italic; font-weight: 800; }}
       .hero-slogan {{
-        position: relative; z-index: 1; max-width: 32rem; margin: 0.4rem 0 0;
-        font-family: 'Dancing Script', cursive; font-size: 1.6rem; font-weight: 700;
+        position: relative; z-index: 1; max-width: 30rem; margin: 0.2rem 0 0;
+        font-family: 'Dancing Script', cursive; font-size: 1.3rem; font-weight: 700;
         line-height: 1.4; color: #E8D9C8;
       }}
       .hero-compass-slot {{
         position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
-        width: 260px; height: 260px; margin: 0.4rem auto 0;
+        width: 170px; height: 170px; margin: 0.2rem auto 0;
       }}
     </style>
     """
 
-st.components.v1.html(render_hero(), height=720, scrolling=False)
+st.components.v1.html(render_hero(), height=540, scrolling=False)
 
 st.markdown("""
 <div class="mission-panel">
