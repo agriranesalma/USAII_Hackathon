@@ -117,13 +117,18 @@ div[data-testid="stCheckbox"] label {
   font-weight: 700 !important;
 }
 
-div[data-testid="stCheckbox"] label, div[data-testid="stCheckbox"] label p {
+div[data-testid="stCheckbox"] label,
+div[data-testid="stCheckbox"] label p,
+div[data-testid="stCheckbox"] [data-testid="stMarkdownContainer"],
+div[data-testid="stCheckbox"] [data-testid="stMarkdownContainer"] p {
+  color: var(--text) !important;
   font-size: 0.92rem !important;
   font-family: 'Inter', sans-serif !important;
   text-transform: none !important;
   letter-spacing: 0 !important;
   font-weight: 600 !important;
   line-height: 1.3 !important;
+  -webkit-text-fill-color: var(--text) !important;
 }
 
 .stTextInput input, .stTextArea textarea {
@@ -1043,7 +1048,7 @@ def render_hero(angle: float = 0.0) -> str:
     <div style="font-family:'Inter',sans-serif;">
       <div class="hero-titlecard-standalone">
         <div class="hero-kicker"><span class="dot"></span>DECISION COMPASS</div>
-        <h1 class="hero-title">First-Gen<span class="accent">Compass</span></h1>
+        <h1 class="hero-title">First-Gen <span class="accent">Compass</span></h1>
         <div class="hero-compass-slot">{compass_inner}</div>
         <div class="hero-slogan">A calm, intelligent map for high-stakes choices.</div>
       </div>
@@ -1054,9 +1059,9 @@ def render_hero(angle: float = 0.0) -> str:
       .hero-titlecard-standalone {{
         position: relative; overflow: hidden;
         display: flex; flex-direction: column; align-items: center; text-align: center;
-        gap: 0.55rem;
-        padding: 1.6rem 1.6rem 1.5rem;
-        border-radius: 28px;
+        gap: 0.4rem;
+        padding: 1.1rem 1.4rem 1.05rem;
+        border-radius: 26px;
         background:
           radial-gradient(circle at 18% 12%, rgba(201,130,114,0.22) 0%, transparent 42%),
           radial-gradient(circle at 88% 86%, rgba(158,122,74,0.18) 0%, transparent 40%),
@@ -1079,23 +1084,28 @@ def render_hero(angle: float = 0.0) -> str:
       .hero-title {{
         position: relative; z-index: 1; margin: 0.05rem 0 0;
         font-family: 'Source Serif 4', Georgia, serif; font-weight: 900;
-        letter-spacing: -0.03em; line-height: 0.96;
-        font-size: clamp(2.1rem, 4vw, 3.4rem); color: #FBF3E8;
+        letter-spacing: -0.03em; line-height: 1;
+        font-size: clamp(1.5rem, 3vw, 2.5rem);
+        white-space: nowrap;
+        color: #FBF3E8;
       }}
-      .hero-title .accent {{ display: block; color: #C98272; font-style: italic; font-weight: 800; }}
+      .hero-title .accent {{ display: inline; color: #C98272; font-style: italic; font-weight: 800; }}
       .hero-slogan {{
-        position: relative; z-index: 1; max-width: 28rem; margin: 0.1rem 0 0;
-        font-family: 'Dancing Script', cursive; font-size: 1.1rem; font-weight: 700;
-        line-height: 1.4; color: #E8D9C8;
+        position: relative; z-index: 1; max-width: 28rem; margin: 0.05rem 0 0;
+        font-family: 'Dancing Script', cursive; font-size: 1.05rem; font-weight: 700;
+        line-height: 1.35; color: #E8D9C8;
       }}
       .hero-compass-slot {{
         position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
-        width: 130px; height: 130px; margin: 0.1rem auto 0;
+        width: 100px; height: 100px; margin: 0 auto;
+      }}
+      @media (max-width: 480px) {{
+        .hero-title {{ white-space: normal; font-size: clamp(1.3rem, 7vw, 2rem); }}
       }}
     </style>
     """
 
-st.components.v1.html(render_hero(), height=380, scrolling=False)
+st.components.v1.html(render_hero(), height=300, scrolling=False)
 
 st.markdown("""
 <div class="mission-panel">
