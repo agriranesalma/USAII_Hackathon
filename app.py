@@ -1107,7 +1107,7 @@ def render_hero(angle: float = 0.0) -> str:
         <div class="hero-kicker"><span class="dot"></span>HIGH-STAKES COMPASS</div>
         <h1 class="hero-title">First-Gen <span class="accent">Compass</span></h1>
         <div class="hero-compass-slot">{compass_inner}</div>
-        <div class="hero-slogan">We bridge the gap between inherited knowledge and institutional opacity, giving you the transparency to own your trajectory..</div>
+        <div class="hero-slogan">Giving you the transparency to own your trajectory.</div>
       </div>
     </div>
     <style>
