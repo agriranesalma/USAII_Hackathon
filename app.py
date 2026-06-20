@@ -38,7 +38,7 @@ CSS = """
   --muted: #6D6062;
   --muted-2: #887A7C;
 
-  --beige-deep: #3B2C2A;       /* deep beige/espresso for the hero title card */
+  --beige-deep: #3B2C2A;       
   --beige-deep-2: #4A372F;
   --cream: #F4EADC;
   --sand: #EFE2CF;
@@ -960,11 +960,6 @@ def render_map_svg(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> str:
 
 
 def render_compass_widget(initial_angle: float = 0.0) -> str:
-    """
-    Fixed sizing: the shell is now a fraction of the iframe rather than viewport
-    units, so it never gets clipped by the fixed iframe height set in
-    st.components.v1.html. Everything fits comfortably inside a 260px box.
-    """
     angle = float(initial_angle) % 360
     return f"""
     <style>
@@ -1109,10 +1104,10 @@ def render_hero(angle: float = 0.0) -> str:
     return f"""
     <div style="font-family:'Inter',sans-serif;">
       <div class="hero-titlecard-standalone">
-        <div class="hero-kicker"><span class="dot"></span>DECISION COMPASS</div>
+        <div class="hero-kicker"><span class="dot"></span>HIGH-STAKES COMPASS</div>
         <h1 class="hero-title">First-Gen <span class="accent">Compass</span></h1>
         <div class="hero-compass-slot">{compass_inner}</div>
-        <div class="hero-slogan">A calm, intelligent map for high-stakes choices.</div>
+        <div class="hero-slogan">We bridge the gap between inherited knowledge and institutional opacity, giving you the transparency to own your trajectory..</div>
       </div>
     </div>
     <style>
@@ -1172,9 +1167,7 @@ st.components.v1.html(render_hero(), height=300, scrolling=False)
 st.markdown("""
 <div class="mission-panel">
   <strong>Why this exists</strong>
-  <p>This is a decision tool for first-gen students who are expected to translate a whole
-  system alone. It brings the real cost of each path into focus — money, mobility,
-  pressure, and the surprises people rarely say out loud.</p>
+  <p>Higher education is built on invisible safety nets. Legacy students learn the unwritten rules at the dinner table; first-generation students are expected to navigate them blindly. First-Gen Compass exists to bridge this structural gap. By mapping the hidden costs and hidden tradeoffs of major life choices, it translates institutional opacity into clear, actionable data, giving first-generation students the transparency they deserve to make high-stakes choices with absolute confidence.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1184,31 +1177,13 @@ st.markdown("""
   <div>
     <div class="disclosure-banner-title">What this tool is — and isn't</div>
     <div class="disclosure-banner-text">
-      This surfaces tradeoffs, not answers. It never ranks or picks a "best" option for you —
-      it structures the comparison so <em>you</em> can decide, with the real costs and unknowns
-      in view. Every number below is an AI-assisted estimate to verify directly with each school,
-      not a fact.
+      What it is: First-Gen Compass is an AI-powered simulator that models the hidden financial, academic, and emotional realities of your options. It structures your thinking, flags unseen risks, uncovers unwritten institutional rules, and highlights the precise questions you need to ask your advisors.
+
+What it isn't: An automated oracle. This tool will never tell you what you should do. It does not rank your options from best to worst, nor does it present its estimates as absolute certainties. False confidence is dangerous in high-stakes decisions. The AI is here to clear the mental clutter and surface the map—but you make the final call.
     </div>
   </div>
 </div>
 """, unsafe_allow_html=True)
-
-with st.expander("How this works, and what data it uses"):
-    st.markdown(
-        "- **Reasoning engine:** `meta/llama-3.3-70b-instruct`, called via the NVIDIA NIM API, "
-        "supplies institution-specific knowledge (costs, culture, outcomes) that no fixed rule "
-        "table could cover for every school or path a student might type in.\n"
-        "- **Scoring & scenario math is deterministic, not AI-generated.** Your sliders "
-        "(risk tolerance, financial pressure, family support) feed a fixed weighted formula, "
-        "and each 'what-if' scenario applies fixed point deltas. Same inputs always produce the "
-        "same comparison — nothing here is a black box re-roll.\n"
-        "- **If the AI call fails or returns unreliable output,** the app falls back to a "
-        "transparent keyword heuristic and says so plainly above the results — it does not "
-        "silently guess.\n"
-        "- **Data handling:** everything you type (name, context, option details) lives only in "
-        "this browser session to build the prompt sent to the NVIDIA API for that one request. "
-        "Nothing is logged or stored by this app, and no other AI tool or external dataset is used."
-    )
 
 
 if not get_api_key():
