@@ -295,6 +295,66 @@ div[data-baseweb="checkbox"] input:checked + span { background-color: var(--acce
 .empty-state-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 1.55rem; font-weight: 800; margin-bottom: 0.6rem; color: var(--text); }
 .empty-state-text { color: var(--fog); max-width: 500px; margin: 0 auto; font-size: 0.97rem; font-weight: 500; line-height: 1.75; }
 
+/* ===================================================================== */
+/* Responsible-AI disclosure banner                                       */
+/* ===================================================================== */
+.disclosure-banner {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+  max-width: 760px;
+  margin: 0 auto 1.4rem;
+  padding: 0.95rem 1.15rem;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(245,235,223,0.7));
+  border: 1px solid rgba(58,44,45,0.14);
+  box-shadow: var(--shadow-soft);
+}
+.disclosure-banner .ic { font-size: 1.2rem; line-height: 1.4; flex-shrink: 0; }
+.disclosure-banner-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 0.25rem; }
+.disclosure-banner-text { color: var(--text); font-size: 0.92rem; font-weight: 500; line-height: 1.6; }
+
+/* Confidence framing for AI vs fallback outputs */
+.confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 0.6rem;
+}
+.confidence-badge.grounded { background: rgba(104,128,107,0.12); color: var(--sage); border: 1px solid rgba(104,128,107,0.3); }
+.confidence-badge.fallback { background: rgba(232,105,79,0.10); color: #C2543B; border: 1px solid rgba(232,105,79,0.28); }
+
+/* Human-in-the-loop decision commitment */
+.decision-box {
+  max-width: 760px;
+  margin: 1.6rem auto 0;
+  padding: 1.3rem 1.45rem;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(247,239,230,0.85));
+  border: 1px solid rgba(58,44,45,0.12);
+  box-shadow: var(--shadow-soft);
+}
+.decision-box-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent-2); margin-bottom: 0.4rem; }
+.decision-box-hint { color: var(--muted); font-size: 0.92rem; line-height: 1.65; margin-bottom: 0.85rem; }
+.decision-card {
+  max-width: 760px;
+  margin: 1.1rem auto 0;
+  padding: 1.2rem 1.4rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(232,245,234,0.55), rgba(255,255,255,0.85));
+  border: 1px solid rgba(104,128,107,0.3);
+}
+.decision-card-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--sage); margin-bottom: 0.45rem; }
+.decision-card-text { color: var(--text); font-size: 1.02rem; font-weight: 600; line-height: 1.6; }
+.decision-card-meta { color: var(--muted); font-size: 0.82rem; margin-top: 0.5rem; }
+
 @media (max-width: 640px) {
   .hero-title { font-size: 2.2rem; }
   .section-label { padding: 0.6rem 0.9rem; }
@@ -320,6 +380,8 @@ if "options"          not in st.session_state: st.session_state.options         
 if "engine_result"    not in st.session_state: st.session_state.engine_result    = None
 if "show_results"     not in st.session_state: st.session_state.show_results     = False
 if "scenario_checks"  not in st.session_state: st.session_state.scenario_checks  = {n: False for n, _ in SCENARIOS}
+if "committed_action" not in st.session_state: st.session_state.committed_action = ""
+if "committed_who"    not in st.session_state: st.session_state.committed_who    = ""
 
 
 def profile() -> Dict[str, Any]:
@@ -1116,6 +1178,39 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+<div class="disclosure-banner">
+  <div class="ic">🧭</div>
+  <div>
+    <div class="disclosure-banner-title">What this tool is — and isn't</div>
+    <div class="disclosure-banner-text">
+      This surfaces tradeoffs, not answers. It never ranks or picks a "best" option for you —
+      it structures the comparison so <em>you</em> can decide, with the real costs and unknowns
+      in view. Every number below is an AI-assisted estimate to verify directly with each school,
+      not a fact.
+    </div>
+  </div>
+</div>
+""", unsafe_allow_html=True)
+
+with st.expander("How this works, and what data it uses"):
+    st.markdown(
+        "- **Reasoning engine:** `meta/llama-3.3-70b-instruct`, called via the NVIDIA NIM API, "
+        "supplies institution-specific knowledge (costs, culture, outcomes) that no fixed rule "
+        "table could cover for every school or path a student might type in.\n"
+        "- **Scoring & scenario math is deterministic, not AI-generated.** Your sliders "
+        "(risk tolerance, financial pressure, family support) feed a fixed weighted formula, "
+        "and each 'what-if' scenario applies fixed point deltas. Same inputs always produce the "
+        "same comparison — nothing here is a black box re-roll.\n"
+        "- **If the AI call fails or returns unreliable output,** the app falls back to a "
+        "transparent keyword heuristic and says so plainly above the results — it does not "
+        "silently guess.\n"
+        "- **Data handling:** everything you type (name, context, option details) lives only in "
+        "this browser session to build the prompt sent to the NVIDIA API for that one request. "
+        "Nothing is logged or stored by this app, and no other AI tool or external dataset is used."
+    )
+
+
 if not get_api_key():
     st.warning(
         "No NVIDIA API key configured. Add `NVIDIA_API_KEY` to this app's "
@@ -1192,9 +1287,19 @@ if st.session_state.show_results and st.session_state.engine_result:
     w      = weights(prof)
 
     if result.get("used_ai"):
-        st.success("Reasoning is grounded in real knowledge of these specific places and paths.")
+        st.markdown(
+            '<div class="confidence-badge grounded">✓ Grounded estimate</div>',
+            unsafe_allow_html=True)
+        st.caption(
+            "The model reasoned using its training knowledge of these specific places and paths. "
+            "It can still be wrong or out of date — treat every figure as a starting estimate, "
+            "and use the **Questions to investigate** below to confirm it directly with each option."
+        )
     else:
-        st.warning("Running on keyword estimates only — the AI connection wasn't available. Add an NVIDIA API key for sharper analysis.")
+        st.markdown(
+            '<div class="confidence-badge fallback">⚠ Keyword fallback only</div>',
+            unsafe_allow_html=True)
+        st.warning("The AI connection wasn't available, so this run used a rough keyword heuristic instead of real institutional knowledge — treat these numbers as placeholders, not analysis. Add an NVIDIA API key for grounded results.")
 
     st.markdown('<div class="section-label"><span class="dot"></span>THE LAY OF THE LAND</div>', unsafe_allow_html=True)
     st.markdown('<p class="section-hint">Positions here describe the shape of the trade-off for your profile — not a ranking of which to pick.</p>', unsafe_allow_html=True)
@@ -1241,6 +1346,7 @@ if st.session_state.show_results and st.session_state.engine_result:
                 "Each one highlights the option most exposed to that shift."]), unsafe_allow_html=True)
 
     st.markdown('<div class="section-label"><span class="dot"></span>EACH OPTION, IN DETAIL</div>', unsafe_allow_html=True)
+    st.caption("Note: the **confidence in the path** metric below describes how well-mapped that path's outcomes typically are — it is not a measure of how certain the AI is about these numbers.")
 
     for opt in ranked:
         st.markdown(
@@ -1309,6 +1415,43 @@ if st.session_state.show_results and st.session_state.engine_result:
 
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
+
+    st.markdown('<div class="section-label"><span class="dot"></span>YOUR MOVE, NOT THE AI\'S</div>', unsafe_allow_html=True)
+    st.markdown(
+        '<div class="decision-box">'
+        '<div class="decision-box-label">Decision moment</div>'
+        '<div class="decision-box-hint">Everything above is a tradeoff map, not a verdict. '
+        'The one decision this tool will never make for you is which path is "right." '
+        'Before you close this tab, write down the one concrete thing you\'ll actually do next.</div>'
+        '</div>',
+        unsafe_allow_html=True)
+
+    dc1, dc2 = st.columns([3, 2])
+    with dc1:
+        action_draft = st.text_area(
+            "Your next concrete step",
+            value=st.session_state.committed_action,
+            placeholder="e.g. Email UCLA financial aid to ask how my package changes after year one",
+            height=80, key="action_draft_input")
+    with dc2:
+        who_draft = st.text_input(
+            "Who or what you're asking",
+            value=st.session_state.committed_who,
+            placeholder="e.g. UCLA financial aid office", key="who_draft_input")
+
+    if st.button("Lock in my next step", use_container_width=True):
+        st.session_state.committed_action = action_draft.strip()
+        st.session_state.committed_who = who_draft.strip()
+
+    if st.session_state.committed_action:
+        st.markdown(
+            f'<div class="decision-card">'
+            f'<div class="decision-card-label">You decided</div>'
+            f'<div class="decision-card-text">{html_escape(st.session_state.committed_action)}</div>'
+            + (f'<div class="decision-card-meta">Next: {html_escape(st.session_state.committed_who)}</div>'
+               if st.session_state.committed_who else "")
+            + '<div class="decision-card-meta">The AI surfaced the tradeoffs — you made the call.</div>'
+            f'</div>', unsafe_allow_html=True)
 
 else:
     st.markdown("""
