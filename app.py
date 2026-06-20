@@ -696,12 +696,21 @@ confidence_level:       0=very unclear path, 10=extremely well-mapped outcomes
 === OPTIONS ===
 {opts_block}
 
+For each scenario listed in active_scenarios above, reason concretely about which specific option (by exact name) is most exposed to that scenario and why — based on the actual real-world cost structure, dependency on family/aid, geographic distance, and flexibility of each named option. Do not guess generically; use what you actually know about these institutions/paths. If active_scenarios is empty, return an empty list for "scenario_analysis".
+
 Return ONLY this JSON object:
 {{
   "comparison": {{
     "biggest_tradeoff": "one paragraph naming each option directly and explaining the core tension",
     "what_first_gen_students_miss": ["specific insight about THESE options","second","third"],
-    "questions_to_research": ["specific question for financial aid office","another","third"]
+    "questions_to_research": ["specific question for financial aid office","another","third"],
+    "scenario_analysis": [
+      {{
+        "scenario": "<exact scenario name from active_scenarios>",
+        "most_exposed_option": "<exact name of the option most at risk under this scenario>",
+        "explanation": "1-2 concrete sentences on why this specific option is most exposed to this specific scenario, referencing real facts about it"
+      }}
+    ]
   }},
   "options": [
     {{
@@ -745,7 +754,8 @@ def fallback_comparison(opts: List[Dict[str, Any]]) -> Dict[str, Any]:
                 "what_first_gen_students_miss":["The real net cost — not tuition alone.",
                     "Unwritten networking expectations.","How hard it is to leave mid-path."],
                 "questions_to_research":["What is the net price after aid for your income bracket?",
-                    "What if aid changes after year one?","How easy is it to transfer or pause?"]}
+                    "What if aid changes after year one?","How easy is it to transfer or pause?"],
+                "scenario_analysis":[]}
     lo = min(opts, key=lambda o: o["financial_risk"])
     hi = max(opts, key=lambda o: o["salary_potential"]+o["networking"])
     tradeoff = (f"{lo['name']} carries lower financial risk, while {hi['name']} offers stronger upside — but likely asks more upfront."
@@ -756,7 +766,8 @@ def fallback_comparison(opts: List[Dict[str, Any]]) -> Dict[str, Any]:
                 "How hard it is to leave, transfer, or recover if the plan changes."],
             "questions_to_research":["What does the net price calculator show for your family income?",
                 "What happens to your aid if your family situation changes after year one?",
-                "How easy is it to switch programs, transfer, or pause if needed?"]}
+                "How easy is it to switch programs, transfer, or pause if needed?"],
+            "scenario_analysis":[]}
 
 
 NUMERIC_KEYS = ["flexibility","recovery_difficulty","confidence_level","financial_risk",
@@ -812,10 +823,28 @@ def run_engine(prof: Dict[str, Any], opts: List[Dict[str, Any]]) -> Dict[str, An
         comp_raw = data.get("comparison", {})
         if not isinstance(comp_raw, dict): comp_raw = {}
         fb = fallback_comparison(merged)
+
+        valid_names = {o["name"].strip().lower() for o in merged}
+        raw_sa = comp_raw.get("scenario_analysis")
+        scenario_analysis = []
+        if isinstance(raw_sa, list):
+            for item in raw_sa:
+                if not isinstance(item, dict): continue
+                scen = str(item.get("scenario","")).strip()
+                exposed = str(item.get("most_exposed_option","")).strip()
+                expl = str(item.get("explanation","")).strip()
+                if not scen or not exposed or not expl: continue
+                if exposed.strip().lower() not in valid_names:
+                    matched = next((o["name"] for o in merged if o["name"].strip().lower().split()[0:1] == exposed.strip().lower().split()[0:1]), None)
+                    if not matched: continue
+                    exposed = matched
+                scenario_analysis.append({"scenario": scen, "most_exposed_option": exposed, "explanation": expl})
+
         comparison = {
             "biggest_tradeoff": str(comp_raw.get("biggest_tradeoff") or fb["biggest_tradeoff"]),
             "what_first_gen_students_miss": clip(comp_raw.get("what_first_gen_students_miss") or fb["what_first_gen_students_miss"], 5),
             "questions_to_research": clip(comp_raw.get("questions_to_research") or fb["questions_to_research"], 5),
+            "scenario_analysis": scenario_analysis,
         }
         return {"options": merged, "comparison": comparison, "used_ai": True}
 
@@ -1296,26 +1325,21 @@ if st.session_state.show_results and st.session_state.engine_result:
                                    result["comparison"]["questions_to_research"]), unsafe_allow_html=True)
     with cc3:
         if act:
-            IMPACT_MAP = {
-                "Scholarship lost":             "Financial risk spikes — the most cost-exposed path feels it first.",
-                "Family cannot support":        "The path leaning on family logistics becomes much harder.",
-                "Housing costs rise":           "Living cost buffer shrinks; most expensive option is most exposed.",
-                "Need part-time work":          "Time pressure and mental load increase significantly.",
-                "Family emergency":             "Recovery difficulty rises and path-change ease drops.",
-                "Internship offer arrives":     "Networking and salary upside become more decisive.",
-                "Graduate school becomes goal": "Long-term flexibility and career credentials matter more.",
-            }
+            sa_by_scenario = {item["scenario"]: item for item in result["comparison"].get("scenario_analysis", [])}
+            any_rendered = False
             for s in act:
-                worst, worst_d = "—", 0.0
-                for o in ranked:
-                    d = round(score(apply_scenarios(o,[s]),w) - score(o,w), 1)
-                    if abs(d) >= abs(worst_d): worst_d = d; worst = o["name"]
-                dt = f"{'+' if worst_d > 0 else ''}{worst_d:.1f}"
-                st.markdown(
-                    f'<div class="sc-card"><div class="sc-name">{html_escape(s)}</div>'
-                    f'<div class="sc-text">{html_escape(IMPACT_MAP.get(s,"The scenario shifts the risk balance."))} '
-                    f'Most exposed: <b>{html_escape(worst)}</b> ({html_escape(dt)} pts)</div></div>',
-                    unsafe_allow_html=True)
+                item = sa_by_scenario.get(s)
+                if item:
+                    any_rendered = True
+                    st.markdown(
+                        f'<div class="sc-card"><div class="sc-name">{html_escape(s)}</div>'
+                        f'<div class="sc-text">{html_escape(item["explanation"])} '
+                        f'Most exposed: <b>{html_escape(item["most_exposed_option"])}</b></div></div>',
+                        unsafe_allow_html=True)
+            if not any_rendered:
+                st.markdown(render_listbox("Unknowns",[
+                    "The AI didn't return a specific read on these scenarios this run.",
+                    "Try mapping the paths again, or check the option names are clear."]), unsafe_allow_html=True)
         else:
             st.markdown(render_listbox("Unknowns",[
                 "Tick a scenario above to see which path bends first.",
@@ -1380,14 +1404,6 @@ if st.session_state.show_results and st.session_state.engine_result:
             ".tl-text{font-size:0.88rem;line-height:1.55;color:#A8B4C7}</style>"
             + render_timeline(opt),
             height=max(260, len(opt.get("timeline",[])) * 84), scrolling=False)
-
-        if act:
-            impact_text = scenario_impact_text(opt, act)
-            st.markdown(
-                f'<div class="stress-panel">'
-                f'<div><div class="stress-label">Under your selected scenario(s)</div>'
-                f'<div class="stress-delta">{html_escape(impact_text)}</div>'
-                f'</div></div>', unsafe_allow_html=True)
 
         st.markdown("</div></div>", unsafe_allow_html=True)
         st.markdown("<div style='height:0.5rem'></div>", unsafe_allow_html=True)
