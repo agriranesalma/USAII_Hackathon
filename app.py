@@ -1167,7 +1167,10 @@ st.components.v1.html(render_hero(), height=300, scrolling=False)
 st.markdown("""
 <div class="mission-panel">
   <strong>Why this exists</strong>
-  <p>Higher education is built on invisible safety nets. Legacy students learn the unwritten rules at the dinner table; first-generation students are expected to navigate them blindly. First-Gen Compass exists to bridge this structural gap. By mapping the hidden costs and hidden tradeoffs of major life choices, it translates institutional opacity into clear, actionable data, giving first-generation students the transparency they deserve to make high-stakes choices with absolute confidence.</p>
+  <p>Legacy students learn the unwritten rules of higher education and career success at the dinner table,
+  first-generation students are expected to navigate these high-stakes systems blindly.
+  We bridge this gap by mapping the hidden costs and tradeoffs of your path, 
+  creating the knowledge equity you need to own your future.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1177,9 +1180,8 @@ st.markdown("""
   <div>
     <div class="disclosure-banner-title">What this tool is — and isn't</div>
     <div class="disclosure-banner-text">
-      What it is: First-Gen Compass is an AI-powered simulator that models the hidden financial, academic, and emotional realities of your options. It structures your thinking, flags unseen risks, uncovers unwritten institutional rules, and highlights the precise questions you need to ask your advisors.
-
-What it isn't: An automated oracle. This tool will never tell you what you should do. It does not rank your options from best to worst, nor does it present its estimates as absolute certainties. False confidence is dangerous in high-stakes decisions. The AI is here to clear the mental clutter and surface the map—but you make the final call.
+      What it is: A tradeoff simulator that exposes the unseen realities of your options.
+      What it isn't: A decision-maker. The AI shines light on the paths, but you make the final call.
     </div>
   </div>
 </div>
