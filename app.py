@@ -1170,7 +1170,7 @@ st.markdown("""
   <p>Legacy students learn the unwritten rules of higher education and career success at the dinner table,
   first-generation students are expected to navigate these high-stakes systems blindly.
   We bridge this gap by mapping the hidden costs and tradeoffs of each path, 
-  creating the knowledge equity you need to <strong>own</strong> your future.</p>
+  creating the knowledge equity you need to own your future.</p>
 </div>
 """, unsafe_allow_html=True)
 
