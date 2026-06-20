@@ -1169,8 +1169,8 @@ st.markdown("""
   <strong>Why this exists</strong>
   <p>Legacy students learn the unwritten rules of higher education and career success at the dinner table,
   first-generation students are expected to navigate these high-stakes systems blindly.
-  We bridge this gap by mapping the hidden costs and tradeoffs of your path, 
-  creating the knowledge equity you need to own your future.</p>
+  We bridge this gap by mapping the hidden costs and tradeoffs of each path, 
+  creating the knowledge equity you need to <strong>own</strong> your future.</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -1180,8 +1180,8 @@ st.markdown("""
   <div>
     <div class="disclosure-banner-title">What this tool is — and isn't</div>
     <div class="disclosure-banner-text">
-      What it is: A tradeoff simulator that exposes the unseen realities of your options.
-      What it isn't: A decision-maker. The AI shines light on the paths, but you make the final call.
+      What it is: A tradeoff simulator that exposes the unseen realities of your options.<br>
+      What it isn't: A decision-maker. The AI shines light on the paths, but <strong>you</strong> make the final call.
     </div>
   </div>
 </div>
