@@ -25,6 +25,7 @@ SCENARIOS = [
     ("Graduate school becomes goal",  "You might want to continue beyond the degree."),
 ]
 
+
 CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700;8..60,800;8..60,900&family=IBM+Plex+Mono:wght@500;600;700&family=Dancing+Script:wght@600;700&display=swap');
@@ -172,143 +173,34 @@ div[data-baseweb="checkbox"] input:checked + span { background-color: var(--acce
 .stButton button:not([kind="primary"]):hover { border-color: rgba(201,130,114,0.5) !important; transform: translateY(-1px) !important; }
 
 /* ===================================================================== */
-/* HERO                                                                   */
+/* HERO mission panel — lives in normal page background, below the card  */
 /* ===================================================================== */
-.hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.78fr);
-  gap: 1.5rem;
-  align-items: stretch;
-  margin-bottom: 0.4rem;
+.mission-panel {
+  max-width: 760px;
+  margin: 1.6rem auto 2.2rem;
+  padding: 1.2rem 1.5rem;
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(245,235,223,0.95), rgba(238,226,211,0.9));
+  border: 1px solid rgba(158,122,74,0.18);
+  box-shadow: var(--shadow-soft);
+  text-align: left;
 }
-
-/* Deep-beige title card — this IS the hero, scaled like a real product wordmark */
-.hero-titlecard {
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1.1rem;
-  padding: 2.4rem 2.5rem;
-  border-radius: 32px;
-  background:
-    radial-gradient(circle at 18% 12%, rgba(201,130,114,0.22) 0%, transparent 42%),
-    radial-gradient(circle at 88% 86%, rgba(158,122,74,0.18) 0%, transparent 40%),
-    linear-gradient(155deg, var(--beige-deep-2) 0%, var(--beige-deep) 62%, #2E2220 100%);
-  box-shadow: 0 30px 70px rgba(35,24,22,0.32), inset 0 1px 0 rgba(255,255,255,0.06);
-  min-height: 320px;
-}
-
-.hero-titlecard::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 1px);
-  background-size: 22px 22px;
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-.hero-kicker {
-  position: relative;
-  z-index: 1;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  width: fit-content;
-  padding: 0.4rem 0.85rem;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.14);
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: #E8C9A8;
-}
-.hero-kicker .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px rgba(201,130,114,0.25); }
-
-.hero-title {
-  position: relative;
-  z-index: 1;
-  margin: 0;
-  font-family: 'Source Serif 4', Georgia, serif;
-  font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
-  font-size: clamp(3rem, 6vw, 4.6rem);
-  color: #FBF3E8;
-}
-.hero-title .accent {
-  display: block;
-  color: var(--accent);
-  font-style: italic;
-  font-weight: 700;
-}
-
-.hero-slogan {
-  position: relative;
-  z-index: 1;
-  max-width: 30rem;
-  margin: 0;
-  font-family: 'Dancing Script', cursive;
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.4;
-  color: #E8D9C8;
-}
-
-.hero-mission {
-  position: relative;
-  z-index: 1;
-  max-width: 34rem;
-  padding: 0.95rem 1.1rem;
-  margin-top: 0.2rem;
-  border-radius: 16px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
-  font-size: 0.92rem;
-  line-height: 1.7;
-  font-weight: 500;
-  color: #D9CABB;
-}
-.hero-mission strong {
+.mission-panel strong {
   display: block;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 0.4rem;
+  color: var(--rose-2);
+  margin-bottom: 0.45rem;
   font-weight: 700;
 }
-
-/* Compass panel — sized so the FULL compass renders, nothing clipped */
-.compass-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 320px;
-  padding: 1rem;
-  border-radius: 32px;
-  background:
-    radial-gradient(circle at 22% 18%, rgba(201,130,114,0.14), transparent 30%),
-    radial-gradient(circle at 80% 80%, rgba(104,128,107,0.12), transparent 32%),
-    linear-gradient(180deg, rgba(255,255,255,0.92), rgba(248,241,233,0.8));
-  border: 1px solid rgba(58,44,45,0.10);
-  box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.6);
-  overflow: hidden;
-}
-.compass-card iframe { display: block; width: 100% !important; }
-
-@media (max-width: 900px) {
-  .hero-grid { grid-template-columns: 1fr; }
-  .hero-titlecard { padding: 2rem 1.6rem; min-height: 0; }
-  .hero-title { font-size: clamp(2.4rem, 9vw, 3.2rem); }
+.mission-panel p {
+  margin: 0;
+  color: #3b2c2a;
+  font-size: 0.97rem;
+  line-height: 1.75;
+  font-weight: 500;
 }
 
 /* ===================================================================== */
@@ -1146,27 +1038,74 @@ def render_compass_widget(initial_angle: float = 0.0) -> str:
 
 
 # ============================ HERO ============================
-hero_left, hero_right = st.columns([1.05, 0.78])
-
-with hero_left:
-    st.markdown("""
-    <div class="hero-titlecard">
-      <div class="hero-kicker"><span class="dot"></span>DECISION COMPASS</div>
-      <h1 class="hero-title">First-Gen<span class="accent">Compass</span></h1>
-      <div class="hero-slogan">A calm, intelligent map for high-stakes choices.</div>
-      <div class="hero-mission">
-        <strong>Why this exists</strong>
-        This is a decision tool for first-gen students who are expected to translate a whole
-        system alone. It brings the real cost of each path into focus — money, mobility,
-        pressure, and the surprises people rarely say out loud.
+def render_hero(angle: float = 0.0) -> str:
+    compass_inner = render_compass_widget(angle)
+    return f"""
+    <div style="font-family:'Inter',sans-serif;">
+      <div class="hero-titlecard-standalone">
+        <div class="hero-kicker"><span class="dot"></span>DECISION COMPASS</div>
+        <h1 class="hero-title">First-Gen<span class="accent">Compass</span></h1>
+        <div class="hero-compass-slot">{compass_inner}</div>
+        <div class="hero-slogan">A calm, intelligent map for high-stakes choices.</div>
       </div>
     </div>
-    """, unsafe_allow_html=True)
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,800;8..60,900&family=Dancing+Script:wght@700&family=IBM+Plex+Mono:wght@700&display=swap');
+      html, body {{ margin:0; padding:0; background:transparent; }}
+      .hero-titlecard-standalone {{
+        position: relative; overflow: hidden;
+        display: flex; flex-direction: column; align-items: center; text-align: center;
+        gap: 0.9rem;
+        padding: 3.2rem 2.5rem 2.8rem;
+        border-radius: 36px;
+        background:
+          radial-gradient(circle at 18% 12%, rgba(201,130,114,0.22) 0%, transparent 42%),
+          radial-gradient(circle at 88% 86%, rgba(158,122,74,0.18) 0%, transparent 40%),
+          linear-gradient(155deg, #4A372F 0%, #3B2C2A 62%, #2E2220 100%);
+        box-shadow: 0 30px 70px rgba(35,24,22,0.32), inset 0 1px 0 rgba(255,255,255,0.06);
+      }}
+      .hero-titlecard-standalone::after {{
+        content: ""; position: absolute; inset: 0;
+        background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 1px);
+        background-size: 22px 22px; opacity: 0.5; pointer-events: none;
+      }}
+      .hero-kicker {{
+        position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.5rem;
+        width: fit-content; padding: 0.4rem 0.85rem; border-radius: 999px;
+        background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+        font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 700;
+        letter-spacing: 0.18em; text-transform: uppercase; color: #E8C9A8;
+      }}
+      .hero-kicker .dot {{ width: 6px; height: 6px; border-radius: 50%; background: #C98272; box-shadow: 0 0 0 4px rgba(201,130,114,0.25); }}
+      .hero-title {{
+        position: relative; z-index: 1; margin: 0.2rem 0 0;
+        font-family: 'Source Serif 4', Georgia, serif; font-weight: 900;
+        letter-spacing: -0.03em; line-height: 0.96;
+        font-size: clamp(3.6rem, 7.2vw, 6.4rem); color: #FBF3E8;
+      }}
+      .hero-title .accent {{ display: block; color: #C98272; font-style: italic; font-weight: 800; }}
+      .hero-slogan {{
+        position: relative; z-index: 1; max-width: 32rem; margin: 0.4rem 0 0;
+        font-family: 'Dancing Script', cursive; font-size: 1.6rem; font-weight: 700;
+        line-height: 1.4; color: #E8D9C8;
+      }}
+      .hero-compass-slot {{
+        position: relative; z-index: 1; display: flex; align-items: center; justify-content: center;
+        width: 260px; height: 260px; margin: 0.4rem auto 0;
+      }}
+    </style>
+    """
 
-with hero_right:
-    st.markdown('<div class="compass-card">', unsafe_allow_html=True)
-    st.components.v1.html(render_compass_widget(), height=300, scrolling=False)
-    st.markdown('</div>', unsafe_allow_html=True)
+st.components.v1.html(render_hero(), height=720, scrolling=False)
+
+st.markdown("""
+<div class="mission-panel">
+  <strong>Why this exists</strong>
+  <p>This is a decision tool for first-gen students who are expected to translate a whole
+  system alone. It brings the real cost of each path into focus — money, mobility,
+  pressure, and the surprises people rarely say out loud.</p>
+</div>
+""", unsafe_allow_html=True)
 
 if not get_api_key():
     st.warning(
