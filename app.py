@@ -13,7 +13,7 @@ import streamlit as st
 st.set_page_config(page_title="First-Gen Compass", page_icon="🧭", layout="centered")
 
 NVIDIA_BASE_URL    = "https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL       = "meta/llama-3.3-70b-instruct"
+NVIDIA_MODEL       = "meta/llama3-8b-instruct"
 
 SCENARIOS = [
     ("Scholarship lost",              "Financial aid is reduced or disappears."),
